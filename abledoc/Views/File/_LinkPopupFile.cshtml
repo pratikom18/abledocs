@@ -1,0 +1,62 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@*<div class="modal" id="myModal">*@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<div class="modal fade" id="bootstrap-modal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">@Localizer["Link Popup File"]</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+
+                <table class="example1 table table-striped table-bordered table-hover responsive linkpopupfile" width="100%">
+                    <thead class="thin-border-bottom">
+                        <tr>
+                            <th></th>
+                            <th>@Localizer["File Name"]</th>
+                            <th>@Localizer["Last Updated"]</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.LinkPopupFileList != null)
+                        {
+                            @foreach (JobsFilesVersions item in ViewBag.LinkPopupFileList)
+                            {
+                                <tr>
+                                    <td>
+                                        <input data-theme="a" type="checkbox" name="linkCheckBoxes" id="@item.ID" value="@item.ID">
+                                    </td>
+                                    <td>
+                                        @item.Filename
+                                    </td>
+                                    <td>
+                                        @item.LastUpdated
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success btn-primary-1" id="LinkFiles" onclick="LinkFiles('@ViewBag.JobID','@ViewBag.FileID','@ViewBag.flag')">@Localizer["Link"]</button>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="~/assets/js/pages/linkpopup.js?v=@abledoc.Utility.CommonHelper.Version"></script>
+

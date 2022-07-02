@@ -1,0 +1,193 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model DiscriptionMaster
+<div class="modal fade" id="bootstrap-modal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title">
+                    @*  @Localizer["Create"]*@
+                    @if (ViewBag.PageMode == "Create")
+                    {
+                        @Localizer["Create"]
+                    }
+                    else if (ViewBag.PageMode == "Update")
+                    {
+                        @Localizer["Update"]
+                    }
+                </h4>
+            </div>
+            <div id="demo-modal">
+                <form method="post" id="DiscriptionMasterform">
+                    <div class="card">
+                        <div class="card-body">
+                            <input type="hidden" asp-for="id" />
+
+                            <div class="row">
+                                <label asp-for="ProductName" class="col-form-label col-sm-3">@Localizer["Product Name"] <span class="text-danger">*</span></label>
+                                <div class="col-md-9">
+                                    <div class="form-group">
+
+                                        <input type="text" asp-for="ProductName" class="form-control" />
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                            <div class="row">
+                                <label asp-for="ProductPrice" class="col-form-label col-sm-3">@Localizer["Product Price"] <span class="text-danger">*</span></label>
+                                <div class="col-md-9">
+                                    <div class="form-group">
+
+                                        <input type="number" asp-for="ProductPrice" class="form-control" />
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row language-div">
+                                <label for="Language" class="col-form-label col-sm-3">@Localizer["Language"] <span class="text-danger">*</span></label>
+                                <div class="col-md-9">
+                                    <div class="form-group">
+
+                                        @Html.DropDownList("Language", abledoc.Utility.ComboHelper.GetCommonMasterList("Language", Model.Language), Localizer["Select"].Value, new { @id = "Language", @class = "form-control select2", @datastyle = "btn btn-link", @name = "Language", @placeholder = "Language" })
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <label class="col-md-3 col-form-label">@Localizer["Unit"] <span class="text-danger">*</span></label>
+                                <div class="col-md-9">
+                                    <div class="form-group">
+                                        @*@Html.DropDownList("country_code", abledoc.Utility.ComboHelper.GetCountryList(Convert.ToString(Model.country_code)), "Select", new { @id = "country_code", @class = "form-control input-inline input-medium select2", @datastyle = "btn btn-link", @name = "country_code", @placeholder = "Country", @multiple = "multiple" })*@
+                                        <select id="unit" name="unit" multiple="multiple" class="form-control input-inline input-medium select2">
+                                            @{
+                                                if (string.IsNullOrEmpty(Model.unit))
+                                                {
+                                                    foreach (CommonMaster item in new CommonMaster().GetCommonMasterList("Unit"))
+                                                    {
+                                                        <option value="@item.commonid">@item.typename</option>
+
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    var unitexplode = Model.unit.ToString().Split(",").ToArray();
+                                                    Dictionary<int, int> unitArray = new Dictionary<int, int>();
+                                                    int count = 0;
+                                                    foreach (CommonMaster item in new CommonMaster().GetCommonMasterList("Unit"))
+                                                    {
+                                                        if (count < unitexplode.Length)
+                                                        {
+                                                            if (!unitArray.ContainsValue(Convert.ToInt32(unitexplode[count])))
+                                                            {
+                                                                unitArray.Add(count, Convert.ToInt32(unitexplode[count]));
+                                                            }
+
+                                                        }
+
+                                                        if (unitArray.ContainsValue(item.commonid))
+                                                        {
+                                                            <option value="@item.commonid" selected>@item.typename</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@item.commonid">@item.typename</option>
+                                                        }
+
+
+                                                        count++;
+                                                    }
+
+                                                }
+
+
+                                            }
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" style="display:none;">
+                                <label class="col-md-3 col-form-label">@Localizer["Country"] <span class="text-danger">*</span></label>
+                                <div class="col-md-9">
+                                    <div class="form-group">
+                                        @*@Html.DropDownList("country_code", abledoc.Utility.ComboHelper.GetCountryList(Convert.ToString(Model.country_code)), "Select", new { @id = "country_code", @class = "form-control input-inline input-medium select2", @datastyle = "btn btn-link", @name = "country_code", @placeholder = "Country", @multiple = "multiple" })*@
+                                        <select id="country_code" name="country_code" multiple="multiple" class="form-control input-inline input-medium select2">
+                                            @foreach (Countries item in new Countries().GetCountryList())
+                                            {
+                                                if (string.IsNullOrEmpty(Model.country_code))
+                                                {
+                                                    <option value="@item.code">@item.country</option>
+                                                }
+                                                else
+                                                {
+                                                    if (Model.country_code.Contains(item.code.ToString()))
+                                                    {
+                                                        <option value="@item.code" selected>@item.country</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item.code">@item.country</option>
+                                                    }
+                                                }
+
+                                            }
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <div class="col-sm-2"><button type="button" class="btn btn-primary-1" id="saveContent">@Localizer["Save"]</button></div>
+                        <div class="col-sm-2"><button type="button" class="btn btn-danger" data-dismiss="modal">@Localizer["Close"]</button></div>
+
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@{
+    <script>
+        $("#DiscriptionMasterform").validate({
+            rules: {
+                ProductName: "required",
+                ProductPrice: "required",
+                Language: "required",
+                unit: "required",
+
+
+            },
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                if (element.hasClass('select2') && element.next('.select2-container').length) {
+                    error.insertAfter(element.next('.select2-container'));
+                } else {
+                    error.insertAfter(element.closest('.form-control'));
+                }
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            }
+        });
+    </script>
+
+}

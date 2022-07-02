@@ -1,0 +1,32 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model abledoc.Models.Jobs;
+@*@{ Layout = null; }*@
+@*@{ViewBag.flag = Model.flag;}*@
+<div class="modal fade" id="bootstrap-modal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">@Localizer["File Preview"]</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+
+                <div class="col-md-12">
+                    @await Html.PartialAsync("_IFramePdf")
+                </div>
+
+                <div class="card-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times-circle"></i> @Localizer["Close"]</button>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+</div>

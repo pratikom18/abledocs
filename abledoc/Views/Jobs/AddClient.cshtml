@@ -1,0 +1,29 @@
+﻿@model abledoc.Models.Clients;
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@*@{ Layout = null; }*@
+
+<form asp-action="AddClient" method="post" onsubmit="return jQueryAjaxPost(this);">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" name="flag" id="flag" value="@ViewBag.flag" />
+    <div class="modal-body">
+        <div class="form-group">
+            <label asp-for="Company">@Localizer["Company Name"] <span class="text-danger">*</span></label>
+            <input asp-for="Company" class="form-control" />
+            <span asp-validation-for="Company" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Code">@Localizer["Code"] <span class="text-danger">*</span></label>
+            <input asp-for="Code" class="form-control" />
+            <span asp-validation-for="Code" class="text-danger"></span>
+        </div>
+
+    </div>
+    <!-- Modal footer -->
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary-1" id="saveBtn1">@Localizer["Save"]</button>
+        &nbsp;&nbsp;
+        <button type="button" class="btn btn-danger" data-dismiss="modal">@Localizer["Close"]</button>
+    </div>
+</form>
+

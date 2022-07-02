@@ -1,0 +1,14 @@
+DROP TABLE `abledocs_eu`.`users`;
+DROP TABLE `abledocs_eu`.`usersroles`;
+DROP TABLE `abledocs_eu`.`userroles`;
+DROP TABLE `abledocs_eu`.`user_permissions`;
+DROP TABLE `abledocs_eu`.`states`;
+DROP TABLE `abledocs_eu`.`setting_permissions`;
+DROP TABLE `abledocs_eu`.`rolespermissions`;
+DROP TABLE `abledocs_eu`.`menumaster`;
+DROP TABLE `abledocs_eu`.`manage_company`;
+DROP TABLE `abledocs_eu`.`countries`;
+DROP TABLE `abledocs_eu`.`common_master`;
+DROP TABLE `abledocs_eu`.`job_quote_autopopulate`;
+DROP TABLE `abledocs_eu`.`job_quote_autopopulate_countries`;
+DROP TABLE `abledocs_eu`.`setting`;

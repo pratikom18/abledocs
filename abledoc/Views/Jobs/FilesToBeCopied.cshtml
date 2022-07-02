@@ -1,0 +1,131 @@
+﻿@model abledoc.Models.Jobs;
+@*@{ Layout = null; }*@
+<div class="modal fade" id="bootstrap-modal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Cancel & Copy Job Parts</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" style="max-height: calc(100vh - 200px); overflow-y: auto;">
+                <div class="pull-right">
+
+                    <button type="button" class="btn btn-outline-success btn-sm CopyCategoryTab" id="sourceTabBtn" rel="source">Source</button>
+
+                    <button type="button" class="btn btn-primary-1 btn-sm CopyCategoryTab" id="referenceTabBtn" rel="reference">Reference</button>
+
+                    <button type="button" class="btn btn-primary-1 btn-sm CopyCategoryTab" id="othersTabBtn" rel="others">Others</button>
+
+                </div>
+                <br/><br />
+
+                <div id="otherTab">
+                    <table id="otherFileCopy" class="table table-striped table-bordered table-hover responsive" width="100%">
+                        <thead class="thin-border-bottom">
+                            <tr>
+                                <th>File Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+
+                <div id="referenceTab">
+
+
+                    <table id="referenceFileCopy" class="table table-striped table-bordered table-hover responsive" width="100%">
+                        <thead class="thin-border-bottom">
+                            <tr>
+                                <th>File Name</th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+
+                </div>
+
+
+
+                <div id="sourceTab">
+
+                    <table id="sourceCopy" class="myTable table table-striped table-bordered table-hover responsive" width="100%">
+                        <thead class="thin-border-bottom">
+                            <tr>
+                                <th>File Name</th>
+
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+
+
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" onclick="CopyAndCreateJob(@Model.ID,@Model.ClientID); return false;">Copy & Create New Job</button>
+                    &nbsp;&nbsp;
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+
+
+            </div>
+                            </div>
+                        </div>
+                    </div>
+<script>
+    $(document).on("click", "#sourceTabBtn", function () {
+        value = $(this).attr("rel");
+        CopyCategoryTab(value, $(this));
+
+    });
+    $("#sourceTabBtn").click();
+
+
+    $(document).on("click", "#othersTabBtn", function () {
+        value = $(this).attr("rel");
+        CopyCategoryTab(value, $(this));
+
+    });
+
+    $(document).on("click", "#referenceTabBtn", function () {
+        value = $(this).attr("rel");
+        CopyCategoryTab(value, $(this));
+
+    });
+    function CopyCategoryTab(value, $this) {
+
+        $(".CopyCategoryTab").addClass("btn-primary-1").removeClass("btn-outline-success");
+        $this.removeClass("btn-primary-1").addClass("btn-outline-success");
+        $("#otherTab").addClass("hide");
+        $("#referenceTab").addClass("hide");
+        $("#sourceTab").addClass("hide");
+
+        if (value == "source") {
+            $("#sourceTab").removeClass("hide");
+
+        } else if (value == "reference") {
+            $("#referenceTab").removeClass("hide");
+        } else if (value == "others") {
+            $("#otherTab").removeClass("hide");
+        }
+
+    }
+</script>

@@ -1,0 +1,439 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model abledoc.Models.Production;
+@{
+        ViewData["Title"] = Localizer["Production"];
+        ViewData["PageTitle"] = Localizer["Production"];
+    }
+<input type="hidden" id="hdnActions" value="@Localizer["Actions"]" />
+
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-9">
+                <div class="card">
+                    <div id="MultDiv" style="display:none">
+
+                        <button class="btn btn-sm" id="uploadBtn" onclick="alert('Under development');">@Localizer["Upload"]</button>
+
+                        <button class="btn btn-sm" id="downloadBtn">@Localizer["Download"]</button>
+
+                        <button class="btn btn-sm" id="multiassigndate">@Localizer["Multi Assign Date"]</button>
+
+
+                        <select data-mini="true" name="user" class="form-control assignedChangeBatch" form="multiassign" id="MultiUser" style="color:white;width:35%;float:right" required>
+                            <option value="" style="color: black;">@Localizer["Multi Assign"]</option>
+                            @foreach (var assign in ViewBag.AssigneUserList)
+    {
+                                <option value="@assign.ID" style="color: black;">@(assign.FirstName + " " + assign.LastName[0] + ".")</option>
+                            }
+                        </select>
+
+
+
+
+                    </div>
+
+                    <div id="MultDiv1">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <button class="btn btn-sm" id="multiassigndate">@Localizer["Multi Assign Date"]</button>
+                            </div>
+
+                            <div class="col-md-6">
+                                <select data-mini="true" name="user" class="form-control assignedChangeBatch" form="multiassign" id="MultiUser" style="color:white;" required>
+                                    <option value="" style="color: black;">@Localizer["Multi Assign"]</option>
+                                    @foreach (var assign in ViewBag.AssigneUserList)
+    {
+                                        <option value="@assign.ID" style="color: black;">@(assign.FirstName + " " + assign.LastName[0] + ".")</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="row">
+                            <div class="form-group col-sm-3">
+                                <select class="form-control select2" id="searchby">
+                                    <option value="">@Localizer["--Select--"]</option>
+                                    <option value="ClientName">@Localizer["Client Name"]</option>
+                                    <option value="JobNumber">@Localizer["Job Number"]</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group col-sm-7">
+                                <input type="text" id="txtSearch" class="form-control col-sm-12 txtproduction" value="@ViewBag.Search" />
+                                <br />
+                                <span class="text-danger search-error field-validation-error" style="display:none;" data-valmsg-for="Search" data-valmsg-replace="true"><span id="Search-error" class="">Please enter search text.</span></span>
+                            </div>
+                            <div class="form-group col-sm-2">
+                                <button type="button" class="btn btn-primary btn-sm float-sm-right btnSearch btn-primary-1">
+                                    <i class="fa fa-search"></i> @Localizer["Search"]
+   </button>
+
+</div>
+
+</div>
+                                @*<div class="card-icon">
+        <i class="material-icons">assignment</i>
+    </div>
+    <h4 class="card-title">DataTables.net</h4>*@
+@{
+foreach (KeyValuePair<string, string> kvp in ViewBag.StatusCountList)
+{
+<button type = "button" class="btn @((kvp.Key == "Phase 1")?"btn-success":"btn-primary-1") btn-sm statusBtn" rel="@kvp.Key">
+@kvp.Key (@kvp.Value)
+</button>
+}
+}
+
+<input type = "hidden" id = "status" value = "Phase 1" />
+<input type = "hidden" id = "currentDate" value = "@DateTime.Now.ToString("yyyy-MM-dd")" />
+<input type = "hidden" id = "forDue2Days" value = "@DateTime.Today.AddDays(2).ToString("yyyy-MM-dd")" />
+</div >
+<div class= "card-body" >
+<div class= "toolbar" >
+<!--Here you can write extra buttons/actions for the toolbar              -->
+</div>
+<div class= "material-datatables" >
+<table id = "ProductionTable" class= "table table-striped table-no-bordered table-hover" cellspacing = "0" width = "100%" style = "width:100%" >
+<thead>
+<tr >
+<th width = "5%" > @Localizer["No"] </th >
+<th width = "5%" > @Localizer["File ID"] </th >
+<th width = "5%" > @Localizer["Client"] </th >
+<th width = "5%" > @Localizer["Job"] </th >
+<th width = "5%" > @Localizer["File Name"] </th >
+<th width = "5%" > @Localizer["Pages"] </th >
+<th width = "5%" > @Localizer["DeadLine"] </th >
+<th width = "5%" > @Localizer["Type"] </th >
+<th width = "5%" id = "progress" > @Localizer["Progress"] </th >
+<th width = "5%" id = "checkout" > @Localizer["Checked Out"] </th >
+<th width = "5%" class= "showassign" > @Localizer["Assigned To"] </th >
+<th width = "5%" class= "showassign" > @Localizer["Multi"] <br > @Localizer["Assign"] </th >
+<th width = "5%" id = "last_check_in" > @Localizer["Last Check-in"] </th >
+</tr >
+</thead>
+<tbody>
+</tbody>
+
+</table>
+</div>
+</div>
+
+</div>
+
+</div >
+<div class= "col-md-3" >
+<div class= "card" >
+<div class= "card-header card-header-primary card-header-icon" >
+<div class= "row" >
+<br />
+<div class= "form-group col-sm-12" >
+<h5 >
+<a href = "javascript:;" id = "phaseshow" class= "a-1" >
+<span class= "display-name" > @Localizer["Phase 1"] </span > <span id = "fileCountSpanID" class= "display-count" > 8 </span >
+</a >
+</h5 >
+</div >
+
+
+<div class= "form-group col-sm-10" >
+<input type = "text" id = "txtSearch1" class= "form-control col-sm-10 txtproduction" value = "@ViewBag.Search" />
+<br />
+<span class= "text-danger search-error field-validation-error" style = "display:none;" data - valmsg -for= "Search"  data -valmsg -replace = "true" ><span id = "Search-error" class= "" > Please enter search text.</span></span>
+</div>
+<div class= "form-group col-sm-1" >
+<button type = "button" class= "btn btn-primary btn-sm float-sm-right btnSearch1 btn-primary-1" >
+<i class= "fa fa-search" ></i >
+</button >
+</div >
+</div >
+
+</div >
+<div class= "card-body auto-scrool1" >
+<div class= "toolbar" >
+<!--Here you can write extra buttons/actions for the toolbar              -->
+</div>
+<div class= "material-datatables" >
+<table id = "ProductionTable1" class= "table table-striped table-no-bordered table-hover" cellspacing = "0" width = "100%" style = "width:100%" >
+<thead >
+<tr >
+<th ></th >
+</tr >
+</thead >
+<tbody >
+                                        @*<tr>
+                <td>
+                    <a target="_blank" data-ajax="false">
+                        59939 - 200430-Brugervejledning-til-elever--April-2020.pdf
+                        <hr class="hr-1" />
+                        Engagement #: 2019-DK-UVM-5359
+                        <hr class="hr-1" />
+                        @("Deadline: 2020-11-12 @ 18:00")
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a target="_blank" data-ajax="false">
+                        59939 - 200430-Brugervejledning-til-elever--April-2020.pdf
+                        <hr class="hr-1"/>
+                        Engagement #: 2019-DK-UVM-5359
+                        <hr class="hr-1"/>
+                        @("Deadline: 2020-11-12 @ 18:00")
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a target="_blank" data-ajax="false">
+                        59939 - 200430-Brugervejledning-til-elever--April-2020.pdf<br />
+                        <hr />
+                        Engagement #: 2019-DK-UVM-5359 <br />
+                        <hr />
+                        @("Deadline: 2020-11-12 @ 18:00")
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a target="_blank" data-ajax="false">
+                        59939 - 200430-Brugervejledning-til-elever--April-2020.pdf<br />
+                        <hr />
+                        Engagement #: 2019-DK-UVM-5359 <br />
+                        <hr />
+                        @("Deadline: 2020-11-12 @ 18:00")
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a target="_blank" data-ajax="false">
+                        59939 - 200430-Brugervejledning-til-elever--April-2020.pdf<br />
+                        <hr />
+                        Engagement #: 2019-DK-UVM-5359 <br />
+                        <hr />
+                        @("Deadline: 2020-11-12 @ 18:00")
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a target="_blank" data-ajax="false">
+                        59939 - 200430-Brugervejledning-til-elever--April-2020.pdf<br />
+                        <hr />
+                        Engagement #: 2019-DK-UVM-5359 <br />
+                        <hr />
+                        @("Deadline: 2020-11-12 @ 18:00")
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a target="_blank" data-ajax="false">
+                        59939 - 200430-Brugervejledning-til-elever--April-2020.pdf<br />
+                        <hr />
+                        Engagement #: 2019-DK-UVM-5359 <br />
+                        <hr />
+                        @("Deadline: 2020-11-12 @ 18:00")
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a target="_blank" data-ajax="false">
+                        59939 - 200430-Brugervejledning-til-elever--April-2020.pdf<br />
+                        <hr />
+                        Engagement #: 2019-DK-UVM-5359 <br />
+                        <hr />
+                        @("Deadline: 2020-11-12 @ 18:00")
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a target="_blank" data-ajax="false">
+                        59939 - 200430-Brugervejledning-til-elever--April-2020.pdf<br />
+                        <hr />
+                        Engagement #: 2019-DK-UVM-5359 <br />
+                        <hr />
+                        @("Deadline: 2020-11-12 @ 18:00")
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a target="_blank" data-ajax="false">
+                        59939 - 200430-Brugervejledning-til-elever--April-2020.pdf<br />
+                        <hr />
+                        Engagement #: 2019-DK-UVM-5359 <br />
+                        <hr />
+                        @("Deadline: 2020-11-12 @ 18:00")
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a target="_blank" data-ajax="false">
+                        59939 - 200430-Brugervejledning-til-elever--April-2020.pdf<br />
+                        <hr />
+                        Engagement #: 2019-DK-UVM-5359 <br />
+                        <hr />
+                        @("Deadline: 2020-11-12 @ 18:00")
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a target="_blank" data-ajax="false">
+                        59939 - 200430-Brugervejledning-til-elever--April-2020.pdf<br />
+                        <hr />
+                        Engagement #: 2019-DK-UVM-5359 <br />
+                        <hr />
+                        @("Deadline: 2020-11-12 @ 18:00")
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a target="_blank" data-ajax="false">
+                        59939 - 200430-Brugervejledning-til-elever--April-2020.pdf<br />
+                        <hr />
+                        Engagement #: 2019-DK-UVM-5359 <br />
+                        <hr />
+                        @("Deadline: 2020-11-12 @ 18:00")
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a target="_blank" data-ajax="false">
+                        59939 - 200430-Brugervejledning-til-elever--April-2020.pdf<br />
+                        <hr />
+                        Engagement #: 2019-DK-UVM-5359 <br />
+                        <hr />
+                        @("Deadline: 2020-11-12 @ 18:00")
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a target="_blank" data-ajax="false">
+                        59939 - 200430-Brugervejledning-til-elever--April-2020.pdf<br />
+                        <hr />
+                        Engagement #: 2019-DK-UVM-5359 <br />
+                        <hr />
+                        @("Deadline: 2020-11-12 @ 18:00")
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a target="_blank" data-ajax="false">
+                        59939 - 200430-Brugervejledning-til-elever--April-2020.pdf<br />
+                        <hr />
+                        Engagement #: 2019-DK-UVM-5359 <br />
+                        <hr />
+                        @("Deadline: 2020-11-12 @ 18:00")
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a target="_blank" data-ajax="false">
+                        59939 - 200430-Brugervejledning-til-elever--April-2020.pdf<br />
+                        <hr />
+                        Engagement #: 2019-DK-UVM-5359 <br />
+                        <hr />
+                        @("Deadline: 2020-11-12 @ 18:00")
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a target="_blank" data-ajax="false">
+                        59939 - 200430-Brugervejledning-til-elever--April-2020.pdf<br />
+                        <hr />
+                        Engagement #: 2019-DK-UVM-5359 <br />
+                        <hr />
+                        @("Deadline: 2020-11-12 @ 18:00")
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a target="_blank" data-ajax="false">
+                        59939 - 200430-Brugervejledning-til-elever--April-2020.pdf<br />
+                        Engagement #: 2019-DK-UVM-5359 <br />
+                        @("Deadline: 2020-11-12 @ 18:00")
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a target="_blank" data-ajax="false">
+                        59939 - 200430-Brugervejledning-til-elever--April-2020.pdf<br />
+                        Engagement #: 2019-DK-UVM-5359 <br />
+                        @("Deadline: 2020-11-12 @ 18:00")
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a target="_blank" data-ajax="false">
+                        59939 - 200430-Brugervejledning-til-elever--April-2020.pdf<br />
+                        Engagement #: 2019-DK-UVM-5359 <br />
+                        @("Deadline: 2020-11-12 @ 18:00")
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a target="_blank" data-ajax="false">
+                        59939 - 200430-Brugervejledning-til-elever--April-2020.pdf<br />
+                        Engagement #: 2019-DK-UVM-5359 <br />
+                        @("Deadline: 2020-11-12 @ 18:00")
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a target="_blank" data-ajax="false">
+                        59939 - 200430-Brugervejledning-til-elever--April-2020.pdf<br />
+                        Engagement #: 2019-DK-UVM-5359 <br />
+                        @("Deadline: 2020-11-12 @ 18:00")
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a target="_blank" data-ajax="false">
+                        59939 - 200430-Brugervejledning-til-elever--April-2020.pdf<br />
+                        Engagement #: 2019-DK-UVM-5359 <br />
+                        @("Deadline: 2020-11-12 @ 18:00")
+                    </a>
+                </td>
+            </tr>*@
+                                    </tbody>
+                                    </table>
+</div>
+                    </div>
+                </div>
+            </div>
+            <!-- end col-md-12 -->
+        </div>
+        <!-- end row -->
+    </div>
+</div>
+
+<div id="popup">
+</div>
+<div id="popupQuoteDetail">
+</div>
+@section scripts{
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <script src="~/assets/js/pages/Production.js?v=@abledoc.Utility.CommonHelper.Version"></script>
+    <!-- END PAGE LEVEL PLUGINS -->
+}

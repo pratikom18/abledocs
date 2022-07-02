@@ -1,0 +1,14 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<input type="hidden" id="JobID" value="@ViewBag.JobID" />
+
+<div class="material-datatables">
+    <table id="FirstLevelReportTree" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+        <thead>
+            <tr>
+                <th></th>
+                <th>@Localizer["Compliance Reports"]</th>
+            </tr>
+        </thead>
+    </table>
+</div>

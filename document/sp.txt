@@ -1,0 +1,45 @@
+DELIMITER $$
+
+USE `abledocs`$$
+
+DROP PROCEDURE IF EXISTS `quotecontent_displayorder`$$
+
+CREATE  PROCEDURE `quotecontent_displayorder`(IN `q_id` INT(10), IN `p_display_order` INT(10))
+BEGIN
+   DECLARE dorder INT;
+    DECLARE dlang CHAR(2);
+    DECLARE dcode VARCHAR(255);
+    DECLARE dtype CHAR(50);
+    SELECT display_order INTO dorder FROM job_quote_autopopulate WHERE id=q_id;
+    SELECT IFNULL(`language`,'') INTO dlang FROM job_quote_autopopulate WHERE id=q_id;
+    SELECT IFNULL(country_code,'') INTO dcode FROM job_quote_autopopulate WHERE id=q_id;
+    SELECT `type` INTO dtype FROM job_quote_autopopulate WHERE id=q_id;
+    IF (dorder > p_display_order) THEN
+    	UPDATE job_quote_autopopulate SET display_order=display_order+1 WHERE display_order>=p_display_order AND display_order<dorder AND IFNULL(`language`,'')= dlang AND deleted =0 AND `type`=dtype AND IFNULL(country_code,'')=dcode;
+    ELSE 
+    	
+        	UPDATE job_quote_autopopulate SET display_order=display_order-1 WHERE display_order<=p_display_order AND display_order>dorder AND IFNULL(`language`,'')= dlang AND deleted =0 AND `type`=dtype AND IFNULL(country_code,'')=dcode;
+        
+    END IF;
+  
+    UPDATE job_quote_autopopulate SET display_order=p_display_order WHERE id=q_id;
+    
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+
+USE `abledocs`$$
+
+DROP PROCEDURE IF EXISTS `rank_quotecontent_displayorder`$$
+
+CREATE PROCEDURE `rank_quotecontent_displayorder`(IN lang CHAR(2),IN p_type CHAR(50))
+BEGIN
+	
+       SET @rank:=0;
+       UPDATE job_quote_autopopulate SET display_order=@rank:=@rank+1 WHERE `language` = lang AND TYPE = p_type AND deleted = 0 ORDER BY display_order;
+
+	END$$
+
+DELIMITER ;

@@ -1,0 +1,6 @@
+﻿@{ Layout = null; }
+
+@{
+    string code = ViewBag.code;
+}
+@Html.DropDownList("currency", abledoc.Utility.ComboHelper.GetCountryCurrencyList(code), new { @id = "currency", @class = "form-control selectpicker1 select2 filter-option-1", @datastyle = "btn btn-link", @name = "currency" })

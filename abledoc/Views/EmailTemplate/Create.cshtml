@@ -1,0 +1,115 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model EmailTemplate
+<div class="modal fade" id="bootstrap-modal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title">
+                    @* @Localizer["Create"]*@
+                    @if (ViewBag.PageMode == "Create")
+                    {
+                        @Localizer["Create"]
+                    }
+                    else if (ViewBag.PageMode == "Update")
+                    {
+                        @Localizer["Update"]
+                    }
+                </h4>
+            </div>
+            <div id="demo-modal">
+                <form method="post" id="emailtemplateform">
+                    <div class="card">
+                        <div class="card-body">
+                            <input type="hidden" asp-for="id" />
+
+
+
+                            <div class="row language-div">
+                                <label for="Language" class="col-form-label col-sm-3">@Localizer["Language"] <span class="text-danger">*</span></label>
+                                <div class="col-md-9">
+                                    <div class="form-group">
+
+                                        @Html.DropDownList("Language", abledoc.Utility.ComboHelper.GetCommonMasterList("Language", Model.language), Localizer["Select"].Value, new { @id = "Language", @class = "form-control select2", @datastyle = "btn btn-link", @name = "Language", @placeholder = "Language" })
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label for="subject" class="col-form-label col-sm-3">@Localizer["Subject"] <span class="text-danger">*</span></label>
+                                <div class="col-md-9">
+                                    <div class="form-group">
+
+                                        <input type="text" asp-for="subject" id="subject" class="form-control" />
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label for="email_for" class="col-form-label col-sm-3">@Localizer["Email For"] <span class="text-danger">*</span></label>
+                                <div class="col-md-9">
+                                    <div class="form-group">
+
+                                        @Html.DropDownList("email_for", abledoc.Utility.ComboHelper.GetCommonMasterList("EmailFor", Model.email_for), Localizer["Select"].Value, new { @id = "email_for", @class = "form-control select2", @datastyle = "btn btn-link", @name = "email_for", @placeholder = "Email For" })
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <label for="Information" class="col-form-label col-sm-3">@Localizer["Delivery Email"] <span class="text-danger">*</span></label>
+                                <div class="col-md-9">
+                                    <div class="form-group">
+
+                                        <textarea class="form-control" asp-for="DeliveryEmail"></textarea>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <div class="col-sm-2"><button type="button" class="btn btn-primary-1" id="saveContent">@Localizer["Save"]</button></div>
+                        <div class="col-sm-2"><button type="button" class="btn btn-danger" data-dismiss="modal">@Localizer["Close"]</button></div>
+
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@{
+    <script>
+        $("#emailtemplateform").validate({
+            rules: {
+                Language: "required",
+                email_for: "required",
+                DeliveryEmail: "required",
+                subject: "required"
+
+            },
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                if (element.hasClass('select2') && element.next('.select2-container').length) {
+                    error.insertAfter(element.next('.select2-container'));
+                } else {
+                    error.insertAfter(element.closest('.form-control'));
+                }
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            }
+        });
+    </script>
+
+}

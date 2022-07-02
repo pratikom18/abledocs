@@ -1,0 +1,153 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model Users
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@*<div class="modal" id="myModal">*@
+<div class="modal fade" id="bootstrap-modal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    @*@ViewBag.PageMode @Localizer["User"]*@
+                    @if (ViewBag.PageMode == "Add")
+                    {
+                        @Localizer["Add User"]
+                    }
+                    else if (ViewBag.PageMode == "Edit")
+                    {
+                        @Localizer["Edit User"]
+                    }
+                </h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form method="post" id="userForm" asp-controller="users" asp-action="Upsert">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="ID" />
+                    <div class="row">
+                        <div class="form-group col-sm-3"><label for="FirstName" class="col-form-label">@Localizer["First Name"]<span class="text-danger">*</span></label></div>
+
+                        <div class="form-group col-sm-9">
+                            <input type="text" asp-for="FirstName" class="form-control" id="FirstName" placeholder=@Localizer["First Name"]>
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-3"><label for="LastName" class="col-form-label">@Localizer["Last Name"]<span class="text-danger">*</span></label></div>
+
+                        <div class="form-group col-sm-9">
+                            <input type="text" asp-for="LastName" class="form-control" id="LastName" placeholder=@Localizer["Last Name"]>
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-3"><label for="Username" class="col-form-label">@Localizer["User Name"]<span class="text-danger">*</span></label></div>
+
+                        <div class="form-group col-sm-9">
+                            <input type="text" asp-for="Username" class="form-control" id="Username" placeholder=@Localizer["User Name"]>
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-3"><label for="Email" class="col-form-label">@Localizer["Email"]<span class="text-danger">*</span></label></div>
+
+                        <div class="form-group col-sm-9">
+                            <input type="email" asp-for="Email" class="form-control" id="Email" placeholder=@Localizer["Email"]>
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-3"><label for="Title" class="col-form-label">@Localizer["Title"]<span class="text-danger">*</span></label></div>
+
+                        <div class="form-group col-sm-9">
+                            <input type="text" asp-for="Title" class="form-control" id="Title" placeholder=@Localizer["Title"]>
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+                    </div>
+                    @if (ViewBag.PageMode == "Add")
+                    {
+                        <div class="row">
+                            <div class="form-group col-sm-3"><label for="Password" class="col-form-label">@Localizer["Password"]<span class="text-danger">*</span></label></div>
+
+                            <div class="form-group col-sm-9">
+                                <input type="text" asp-for="Password" class="form-control" id="Password" placeholder=@Localizer["Password"]>
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="row">
+                        <div class="form-group col-sm-3"><label for="Country" class="col-form-label">@Localizer["Country"]<span class="text-danger">*</span></label></div>
+
+                        <div class="form-group col-sm-9">
+                            @Html.DropDownList("Country", abledoc.Utility.ComboHelper.GetCountryList(), new { @id = "Country", @class = "form-control select2", @datastyle = "btn btn-link", @name = "Country", @tabindex = "3", @placeholder = "Country" })
+                            <span asp-validation-for="Country" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-3"><label for="CurrentSupervisor" class="col-form-label">@Localizer["Supervisor"]<span class="text-danger">*</span></label></div>
+
+                        <div class="form-group col-sm-9">
+                            @Html.DropDownList("CurrentSupervisor", abledoc.Utility.ComboHelper.GetSupervisorList(""), new { @id = "CurrentSupervisor", @class = "form-control select2", @name = "CurrentSupervisor", @tabindex = "3", @placeholder = "Supervisor" })
+                            <span asp-validation-for="CurrentSupervisor" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-3"><label for="UserRoleId" class="col-form-label">@Localizer["Role"]<span class="text-danger">*</span></label></div>
+
+                        <div class="form-group col-sm-9">
+                            <select id="UserRoleId" name="UserRoleId" multiple="multiple" class="form-control input-inline input-medium select2">
+                                @foreach (UserRoles item in ViewBag.RoleList)
+                                {
+                                    if (string.IsNullOrEmpty(Model.UserRoleId))
+                                    {
+                                        <option value="@item.RoleId">@item.RoleName</option>
+                                    }
+                                    else
+                                    {
+                                        if (Model.UserRoleId.Contains(item.RoleId.ToString()))
+                                        {
+                                            <option value="@item.RoleId" selected>@item.RoleName</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.RoleId">@item.RoleName</option>
+                                        }
+                                    }
+
+                                }
+
+                            </select>
+                            <span asp-validation-for="UserRoleId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary-1" id="saveBtn">@Localizer["Save"]</button>
+                        &nbsp;&nbsp;
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">@Localizer["Close"]</button>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+@*</div>*@
+@{
+    <script src="~/assets/js/pages/UserDetail.js?v=@abledoc.Utility.CommonHelper.Version"></script>
+}

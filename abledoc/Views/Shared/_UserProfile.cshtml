@@ -1,0 +1,127 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model Users
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@*<div class="modal" id="myModal">*@
+<div class="modal fade" id="bootstrap-modal1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">@Localizer["Edit Profile"]</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form method="post" id="userForm" asp-controller="users" asp-action="UpdateProfile">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="ID" />
+                    <div class="row">
+                        <div class="form-group col-sm-3"><label for="FirstName" class="col-form-label">@Localizer["First Name"]<span class="text-danger">*</span></label></div>
+
+                        <div class="form-group col-sm-9">
+                            <input type="text" asp-for="FirstName" class="form-control" id="FirstName" placeholder=@Localizer["First Name"]>
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-3"><label for="LastName" class="col-form-label">@Localizer["Last Name"]<span class="text-danger">*</span></label></div>
+
+                        <div class="form-group col-sm-9">
+                            <input type="text" asp-for="LastName" class="form-control" id="LastName" placeholder=@Localizer["Last Name"]>
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-3"><label for="Username" class="col-form-label">@Localizer["User Name"]<span class="text-danger">*</span></label></div>
+
+                        <div class="form-group col-sm-9">
+                            <input type="text" asp-for="Username" class="form-control" id="Username" placeholder=@Localizer["User Name"]>
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-3"><label for="Email" class="col-form-label">@Localizer["Email"]<span class="text-danger">*</span></label></div>
+
+                        <div class="form-group col-sm-9">
+                            <input type="email" asp-for="Email" readonly class="form-control" id="Email" placeholder=@Localizer["Email"]>
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-3"><label for="Title" class="col-form-label">@Localizer["Title"]<span class="text-danger">*</span></label></div>
+
+                        <div class="form-group col-sm-9">
+                            <input type="text" asp-for="Title" class="form-control" id="Title" placeholder=@Localizer["Title"]>
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary-1" id="saveBtn">@Localizer["Save"]</button>
+                        &nbsp;&nbsp;
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">@Localizer["Close"]</button>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+@{
+
+    <script>
+        var validator = $('#userForm').validate({
+            rules: {
+                FirstName: {
+                    required: true
+                },
+                LastName: {
+                    required: true
+                },
+                Username: {
+                    required: true
+                },
+                Title: {
+                    required: true
+                }
+            },
+            messages: {
+                FirstName: {
+                    required: "First name is required."
+                },
+                LastName: {
+                    required: "Last name is required."
+                },
+                Username: {
+                    required: "User name is required."
+                },
+
+                Title: {
+                    required: "Title is required."
+                }
+            },
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            }
+        });
+
+    </script>
+}

@@ -1,0 +1,334 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model GenerateQuotePdf;
+@{ Layout = null; }
+@{
+    var errormsg = "";
+
+    var modelClient = Model.modelClient;
+    var modelClientContact = Model.modelClientContact;
+    var language = (modelClient.Language == "") ? "EN" : modelClient.Language;
+
+    var clientName = modelClient.Company;
+    var billingCompany = modelClient.Billing_Company;
+    var displayBillingContact = "";
+    if (modelClientContact != null)
+    {
+        displayBillingContact = modelClientContact.FirstName + " " + modelClientContact.LastName + " - ";
+    }
+
+    billingCompany = (billingCompany == "") ? clientName : billingCompany;
+
+    clientName = displayBillingContact + billingCompany;
+
+    var clientID = modelClient.ID;
+
+    var hourlyRate = modelClient.HourlyRate;
+    var pageRate = modelClient.PageRate;
+
+    Countries objCounntry = new Countries();
+    objCounntry.code = modelClient.Country;
+    var modelCountry = objCounntry.GetCountryByCode();
+    var country_currency_symbol = "$";
+    var country_currency_code = "USD";
+    if (modelCountry != null)
+    {
+        country_currency_symbol = modelCountry.currency;
+        country_currency_code = modelCountry.currency_code;
+    }
+    else
+    {
+        errormsg = "Country not selected for this client. Please set country first.";
+    }
+
+    string provinceid = null;
+    if (modelClient.stateid.ToString() != "" || modelClient.stateid.ToString() != null)
+    {
+        provinceid = modelClient.stateid.ToString();
+    }
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style type="text/css">
+        @@font-face {
+            font-family: 'dejavu';
+            src: url('/fonts/DejaVuSansCondensed.ttf');
+        }
+
+        .classname {
+            font-family: 'dejavu';
+        }
+
+        .table, .th, .td {
+            border: 1px solid #0A81C4;
+            border-collapse: collapse;
+        }
+    </style>
+
+</head>
+<body class="classname" style="color:black">
+    <table style="width: 100%;">
+        <tr>
+            <td>
+                <a href="http://www.evopdf.com">
+                    <img alt="AdminLTE Logo" src="~/Resources/Images/Logo/able_top.png" style="width:50%" />
+                </a>
+            </td>
+            <td style="text-align:right;">
+                <span class="classname" style="color:#0A81C4;font-size: 18px; font-weight: bold;">@Localizer["CompanyName"].Value</span><br />
+                <span class="classname" style="font-size:14px;">
+                    @Localizer["Address"]
+                    <br /><br />
+                    P: @Localizer["Telephone"].Value <br />
+                    E: @Localizer["BillingEmail"].Value <br />
+                    <br />
+                    <br />
+                    <br />
+
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:right;" colspan="2">
+                <span class="classname" style="font-size: 20px; font-weight: bold;">@Localizer["QUOTE"].Value</span>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="border-top:1px solid #0A81C4;"></td>
+        </tr>
+        <tr>
+            <td style="text-align:left;">
+                <span class="classname" style="font-size: 16px;line-height: 1.5;">
+                    @Model.currentDate.ToShortDateString() <br />
+                    @clientName <br />
+                    @Localizer["QuoteSubject"].Value<br />
+                </span>
+            </td>
+            <td style="text-align:right;">
+                <span class="classname" style="font-size: 16px;font-weight:bold;">
+                    @if (!string.IsNullOrEmpty(Model.modelClient.POText))
+                    {
+                        @(Localizer["PO"].Value)
+                    }
+                </span>
+                <br />
+                <span class="classname" style="font-size: 16px;">
+                    @if (!string.IsNullOrEmpty(Model.modelClient.POText))
+                    {
+                        @(Model.modelClient.POText)
+                    }
+
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="border-top:1px solid #0A81C4;"></td>
+        </tr>
+        @*<tr>
+                <td style="text-align:left;" colspan="2">
+                    <span class="classname" style="font-size: 16px;font-weight:bold;">
+                        @if (!string.IsNullOrEmpty(Model.modelClient.POText))
+                        {
+                            @(Localizer["PO"].Value)
+                        }
+                    </span>
+                    <br />
+                    <span class="classname" style="font-size: 16px;">
+                        @if (!string.IsNullOrEmpty(Model.modelClient.POText))
+                        {
+                            @(Localizer["PO"].Value +": "+Model.modelClient.POText)
+                        }
+
+                    </span>
+                </td>
+            </tr>*@
+        <tr>
+            <td style="text-align:left;" colspan="2">
+                <br />
+                @if (Model.subtitle != null)
+                {
+                    foreach (var row in Model.subtitle)
+                    {
+                        <span class="classname" style="font-size: 16px;line-height: 1.5;">
+                            @row.Information
+                        </span>
+                        <br />
+                    }
+                }
+
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:left;" colspan="2">
+                <br />
+                <span class="classname" style="font-size: 18px;font-weight: bold;">@Localizer["ServicesOffered"].Value : </span>
+                <br />
+                @if (Model.offering != null)
+                {
+                    foreach (var row in Model.offering)
+                    {
+                        <span class="classname" style="font-size: 16px;line-height: 1.5;margin-left: 20px;">
+                            -&nbsp;
+                        </span>
+                        <span class="classname" style="font-size: 16px;line-height: 1.5;margin-left: 20px;">
+                            @row.Information
+                        </span>
+                        <br />
+                    }
+                }
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:left;" colspan="2">
+                <br />
+                <span class="classname" style="font-size: 18px;font-weight: bold;">@Localizer["Notes"].Value : </span>
+                <br />
+                @if (Model.notes != null)
+                {
+                    foreach (var row in Model.notes)
+                    {
+                        <span class="classname" style="font-size: 16px;line-height: 1.5;margin-left: 20px;">
+                            -&nbsp;
+                        </span>
+                        <span class="classname" style="font-size: 16px;line-height: 1.5;margin-left: 20px;">
+                            @row.Information
+                        </span>
+                        <br />
+                    }
+                }
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <br />
+                <br />
+                <table class="table" style="border-color:#0A81C4;width:100%">
+                    <tr class="classname" style="color:white;background-color:#0A81C4;border-color:#0A81C4;font-size:14px;font-weight:bold">
+                        <td style="border-color:#0A81C4;text-align:left;">@Localizer["Description"].Value</td>
+                        <td style="border-color:#0A81C4;text-align:center;">@Localizer["Quantity"].Value</td>
+                        <td style="border-color:#0A81C4;text-align:center;">@Localizer["Unit"].Value</td>
+                        <td style="border-color:#0A81C4;text-align:right;">@(Localizer["UnitPrice"].Value)(@country_currency_symbol)</td>
+                        <td style="border-color:#0A81C4;text-align:right;">@(Localizer["Total"].Value)(@country_currency_symbol)</td>
+                    </tr>
+                    @{
+
+                        decimal subTotal = 0;
+                        var taxDB = "-1";
+                        decimal taxTotal = 0;
+                        Int64 taxSelected = 0;
+                        var unitType = "";
+                        var taxSelectedString = "";
+                        var fileCount = 0;
+                        if (Model.modelJobFiles != null)
+                        {
+
+                            foreach (var row in Model.modelJobFiles)
+                            {
+                                fileCount++;
+                                var descriptionText = (row.Description == "") ? row.Filename : row.Description;
+
+                                taxDB = row.Tax;
+                                taxSelectedString = row.Tax;
+                                <tr class="classname" style="font-size:14px;line-height:1.5">
+                                    <td class="td" style="text-align: left;">
+                                        @descriptionText
+                                    </td>
+                                    <td class="td" style="text-align: center;">
+                                        @row.Quantity
+                                    </td>
+                                    <td class="td" style="text-align: center;">
+                                        @row.PricePer
+                                    </td>
+
+                                    @{
+                                        var val = row.Price;
+                                        if ((unitType == "Hour") && (row.Price == 0))
+                                        {
+                                            val = hourlyRate;
+                                        }
+                                        else if ((unitType == "Page") && (row.Price == 0))
+                                        {
+                                            val = pageRate;
+                                        }
+                                        else
+                                        {
+                                            val = row.Price;
+                                        }
+
+                                        var total = (row.Price * row.Quantity);
+
+                                    }
+                                    <td class="td" style="text-align: right;">
+                                        @(country_currency_symbol+""+val)
+                                    </td>
+                                    <td class="td" style="text-align: right;">@(country_currency_symbol+""+total.ToString("#,##0.00"))</td>
+
+                                </tr>
+                                subTotal = subTotal + (row.Price * row.Quantity);
+                            }
+                        }
+                    }
+                    <tr class="classname" style="font-size:14px;line-height:1.5;">
+                        <td class="td" rowspan="3" colspan="3" style="text-align: center;">
+                            <span>@Localizer["TermsText"].Value</span>
+                            <br />
+                            <span><b>@Localizer["PricesInCurrency"].Value @country_currency_code</b></span>
+                        </td>
+                        <td class="td" style="text-align:right;font-size:16px;font-weight:bold;">@Localizer["SubTotal"].Value</td>
+                        <td class="td" style="text-align:right;font-size:16px;font-weight:bold;">@(country_currency_symbol+""+subTotal.ToString("#,##0.00"))</td>
+
+                    </tr>
+                    <tr class="classname" style="line-height: 1.5;">
+                        <td class="td" style="text-align:right;font-size:16px;">
+                            @{
+                                var modelJobPopulate = new JobQuoteAutopopulate().GetJobPopulateList(modelClient.Country, provinceid);
+                                if (modelJobPopulate != null)
+                                {
+                                    if (modelJobPopulate.Count > 0)
+                                    {
+
+                                        foreach (var row in new JobQuoteAutopopulate().GetJobPopulateList(modelClient.Country, provinceid))
+                                        {
+
+                                            if (taxSelectedString == row.Information)
+                                            {
+                                                @row.Information
+                                                taxSelected = @row.tax;
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }
+                        </td>
+                        <td class="td" style="text-align:right;font-size:16px;">
+                            @{
+
+                                taxTotal = (taxSelected * subTotal) / 100;
+                                @(country_currency_symbol + ""+taxTotal.ToString("#,##0.00"));
+                            }
+                        </td>
+                    </tr>
+                    <tr class="classname" style="line-height: 1.5;">
+                        <td class="td" style="text-align:right;font-size:16px;font-weight:bold;">@Localizer["Total"].Value</td>
+                        <td class="td" style="text-align:right;font-size:16px;font-weight:bold;">
+                            @{
+
+                                var totalAmount = taxTotal + subTotal;
+                                @(country_currency_symbol+""+totalAmount.ToString("#,##0.00"));
+                            }
+                        </td>
+                    </tr>
+                </table>
+
+            </td>
+        </tr>
+        <tr class="classname" style="font-size:12px;">
+            <td style="text-align:center;">@Localizer["AcceptanceSignature"].Value</td>
+            <td style="text-align:center;">@Localizer["Date"].Value</td>
+        </tr>
+    </table>
+</body>
+</html>

@@ -1,0 +1,92 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model VarianceState;
+@{
+    int id = Model.jobID;
+}
+<div class="modal fade" id="bootstrap-modal" role="dialog" aria-hidden="true" tabindex="-1">
+    <div class="modal-dialog" role="document" style="max-width: 80%;">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title">
+                    @Localizer["Variance"]
+                </h4>
+            </div>
+            <div id="modal-body">
+                <div class="col-md-12">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        @if (Model.flag == "0")
+                                        {
+                                            <div class="form-group row">
+                                                <h6>@Localizer["There is a Variance of"] @Model.varianceAmt @Localizer["between Invoice Amount and Quote Amount"]</h6>
+                                            </div>
+                                        }
+                                        <div class="form-group row">
+                                            <div class="col-md-12">
+                                                <textarea id="varianceComment" name="varianceComment" class="form-control" placeholder=@Localizer["Comments..."]>@Model.varianceMessage</textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-4">
+                                <iframe id="pdfIFrameInvoice" src="/pendinginvoices/GenerateInvoicePdf?ID=@Model.jobID&InsertFlag=1&flag=@Model.flag" style="border: none; border-width: 0px; float: right;" width="100%" height="400px;">
+                                </iframe>
+                            </div>
+                            <div class="col-md-4">
+                                @if (Model.displayQuote == 1)
+                                {
+                                    <iframe id="pdfIFrameQuote" src="/pendinginvoices/QuoteInvoiceShowFile?JobID=@Model.jobID&Type=Quote&flag=@Model.flag" style="border: none; border-width: 0px; float: right;" width="100%" height="400px;">
+                                    </iframe>
+                                }
+                                else
+                                {
+                                    <div style="border: none; border-width: 0px; float: right;" width="40%" height="'.$pdfH * 0.98.'">
+                                        <a href="javascript:;" style='float: right;' data-role='button' data-theme='e' data-mini='true' data-inline='true'>@Localizer["ERP Recorded Hrs"]: @Model.timedValueERPRecorded</a>
+                                        <a href="javascript:;" style='float: right;' data-role='button' data-theme='l' data-mini='true' data-inline='true'>@Localizer["ERP Altered Hrs"]: @Model.timedValueERPAltered</a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+            </div>
+            <div class="modal-footer">
+                <div class="from-group row">
+                    <div class="col-md-12">
+                        <a href="javascript:;" onclick="SaveVarianceComment(@Model.jobID,@Model.flag);" class="btn btn-success"><i class="material-icons">save</i> @Localizer["Save"]</a>
+                        <a id="downloadInvoiceButton" href="/pendinginvoices/GenerateInvoicePdf?State=DownloadInvoice&Params=@Model.invoiceID|@Model.jobID|@Model.invoiceIDQB&InsertFlag=1&CreditNoteFlag=0&CreditMemoID&flag=@Model.flag" target="_blank" class="btn btn-success"><i class="material-icons">download</i>@Localizer["Download Invoice"]</a>
+                        @if (Model.flag == "1" && Model.invoiceIDQB != 0)
+                        {
+                            <a href="javascript:;" onclick="ReIssueInvoice(@Model.invoiceID,@Model.jobID,@Model.invoiceIDQB,@Model.flag);" class="btn btn-success">@Localizer["Re-Issue Invoice"]</a>
+                        }
+                    </div>
+
+                </div>
+                <div class="from-group row">
+                    <div class="col-md-12">
+                        @if (Model.flag == "0")
+                        {
+                            <a href="javascript:;" onclick="VarianceSendBack(@Model.jobID,@Model.invoiceID,@Model.flag);" class="btn btn-success">@Localizer["Reject"]</a>
+                            <a href="javascript:;" onclick="ApproveVariance(event, @Model.jobID, @Model.invoiceID,@Model.flag);" class="btn btn-success">@Localizer["Approve"]</a>
+                        }
+                        <a href="javascript:;" id="variancePanelClose" class="btn btn-success" data-dismiss="modal">@Localizer["Close"]</a>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

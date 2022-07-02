@@ -1,0 +1,589 @@
+﻿@model FinalFile
+@{
+    ViewData["PageTitle"] = "Phase 4 Checked Out";
+    ViewData["Title"] = "File #" + Model.jobsFiles.ID + " - " + Model.jobsFiles.Filename;//;
+}
+@{
+    string lastTimerTotal = "00:00:00";
+    if (Model != null)
+    {
+        ViewBag.ID = Model.jobsFiles.ID;
+        ViewBag.FileID = Model.jobsFiles.ID;
+        ViewBag.JobID = Model.jobsFiles.JobID;
+        ViewBag.CurrentVersionFileID = Model.jobsFiles.CurrentVersionFileID;
+        if (Model.allTimers != null)
+        {
+            lastTimerTotal = Model.allTimers.TotalTimerNow;
+
+            if (lastTimerTotal == "")
+            {
+                lastTimerTotal = "00:00:00";
+            }
+        }
+        ViewBag.Code = Model.clients.Code;
+    }
+
+    ViewBag.State = "FINAL";
+
+}
+@section Styles{
+    <style type="text/css">
+        #uploadText {
+            width: 100%;
+            position: absolute;
+            left: 0px;
+        }
+
+        #upload ul li, #upload ul li {
+            top: 0px;
+            height: 75px;
+            /*  overflow-y: scroll;*/
+        }
+    </style>
+}
+<input type="hidden" id="FileID" value="@ViewBag.ID" />
+@if (Model.jobsFiles != null)
+{
+    <input type="hidden" name="JobID" id="JobID" value="@Model.jobsFiles.JobID">
+    <input type="hidden" name="ID" id="ID" value="@Model.jobsFiles.ID">
+    <input type="hidden" name="State" id="State" value="FINAL" />
+    <input type="hidden" name="FileType" id="FileType" value="@Model.jobsFiles.Status" />
+    <input type="hidden" name="LastTimerTotal" ID="LastTimerTotal" value="@lastTimerTotal">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="row">
+
+                @await Html.PartialAsync("/views/qcfiles/_DragDropFile.cshtml")
+                @await Html.PartialAsync("~/Views/QcFiles/_CSRNotes.cshtml")
+                @*<div class="col-md-6">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-collapse">
+                                <div class="card-header" role="tab" id="headingUploadFiles">
+                                    <h5 class="mb-0">
+                                        <a data-toggle="collapse" href="#collapseUploadFiles" aria-expanded="true" aria-controls="collapseUploadFiles" class="collapsed accordion">
+                                            Upload Files
+                                            <i class="material-icons">keyboard_arrow_down</i>
+                                        </a>
+                                    </h5>
+                                </div>
+                                <div id="collapseUploadFiles" class="collapse show" role="tabpanel" aria-labelledby="headingUploadFiles" data-parent="#accordion" style="">
+                                    <div class="card-body">
+                                        <div id="UploadFile" style="width: 100%;">
+                                            <div>
+                                                <div class="filter-container p-0 row">
+                                                    <div class="filtr-item col-md-12 auto-scrool Wc" data-category="1">
+                                                        <div id="downloadBox" class="dropzone" style="position: relative;">
+                                                            <form name="upload" id="upload" data-ajax="false" method="POST" action="/qcfiles/upload" enctype="multipart/form-data">
+                                                                <input type="hidden" name="uploadFlag" id="uploadFlag" value="file">
+                                                                <div id="drop" style="padding: 0px;">
+                                                                    <a id="uploadText" class="ui-link text-center" style="overflow: hidden; width: 90%; left: 5%;height:250px;">
+                                                                        <br />
+                                                                        <br />
+                                                                        <i class="material-icons" style="font-size:50px">cloud_upload</i>
+
+                                                                        <div id="uploadDragDrop" style="color: #000;">
+                                                                            <br>Drop
+                                                                            <br>Phase 5 Working Copies
+                                                                            <br>Files Here
+                                                                        </div>
+                                                                    </a>
+                                                                    <div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset" style="border-color: transparent;display:none;">
+                                                                        <input type="file" name="upl" multiple="true">
+                                                                    </div>
+                                                                </div>
+                                                                <ul id="uploadedFiles" style="overflow-y: scroll; height: 250px; margin-left:-9%"></ul>
+                                                            </form>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="card-collapse">
+                                        <div class="card-header" role="tab" id="headingOne">
+                                            <h5 class="mb-0">
+                                                <a data-toggle="collapse" href="#collapseDownloadFiles" aria-expanded="true" aria-controls="collapseOne" class="collapsed accordion">
+                                                    Download Files
+                                                    <i class="material-icons">keyboard_arrow_down</i>
+                                                </a>
+                                            </h5>
+                                        </div>
+                                        <div id="collapseDownloadFiles" class="collapse show" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" style="">
+                                            <div class="card-body DownloadFiles">
+                                                @await Html.PartialAsync("~/Views/QcFiles/_DownloadFiles.cshtml")
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="card-collapse">
+                                        <div class="card-header" role="tab" id="headingPhase5Last">
+                                            <h5 class="mb-0">
+                                                <a data-toggle="collapse" href="#collapsePhase5Last" aria-expanded="true" aria-controls="collapsePhase5Last" class="collapsed accordion">
+                                                    Comments
+                                                    <i class="material-icons">keyboard_arrow_down</i>
+                                                </a>
+                                            </h5>
+                                        </div>
+                                        <div id="collapsePhase5Last" class="collapse show" role="tabpanel" aria-labelledby="headingPhase5Last" data-parent="#accordion" style="">
+                                            <div class="card-body">
+                                                <table id="datatables3" class="example1 table table-striped table-bordered table-hover responsive" width="100%">
+                                                    <thead class="thin-border-bottom">
+                                                        <tr>
+                                                          @*  <th @(Model.jobsFiles.Status == "FINAL" ? "" : "style=display:none;")>Errors</th>*@
+                                                            <th>Comments</th>
+                                                            <th>User</th>
+                                                            <th>Status</th>
+                                                            <th>Date</th>
+                                                            <th>Time</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @if (Model.jobsFilesCommentsList != null)
+                                                        {
+                                                            foreach (JobsFilesReviews item1 in Model.jobsFilesCommentsList)
+                                                            {
+                                                                <tr>
+                                                                    @*<td @(Model.jobsFiles.Status == "FINAL" ? "" : "style=display:none;")>
+                                                                        @if (item1.Status == "Phase 2")
+                                                                        {
+                                                                            @if (!string.IsNullOrEmpty(item1.TagOrderE.ToString()))
+                                                                            {
+                                                                                @(" Tag Order "+ (item1.TagOrderE))
+                                                                            }
+                                                                            @if (!string.IsNullOrEmpty(item1.ContentOrderE.ToString()))
+                                                                            {
+                                                                                @(" Content Order "+ (item1.ContentOrderE))
+                                                                            }
+                                                                            @if (!string.IsNullOrEmpty(item1.TabbingOrderE.ToString()))
+                                                                            {
+                                                                                @(" Tabbing Order "+(item1.TabbingOrderE))
+                                                                            }
+                                                                            @if (!string.IsNullOrEmpty(item1.IncorrectTagsE.ToString()))
+                                                                            {
+                                                                                @(" Incorrect Tags "+(item1.IncorrectTagsE))
+                                                                            }
+                                                                            @if (!string.IsNullOrEmpty(item1.AssemblyE.ToString()))
+                                                                            {
+                                                                                @(" Assembly "+ (item1.AssemblyE))
+                                                                            }
+                                                                            @if (!string.IsNullOrEmpty(item1.FiguresTextE.ToString()))
+                                                                            {
+                                                                                @(" Figures Text "+(item1.FiguresTextE))
+                                                                            }
+                                                                            @if (!string.IsNullOrEmpty(item1.FiguresMissedE.ToString()))
+                                                                            {
+                                                                                @(" Figures Missed "+(item1.FiguresMissedE))
+                                                                            }
+                                                                            @if (!string.IsNullOrEmpty(item1.HeadingsE.ToString()))
+                                                                            {
+                                                                                @(" Headings "+(item1.HeadingsE))
+                                                                            }
+                                                                            @if (!string.IsNullOrEmpty(item1.ReferencesMissedE.ToString()))
+                                                                            {
+                                                                                @(" References Missed "+(item1.ReferencesMissedE))
+                                                                            }
+                                                                            @if (!string.IsNullOrEmpty(item1.ReferencesTypeE.ToString()))
+                                                                            {
+                                                                                @(" References Type "+(item1.ReferencesTypeE))
+                                                                            }
+                                                                            @if (!string.IsNullOrEmpty(item1.SpaceIssuesE.ToString()))
+                                                                            {
+                                                                                @(" Space Issues "+(item1.SpaceIssuesE))
+                                                                            }
+                                                                            @if (!string.IsNullOrEmpty(item1.FormFieldPropertiesE.ToString()))
+                                                                            {
+                                                                                @(" Form Field Properties "+(item1.FormFieldPropertiesE))
+                                                                            }
+                                                                            @if (!string.IsNullOrEmpty(item1.FormFieldTooltipsE.ToString()))
+                                                                            {
+                                                                                @(" Form Field Tooltips "+(item1.FormFieldTooltipsE))
+                                                                            }
+                                                                            @if (!string.IsNullOrEmpty(item1.FormFieldTypeE.ToString()))
+                                                                            {
+                                                                                @(" Form Field Type "+(item1.FormFieldTypeE))
+                                                                            }
+                                                                            @if (!string.IsNullOrEmpty(item1.ArtifactE.ToString()))
+                                                                            {
+                                                                                @(" Artifact "+(item1.ArtifactE))
+                                                                            }
+                                                                            @if (!string.IsNullOrEmpty(item1.TableStructureE.ToString()))
+                                                                            {
+                                                                                @(" Table Structure "+(item1.TableStructureE))
+                                                                            }
+                                                                            @if (!string.IsNullOrEmpty(item1.ListStructureE.ToString()))
+                                                                            {
+                                                                                @(" List Structure "+(item1.ListStructureE))
+                                                                            }
+                                                                            @if (!string.IsNullOrEmpty(item1.LinksE.ToString()))
+                                                                            {
+                                                                                @(" Links "+(item1.LinksE))
+                                                                            }
+                                                                            @if (!string.IsNullOrEmpty(item1.LanguageAttributesE.ToString()))
+                                                                            {
+                                                                                @(" Language Attributes "+(item1.LanguageAttributesE))
+                                                                            }
+                                                                            @if (!string.IsNullOrEmpty(item1.SideBySideE.ToString()))
+                                                                            {
+                                                                                @(" Side By Side "+(item1.SideBySideE))
+                                                                            }
+                                                                            @if (!string.IsNullOrEmpty(item1.CSRE.ToString()))
+                                                                            {
+                                                                                @(" CSR " + item1.CSRE)
+                                                                            }
+                                                                            @if (!string.IsNullOrEmpty(item1.DocumentNamingE.ToString()))
+                                                                            {
+                                                                                @(" Document Naming "+(item1.DocumentNamingE))
+                                                                            }
+                                                                        }
+
+                                                                    </td>*@
+                                                                    <td>
+                                                                        @item1.Comments
+                                                                    </td>
+                                                                    <td>
+                                                                        @item1.FullName
+                                                                    </td>
+                                                                    <td>
+                                                                        @item1.Status
+                                                                    </td>
+                                                                    <td>
+                                                                        @item1.LastUpdated.ToString("MM/dd/yyyy")
+                                                                    </td>
+                                                                    <td>
+                                                                        @item1.LastUpdated.ToString("hh:mm tt")
+                                                                    </td>
+
+                                                                </tr>
+                                                            }
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (Model.jobsFiles.Status == "FINAL")
+                    {
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="card-collapse">
+                                            <div class="card-header" role="tab" id="headingALTText">
+                                                <h5 class="mb-0">
+                                                    <a data-toggle="collapse" href="#collapseALTText" aria-expanded="true" aria-controls="collapseALTText" class="collapsed accordion">
+                                                        ALT Text
+                                                        <i class="material-icons">keyboard_arrow_down</i>
+                                                    </a>
+                                                </h5>
+                                            </div>
+                                            <div id="collapseALTText" class="collapse show" role="tabpanel" aria-labelledby="headingALTText" data-parent="#accordion" style="">
+                                                <div class="card-body">
+                                                    <table id="datatables1" class="example1 table table-striped table-bordered table-hover responsive" width="100%">
+                                                        <thead class="thin-border-bottom">
+                                                            <tr>
+                                                                <th>Page Num</th>
+                                                                <th>Alt-Text</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @if (Model.altTextsList != null)
+                                                            {
+                                                                @foreach (AltTexts item1 in Model.altTextsList)
+                                                                {
+                                                                    <tr>
+                                                                        <td>
+                                                                            @item1.PageNum
+                                                                        </td>
+                                                                        <td>
+                                                                            <textarea id="copyAltText" name="copyAltText" class="form-control" readonly>@item1.AltText</textarea>
+                                                                        </td>
+
+                                                                    </tr>
+                                                                }
+                                                            }
+
+
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @*<div class="row">
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="card-collapse">
+                                                <div class="card-header" role="tab" id="headingPhase2Last">
+                                                    <h5 class="mb-0">
+                                                        <a data-toggle="collapse" href="#collapsePhase2Last" aria-expanded="true" aria-controls="collapsePhase2Last" class="collapsed accordion">
+                                                            Phase 2 Last Comments
+                                                            <i class="material-icons">keyboard_arrow_down</i>
+                                                        </a>
+                                                    </h5>
+                                                </div>
+                                                <div id="collapsePhase2Last" class="collapse show" role="tabpanel" aria-labelledby="headingPhase2Last" data-parent="#accordion" style="">
+                                                    <div class="card-body">
+                                                        <table id="datatables2" class="example1 table table-striped table-bordered table-hover responsive" width="100%">
+                                                            <thead class="thin-border-bottom">
+                                                                <tr>
+                                                                    <th>Errors</th>
+                                                                    <th>Comments</th>
+                                                                    <th>Reviewer</th>
+                                                                    <th>Date</th>
+                                                                    <th>Time</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @if (Model.jobsFilesReviewsList != null)
+                                                                {
+                                                                    foreach (JobsFilesReviews item1 in Model.jobsFilesReviewsList)
+                                                                    {
+                                                                        <tr>
+                                                                            <td>
+                                                                                @if (!string.IsNullOrEmpty(item1.TagOrderE.ToString()))
+                                                                                {
+                                                                                    <button class="btn btn-primary-1">Tag Order (@item1.TagOrderE)</button>
+                                                                                }
+                                                                                @if (!string.IsNullOrEmpty(item1.ContentOrderE.ToString()))
+                                                                                {
+                                                                                    <button class="btn btn-primary-1">Content Order (@item1.ContentOrderE)</button>
+                                                                                }
+                                                                                @if (!string.IsNullOrEmpty(item1.TabbingOrderE.ToString()))
+                                                                                {
+                                                                                    <button class="btn btn-primary-1">Tabbing Order (@item1.TabbingOrderE)</button>
+                                                                                }
+                                                                                @if (!string.IsNullOrEmpty(item1.IncorrectTagsE.ToString()))
+                                                                                {
+                                                                                    <button class="btn btn-primary-1">Incorrect Tags (@item1.IncorrectTagsE)</button>
+                                                                                }
+                                                                                @if (!string.IsNullOrEmpty(item1.AssemblyE.ToString()))
+                                                                                {
+                                                                                    <button class="btn btn-primary-1">Assembly (@item1.AssemblyE)</button>
+                                                                                }
+                                                                                @if (!string.IsNullOrEmpty(item1.FiguresTextE.ToString()))
+                                                                                {
+                                                                                    <button class="btn btn-primary-1">Figures Text (@item1.FiguresTextE)</button>
+                                                                                }
+                                                                                @if (!string.IsNullOrEmpty(item1.FiguresMissedE.ToString()))
+                                                                                {
+                                                                                    <button class="btn btn-primary-1">Figures Missed (@item1.FiguresMissedE)</button>
+                                                                                }
+                                                                                @if (!string.IsNullOrEmpty(item1.HeadingsE.ToString()))
+                                                                                {
+                                                                                    <button class="btn btn-primary-1">Headings (@item1.HeadingsE)</button>
+                                                                                }
+                                                                                @if (!string.IsNullOrEmpty(item1.ReferencesMissedE.ToString()))
+                                                                                {
+                                                                                    <button class="btn btn-primary-1">References Missed (@item1.ReferencesMissedE)</button>
+                                                                                }
+                                                                                @if (!string.IsNullOrEmpty(item1.ReferencesTypeE.ToString()))
+                                                                                {
+                                                                                    <button class="btn btn-primary-1">References Type (@item1.ReferencesTypeE)</button>
+                                                                                }
+                                                                                @if (!string.IsNullOrEmpty(item1.SpaceIssuesE.ToString()))
+                                                                                {
+                                                                                    <button class="btn btn-primary-1">Space Issues (@item1.SpaceIssuesE)</button>
+                                                                                }
+                                                                                @if (!string.IsNullOrEmpty(item1.FormFieldPropertiesE.ToString()))
+                                                                                {
+                                                                                    <button class="btn btn-primary-1">Form Field Properties (@item1.FormFieldPropertiesE)</button>
+                                                                                }
+                                                                                @if (!string.IsNullOrEmpty(item1.FormFieldTooltipsE.ToString()))
+                                                                                {
+                                                                                    <button class="btn btn-primary-1">Form Field Tooltips (@item1.FormFieldTooltipsE)</button>
+                                                                                }
+                                                                                @if (!string.IsNullOrEmpty(item1.FormFieldTypeE.ToString()))
+                                                                                {
+                                                                                    <button class="btn btn-primary-1">Form Field Type (@item1.FormFieldTypeE)</button>
+                                                                                }
+                                                                                @if (!string.IsNullOrEmpty(item1.ArtifactE.ToString()))
+                                                                                {
+                                                                                    <button class="btn btn-primary-1">Artifact (@item1.ArtifactE)</button>
+                                                                                }
+                                                                                @if (!string.IsNullOrEmpty(item1.TableStructureE.ToString()))
+                                                                                {
+                                                                                    <button class="btn btn-primary-1">Table Structure (@item1.TableStructureE)</button>
+                                                                                }
+                                                                                @if (!string.IsNullOrEmpty(item1.ListStructureE.ToString()))
+                                                                                {
+                                                                                    <button class="btn btn-primary-1">List Structure (@item1.ListStructureE)</button>
+                                                                                }
+                                                                                @if (!string.IsNullOrEmpty(item1.LinksE.ToString()))
+                                                                                {
+                                                                                    <button class="btn btn-primary-1">Links (@item1.LinksE)</button>
+                                                                                }
+                                                                                @if (!string.IsNullOrEmpty(item1.LanguageAttributesE.ToString()))
+                                                                                {
+                                                                                    <button class="btn btn-primary-1">Language Attributes (@item1.LanguageAttributesE)</button>
+                                                                                }
+                                                                                @if (!string.IsNullOrEmpty(item1.SideBySideE.ToString()))
+                                                                                {
+                                                                                    <button class="btn btn-primary-1">Side By Side (@item1.SideBySideE)</button>
+                                                                                }
+                                                                                @if (!string.IsNullOrEmpty(item1.CSRE.ToString()))
+                                                                                {
+                                                                                    <button class="btn btn-primary-1">CSR (@item1.CSRE)</button>
+                                                                                }
+                                                                                @if (!string.IsNullOrEmpty(item1.DocumentNamingE.ToString()))
+                                                                                {
+                                                                                    <button class="btn btn-primary-1">Document Naming (@item1.DocumentNamingE)</button>
+                                                                                }
+
+                                                                            </td>
+                                                                            <td>
+                                                                                @item1.Comments
+                                                                            </td>
+                                                                            <td>
+                                                                                @item1.FullName
+                                                                            </td>
+                                                                            <td>
+                                                                                @item1.LastUpdated.ToString("MM/dd/yyyy")
+                                                                            </td>
+                                                                            <td>
+                                                                                @item1.LastUpdated.ToString("hh:mm tt")
+                                                                            </td>
+
+                                                                        </tr>
+                                                                    }
+                                                                }
+
+
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>*@
+                    }
+                    <div class="row Conversation">
+                        @await Html.PartialAsync("/views/file/_Conversation.cshtml")
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-group row">
+                        <button type="button" class="btn btn-success btn-primary-1" data-toggle="modal" data-target="#secondTimer" onclick="nonEngagement();">
+                            <i class="material-icons">watch_later</i> Non-Engagement Timer
+                        </button>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-6 col-form-label text-left">Client:</label>
+                        <label class="col-md-6 col-form-label text-left">@Model.clients.Company</label>
+                        <label class="col-md-6 col-form-label text-left">Client & Job:</label>
+                        <label class="col-md-6 col-form-label text-left">@Model.jobs.EngagementNum</label>
+                        <label class="col-md-6 col-form-label text-left">File Quoted As:</label>
+                        <label class="col-md-6 col-form-label text-left">@Model.jobs.JobQuotedAs</label>
+                        <label class="col-md-6 col-form-label text-left">DeadLine:</label>
+                        <label class="col-md-6 col-form-label text-left">@(Model.jobsFiles.Deadline + " @ " + Model.jobsFiles.DeadlineTime  )</label>
+                        <label class="col-md-6 col-form-label text-left">Pages:</label>
+                        <label class="col-md-6 col-form-label text-left">@Model.jobsFiles.Pages</label>
+                        <label class="col-md-6 col-form-label text-left">Instructions:</label>
+                        <label class="col-md-6 col-form-label text-left">@Model.jobs.Tagging_Instructions</label>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-6 col-form-label text-left" id="stopWatch">@lastTimerTotal</label>
+                        <button type="button" class="btn btn-success btn-primary-1" data-toggle="modal" id="start" onclick="start()">
+                            Start
+                        </button>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" id="stop" onclick="stop()" style="display:none;">
+                            Stop
+                        </button>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <label for="altText" class="col-form-label">Finalizer Comments</label>
+                        </div>
+                        <div class="col-md-8">
+                            <textarea class="form-control" name="altText" rows="5" id="PhaseComments" placeholder="Finalizer Comments"></textarea>
+                        </div>
+
+                    </div>
+                    <div class="form-group row">
+                        <label for="altText" class="col-md-4 col-form-label">ALT-Text</label>
+                        <div class="col-md-8">
+                            @Html.DropDownList("altTextStatusID", abledoc.Utility.ComboHelper.GetAltTextStatusList(Model.jobsFiles.AltTxt.ToString()), "Select", new { @id = "altTextStatusID", @class = "form-control selectpicker", @datastyle = "btn btn-link", @name = "altTextStatusID", @onchange = "UpdateAlt();" })
+                        </div>
+                    </div>
+                    <div id="phaseButton" class="form-group row">
+                        @{ ViewBag.status = Model.jobsFiles.Status;
+                            ViewBag.altTextVal = Model.jobsFiles.AltTxt;
+                            ViewBag.p1ToP4 = Model.jobs.P1ToP4;
+                            ViewBag.p4ToDelivery = Model.jobs.P4ToDelivery;
+                        }
+                        @await Html.PartialAsync("~/views/qcfiles/_PhaseButton.cshtml")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}<div id="secondTimer" class="modal">
+    @await Html.PartialAsync("~/views/qcfiles/_NonEngagementTimer.cshtml")
+</div>
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+
+            $('#queryTypeSelect').selectpicker('setStyle', 'btn btn-link');
+            $('#altTextStatusID').selectpicker('setStyle', 'btn btn-link');
+            $('.filter-option').addClass('filter-option-1');
+            $('#datatables1').dataTable();
+            $('#datatables2').dataTable();
+            $('#datatables3').dataTable();
+        });
+    </script>
+
+    <script src="~/assets/js/pages/timestartstop.js?v=1.2"></script>
+    <script src="~/assets/js/pages/CommonFiles.js?v=1.2"></script>
+    <script src="~/assets/js/pages/DownLoadFileTree.js?v=1.2"></script>
+    <script src="~/assets/js/pages/NoneEngagementTimer.js?v=1.2"></script>
+
+    <!-- END PAGE LEVEL PLUGINS -->
+}
+

@@ -1,0 +1,124 @@
+﻿@model abledoc.Models.JobsFiles;
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@*@{ Layout = null; }*@
+@{
+    Clients modelClient = new Clients();
+    modelClient.databasename = Model.databasename;
+    modelClient = modelClient.GetClientByJobId(Convert.ToInt32(Model.JobID));
+    decimal hourlyRate = modelClient.HourlyRate;
+    decimal pageRate = modelClient.PageRate;
+    decimal Quantity = (Model.Quantity > 0) ? Model.Quantity : 1;
+    @* ViewBag.flag = Model.flag;*@
+}
+<div class="modal fade right" id="bootstrap-modal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">@Localizer["File Preview"]</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form method="post" id="FilePreviewForm">
+                    <input type="hidden" name="Checkout_FileID" ID="Checkout_FileID" value="@Model.ID">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card-body">
+                                <!-- form start -->
+                                <div class="row">
+                                    <label for="field_PageCount" class="col-form-label col-sm-3 text-left">@Localizer["Page Count"]</label>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <input type="number" name="PageCount" id="field_PageCount" class="form-control" value="@Model.Pages" />
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <label for="field_DeadlineFile" class="col-form-label col-sm-3 text-left">@Localizer["DeadLine Date"]</label>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <input type="hidden" id="old_deadline_date" value="@Model.Deadline" />
+                                            <input type="text" name="DeadlineFile" id="field_DeadlineFile" class="form-control datepicker" value="@Model.Deadline" autocomplete="off" />
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <label for="field_DeadlineTimeFile" class="col-form-label col-sm-3 text-left">@Localizer["DeadLine Time"]</label>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <input type="text" name="DeadlineTimeFile" id="field_DeadlineTimeFile" class="form-control timepicker" value="@Model.DeadlineTime" />
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <label for="field_PricePer" class="col-form-label col-sm-3 text-left">@Localizer["Unit"]</label>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            @Html.DropDownList("field_PricePer", abledoc.Utility.ComboHelper.GetCommonMasterList("Unit", Model.PricePer), Localizer["Select"].Value, new { @id = "field_PricePer", @class = "form-control modal-select2", @name = "field_PricePer" })
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <label for="field_Price" class="col-form-label col-sm-3 text-left">@Localizer["Price"]</label>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <input type="number" name="Price" id="field_Price" class="form-control" value="@Model.Price" />
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <label for="field_Quantity" class="col-form-label col-sm-3 text-left">@Localizer["Quantity"]</label>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <input type="number" name="Quantity" id="field_Quantity" class="form-control" value="@Model.Quantity" />
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <label for="AltTxt" class="col-form-label col-sm-3 text-left">@Localizer["ALT-Text"]</label>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            @Html.DropDownList("AltTxt", abledoc.Utility.ComboHelper.GetAltTextStatusList(string.IsNullOrEmpty(Model.AltTxt.ToString()) ? "" : Model.AltTxt.ToString()), Localizer["Select"].Value, new { @id = "altTextStatusID", @class = "form-control modal-select2", @name = "AltTxt", @onchange = "UpdateAlt();" })
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+
+
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            @await Html.PartialAsync("_IFramePdf")
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <button type="button" onclick="SavePanelData(@Model.ID);" class="btn btn-success"><i class="fa fa-save"></i> @Localizer["Save"]</button>
+                        &nbsp;&nbsp;
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times-circle"></i> @Localizer["Close"]</button>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+@{
+    <script src="~/assets/js/pages/filequotestate.js?v=@abledoc.Utility.CommonHelper.Version"></script>
+}

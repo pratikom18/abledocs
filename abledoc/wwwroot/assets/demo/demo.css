@@ -1,0 +1,141 @@
+.tim-row{
+    margin-bottom: 20px;
+}
+
+.tim-white-buttons {
+    background-color: #777777;
+}
+.typography-line{
+    padding-left: 25%;
+    margin-bottom: 35px;
+    position: relative;
+    display: block;
+    width: 100%;
+}
+.typography-line span{
+    bottom: 10px;
+    color: #c0c1c2;
+    display: block;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 13px;
+    left: 0;
+    position: absolute;
+    width: 260px;
+    text-transform: none;
+}
+.tim-row{
+    padding-top: 60px;
+}
+.tim-row h3{
+    margin-top: 0;
+}
+
+.tim-typo{
+    padding-left: 25%;
+    margin-bottom: 40px;
+    position: relative;
+    width: 100%;
+}
+.tim-typo .tim-note{
+    bottom: 5px;
+    color: #c0c1c2;
+    display: block;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 15px;
+    left: 0;
+    margin-left: 20px;
+    position: absolute;
+    width: 260px;
+}
+
+
+
+
+
+
+
+
+
+
+.mainimg {
+    height: 100% !important;
+    background-image: url(/ADOnlineUI/ADOnlineloginbackground1.svg) !important;
+    background-size: 100% 100% !important;
+    -o-background-size: 100% 100% !important;
+    -webkit-background-size: 100% 100% !important;
+    background-size: cover !important;
+    background-position: top center !important;
+}
+.mainimg2 {
+    height: 475px;
+    width: 608px;
+    background-image: url(/ADOnlineUI/ADOnlineloginUI1.svg) !important;
+    background-size: 100% 100% !important;
+    -o-background-size: 100% 100% !important;
+    -webkit-background-size: 100% 100% !important;
+    background-size: cover !important;
+    background-position: top center !important;
+}
+
+.mainimg1 {
+    background-size: cover;
+}
+.w-full-page {
+    height: auto;
+    min-height: 100vh;
+}
+.off-canvas-sidebar .wrapper-full-page .page-header {
+    padding: 0vh 0 !important;
+}
+
+.new-col-lg-4 {
+    max-width: 50% !important;
+}
+
+@media only screen and (min-width: 959px) and (max-width: 1024px) {
+    .mainimg1 {
+        background-size: contain !important;
+    }
+    .new-col-lg-4 {
+        max-width: 78% !important;
+    }
+}
+@media only screen and (min-width: 768px) and (max-width: 959px){
+    .mainimg1 {
+        background-size: contain !important;
+    }
+    .new-col-lg-4 {
+        max-width: 80% !important;
+    }
+}
+
+@media only screen and (min-width: 599px) and (max-width: 767px){
+    .container {
+        max-width: 577px;
+    }
+    .new-col-lg-4 {
+        max-width: 100% !important;
+    }
+}
+
+
+@media only screen and (max-width: 767px) {
+    .mainimg1 {
+        background-size: contain !important;
+    }
+
+}
+@media only screen and (max-width: 599px){
+    .new-col-lg-4 {
+        max-width: 350px !important;
+        overflow: hidden;
+        left: -7px;
+    }
+}
+
+@media only screen and (max-width: 479px){
+    
+}
+

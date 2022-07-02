@@ -1,0 +1,86 @@
+CREATE TABLE `abledocs`.`adsales` (
+  
+`adsalesid` INT NOT NULL AUTO_INCREMENT,
+  
+`clientid` INT NULL,
+  
+`contactid` INT NULL,
+  
+`title` VARCHAR(100) NULL,
+ 
+`value` DECIMAL NULL,
+  
+`currency` VARCHAR(45) NULL,
+  
+`pipeline` VARCHAR(45) NULL,
+  
+`stage` VARCHAR(45) NULL,
+  
+`expecteddate` DATETIME NULL,
+  
+`ownerid` INT NULL,
+  
+`visibleto` VARCHAR(45) NULL,
+  
+`createddate` DATETIME NULL,
+  
+`userid` INT NULL,
+  
+PRIMARY KEY (`adsalesid`));
+
+
+CREATE TABLE `abledocs`.`adsales_phone` (
+  
+`adsalesphoneid` INT NOT NULL AUTO_INCREMENT,
+  
+`phone` VARCHAR(45) NULL,
+  
+`type` VARCHAR(45) NULL,
+  
+`adsalesid` INT NULL,
+  
+PRIMARY KEY (`adsalesphoneid`));
+
+
+CREATE TABLE `abledocs`.`adsales_email` (
+  
+`adsalesemailid` INT NOT NULL AUTO_INCREMENT,
+  
+`adsalesid` INT NULL,
+  
+`email` VARCHAR(100) NULL,
+  
+`type` VARCHAR(45) NULL,
+  
+PRIMARY KEY (`adsalesemailid`));
+
+INSERT INTO `abledocs`.`common_master` (`commonid`, `type`, `typename`, `typecode`, `country_required`, `display_order`) VALUES ('36', 'Pipestage', 'Prospect', 'Prospect', '0', '1');
+
+INSERT INTO `abledocs`.`common_master` (`commonid`, `type`, `typename`, `typecode`, `country_required`, `display_order`) VALUES ('37', 'Pipestage', 'Customer Interest', 'Customer_Interest', '0', '2');
+
+INSERT INTO `abledocs`.`common_master` (`commonid`, `type`, `typename`, `typecode`, `country_required`, `display_order`) VALUES ('38', 'Pipestage', 'Qualified to Buy', 'Qualified_to_Buy', '0', '3');
+
+INSERT INTO `abledocs`.`common_master` (`commonid`, `type`, `typename`, `typecode`, `country_required`, `display_order`) VALUES ('39', 'Pipestage', 'Proposal', 'Proposal', '0', '4');
+
+INSERT INTO `abledocs`.`common_master` (`commonid`, `type`, `typename`, `typecode`, `country_required`, `display_order`) VALUES ('40', 'Pipestage', 'Executive Presentation/Approval', 'Executive_Presentation_Approval', '0', '5');
+
+INSERT INTO `abledocs`.`common_master` (`commonid`, `type`, `typename`, `typecode`, `country_required`, `display_order`) VALUES ('41', 'Pipestage', 'Verbal Commitment', 'Verbal_Commitment', '0', '6');
+
+INSERT INTO `abledocs`.`common_master` (`commonid`, `type`, `typename`, `typecode`, `country_required`, `display_order`) VALUES ('42', 'Pipeline', 'Sales Process/Stages', 'Pipestage', '0', '1');
+
+
+
+INSERT INTO `abledocs`.`common_master` (`commonid`, `type`, `typename`, `typecode`, `country_required`, `display_order`) VALUES ('43', 'Visibleto', 'Owner only', 'Owner_only', '0', '1');
+
+INSERT INTO `abledocs`.`common_master` (`commonid`, `type`, `typename`, `typecode`, `country_required`, `display_order`) VALUES ('44', 'Visibleto', 'Owner's visible group', 'Owner_visible_group', '0', '2');
+
+INSERT INTO `abledocs`.`common_master` (`commonid`, `type`, `typename`, `typecode`, `country_required`, `display_order`) VALUES ('45', 'Visibleto', 'Owner's group, and sub-groups', 'Owner_sub_groups', '0', '3');
+
+INSERT INTO `abledocs`.`common_master` (`commonid`, `type`, `typename`, `typecode`, `country_required`, `display_order`) VALUES ('46', 'Visibleto', 'Entire company', 'Entire_company', '0', '4');
+
+ALTER TABLE `abledocs`.`adsales` 
+CHANGE COLUMN `expecteddate` `expecteddate` CHAR(10) NULL DEFAULT NULL ;
+
+
+ALTER TABLE `abledocs`.`jobs` 
+CHANGE COLUMN `JobFromADap` `JobFromADapi` CHAR(1) NULL DEFAULT '0' ;

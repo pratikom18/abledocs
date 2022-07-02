@@ -1,0 +1,22 @@
+ADService
+	Clients
+	Contacts
+	Jobs
+        Production
+        Phases
+	Quotes
+	search
+	More
+	Invoices
+
+ADScan
+ADLegacy
+ADGateways
+axesAdmin
+	user
+	setttings
+
+ (AssignedMenuList.Where(x => x.ParentID == parentMenu.menumasterid).ToList().Count > 0)
+url1.Split('/')[1]
+
+AssignedMenuList.Where(x=>x.ParentID == parentMenu.menumasterid && x.ParentID != 0).Count() > 0

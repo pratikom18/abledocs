@@ -1,0 +1,118 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model MenuMaster
+<div class="modal fade" id="bootstrap-modal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title">
+                    @if(ViewBag.PageMode == "Add"){
+                    @Localizer["Add Menu"]  
+                    }else if (ViewBag.PageMode == "Edit")
+                    {
+                    @Localizer["Edit Menu"] 
+                    }
+                </h4>
+            </div>
+            <div id="demo-modal">
+                <form method="post" id="menuForm" asp-controller="menu" asp-action="Upsert">
+                    <div class="card">
+                        <div class="card-body">
+                            <input type="hidden" asp-for="MenuMasterId" />
+                            <div class="row">
+                                <div class="form-group col-sm-3"><label for="MenuName" class="col-form-label">@Localizer["Menu Name"]<span class="text-danger">*</span></label></div>
+
+                                <div class="form-group col-sm-9">
+
+                                    <input type="text" asp-for="MenuName" class="form-control" id="MenuName" placeholder=@Localizer["Menu Name"] required>
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-sm-3"><label for="ParentId" class="col-form-label">@Localizer["Parent Menu"]</label></div>
+
+                                <div class="form-group col-sm-9">
+
+                                    @Html.DropDownList("ParentId", abledoc.Utility.ComboHelper.GetParentMenuList(), Localizer["Select"].Value, new { @id = "ParentId", @class = "form-control selectpicker", @datastyle = "btn btn-link", @name = "ParentId", @tabindex = "3", @placeholder = "Parent Menu" })
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-sm-3"><label for="PageUrl" class="col-form-label">@Localizer["Page URL"]<span class="text-danger">*</span></label></div>
+
+                                <div class="form-group col-sm-9">
+                                    <input type="text" asp-for="PageUrl" class="form-control" id="PageUrl" placeholder=@Localizer["Page URL"] required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-sm-3">
+                                    <label for="IconName" class="col-form-label">
+                                        @Localizer["Icon Name"] <span class="text - danger">*</span>
+
+                                    </label>
+                                </div>
+
+                                <div class=" form-group col-sm-9">
+                                    <input type="text" asp-for="IconName" class="form-control" id="IconName" placeholder=@Localizer["Icon Name"] required>
+                                    <span class="form-control-feedback form-control-feedback-1">
+                                        @if (!string.IsNullOrEmpty(Model.IconName))
+                                        {
+                                            <i class="material-icons">@Model.IconName</i>
+                                        }
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-sm-3"><label for="DisplayOrder" class="col-form-label">@Localizer["Display Order"]</label></div>
+
+                                <div class="form-group col-sm-3">
+                                    <input type="number" asp-for="DisplayOrder" class="form-control" id="DisplayOrder" placeholder=@Localizer["Display Order"]>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label class="col-sm-3"></label>
+                                <div class="col-sm-9">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" asp-for="IsActive" type="checkbox"> @Localizer["Is Active"]
+                                            <span class="form-check-sign">
+                                                <span class="check"></span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label class="col-sm-3"></label>
+                                <div class="col-sm-9">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" asp-for="IsHeaderMenu" type="checkbox"> @Localizer["Show In Menu"]
+                                            <span class="form-check-sign">
+                                                <span class="check"></span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <div class="col-sm-2"><button type="submit" class="btn btn-success" id="saveBtn">@Localizer["Save"]</button></div>
+                        <div class="col-sm-2"><button type="button" class="btn btn-danger" data-dismiss="modal">@Localizer["Close"]</button></div>
+
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@{
+    <script src="~/assets/js/pages/MenuDetail.js?v=@abledoc.Utility.CommonHelper.Version"></script>
+}

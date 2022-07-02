@@ -1,0 +1,32 @@
+﻿@{ Layout = null; }
+
+@{
+    CommonMaster commonMaster = new CommonMaster();
+    List<CommonMaster> commonMasterList = commonMaster.GetCommonMasterList(ViewBag.Type);
+    int i = 0;
+    string stage = commonMasterList.Select(x => x.typecode).FirstOrDefault();
+
+}
+<input type="hidden" id="hdnstage" value="@stage" />
+<label class="bmd-label-floating">Pipeline stage</label>
+<div class="cui4-stage-selector">
+
+    @foreach (CommonMaster item in commonMasterList)
+    {
+        i++;
+        if (i == 1)
+        {
+            <label class="cui4-stage-selector__stage cui4-stage-selector__stage--current pipelinestage" data-toggle="tooltip" data-placement="bottom" title="Tooltip on bottom" data-value="@item.typename" data-id="@i" id="@item.typecode"></label>
+        }
+        else
+        {
+            <label class="cui4-stage-selector__stage cui4-stage-selector__stage--current pipelinestage" data-toggle="tooltip" data-placement="bottom" title="Tooltip on bottom" data-value="@item.typename" data-id="@i" id="@item.typecode"></label>
+        }
+
+    }
+    @*<label class="cui4-stage-selector__stage cui4-stage-selector__stage--current" id="1"></label>
+        <label class="cui4-stage-selector__stage" id="2"></label>
+        <label class="cui4-stage-selector__stage" id="3"></label>
+        <label class="cui4-stage-selector__stage" id="4"></label>
+        <label class="cui4-stage-selector__stage" id="5"></label>*@
+</div>

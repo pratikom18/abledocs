@@ -1,0 +1,51 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model abledoc.Models.Production;
+@*@{ Layout = null; }*@
+
+<div class="modal fade" id="bootstrap-modal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">@Localizer["Update Multi Assign Date"]</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form method="post" id="assigndateform">
+
+                    @*<input type="hidden" name="assignfiles[]" value="@ViewBag.FileIDS" />*@
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            <label for="Deadline" class="col-form-label">@Localizer["DeadLine Date"]</label>
+                        </div>
+                        <div class="form-group col-md-8">
+                            <input type="text" class="form-control datepicker" name="Deadline" id="Deadline" autocomplete="off" aria-describedby="Deadline Date" required>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            <label for="DeadlineTime" class="col-form-label">@Localizer["Deadline Time"]</label>
+                        </div>
+                        <div class="form-group col-md-8">
+                            <input type="text" class="form-control timepicker" name="DeadlineTime" id="DeadlineTime" autocomplete="off" aria-describedby="Deadline Time" required>
+                        </div>
+
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary-1" id="saveDate">@Localizer["Save"]</button>
+                        &nbsp;&nbsp;
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">@Localizer["Close"]</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

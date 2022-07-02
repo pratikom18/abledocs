@@ -1,0 +1,110 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<div class="table-responsive">
+    <table class="table">
+
+        <tbody>
+            <tr>
+                <td></td>
+                <td></td>
+                <td class="text-right">FY @ViewBag.years1 TOTAL</td>
+                <td class="text-right">@("$" + ViewBag.amount1)</td>
+                <td></td>
+                <td class="text-right">Q1 YTD:</td>
+                <td class="text-right">@("$" + ViewBag.q1)</td>
+                <td class="text-right">YOY %</td>
+                <td class="text-right">@(ViewBag.q1 != 0 ? Math.Round((ViewBag.q5 - ViewBag.q1) / ViewBag.q5, 2) : 0)%</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td class="text-right">FY @ViewBag.years2 GROSS REV</td>
+                <td class="text-right">@("$" + ViewBag.amount2)</td>
+                <td class="text-right"></td>
+                <td class="text-right">Q2 YTD:</td>
+                <td class="text-right">@("$" + ViewBag.q2)</td>
+                <td class="text-right">YOY %</td>
+                <td class="text-right">@(ViewBag.q2 != 0 ? Math.Round((ViewBag.q6 - ViewBag.q2) / ViewBag.q6, 2) : 0)%</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td class="text-right">% of YoY</td>
+                <td class="text-right">@(Math.Round((ViewBag.amount1 - ViewBag.amount2) / ViewBag.amount1, 2))%</td>
+                <td class="text-right"></td>
+                <td class="text-right">Q3 YTD:</td>
+                <td class="text-right">@("$" + ViewBag.q3)</td>
+                <td class="text-right">YOY %</td>
+                <td class="text-right">@(ViewBag.q3 != 0 ? Math.Round((ViewBag.q7 - ViewBag.q3) / ViewBag.q7, 2) : 0)%</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="text-right">Q4 YTD:</td>
+                <td class="text-right">@("$" + ViewBag.q4)</td>
+                <td class="text-right">YOY %</td>
+                <td class="text-right">@(ViewBag.q4 != 0 ? Math.Round((ViewBag.q8 - ViewBag.q4) / ViewBag.q8, 2):0)%</td>
+            </tr>
+            <tr>
+                <td>@Localizer["Previous"]: @ViewBag.PrvDailyMaxJob.total</td>
+                <td></td>
+                <td class="text-right">@Localizer["Daily MAX"]: @ViewBag.DailyMaxJob.total</td>
+                <td class="text-right">@ViewBag.DailyMaxJob.Created.ToString("MM/dd/yyyy")</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td class="text-right">@Localizer["Weekly MAX"]: @ViewBag.WeeklyMaxJob.total</td>
+                <td class="text-right">@ViewBag.WeeklyMaxJob.Created.ToString("MM/dd/yyyy")</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td class="text-right">@Localizer["Daily File MAX"]: @ViewBag.DailyMaxFiles.total</td>
+                <td class="text-right">@ViewBag.DailyMaxFiles.Created.ToString("MM/dd/yyyy")</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td class="text-right">@Localizer["Weekly Billing MAX"]: $@ViewBag.Billing.InvoiceAmount</td>
+                <td class="text-right">@ViewBag.Billing.Created.ToString("MM/dd/yyyy")</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td class="text-right">@Localizer["Job High Water Mark"]: @ViewBag.JobWaterMarks.total</td>
+                <td class="text-right">@ViewBag.JobWaterMarks.Created.ToString("MM/dd/yyyy")</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+
+
+        </tbody>
+    </table>
+</div>

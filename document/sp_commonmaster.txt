@@ -1,0 +1,15 @@
+DELIMITER $$
+
+USE `abledocs`$$
+
+DROP PROCEDURE IF EXISTS `rank_commonmaster_displayorder`$$
+
+CREATE DEFINER=`root`@`%` PROCEDURE `rank_commonmaster_displayorder`(IN p_type CHAR(50))
+BEGIN
+	
+       SET @rank:=0;
+       UPDATE common_master SET display_order=@rank:=@rank+1 WHERE TYPE = p_type ORDER BY display_order;
+
+	END$$
+
+DELIMITER ;

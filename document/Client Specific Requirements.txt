@@ -1,0 +1,23 @@
+CREATE TABLE `abledocs`.`client_specific_requirements` (
+ 
+ `id` INT NOT NULL,
+ 
+ `client_code` VARCHAR(45) NULL,
+
+  `remediation_requirements` VARCHAR(5000) NULL,
+ 
+ `common_alt` VARCHAR(2000) NULL,
+
+  `author` VARCHAR(1000) NULL,
+ 
+ `unsecured` TINYINT(1) NULL DEFAULT NULL,
+ 
+ `secured` TINYINT(1) NULL DEFAULT NULL,
+  
+`pdf` TINYINT(1) NULL DEFAULT NULL,
+ 
+ `pac_reports` TINYINT(1) NULL DEFAULT NULL,
+ 
+ `notes` VARCHAR(2000) NULL,
+
+  PRIMARY KEY (`id`));

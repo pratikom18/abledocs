@@ -1,0 +1,57 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["ADGateways"];
+    ViewData["PageTitle"] = Localizer["ADGateways"];
+}
+
+<input type="hidden" id="hdnEdit" value="@Localizer["Edit"]" />
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+
+                        <a asp-controller="gateways" class="btn btn-primary btn-sm float-sm-right btn-primary-1" asp-action="create"><i class="fa fa-plus-circle"></i> @Localizer["ADD ADGATEWAY"]</a>
+
+</div>
+
+                    <div class="card-body">
+                        <div class="toolbar">
+                            <!--        Here you can write extra buttons/actions for the toolbar              -->
+                        </div>
+                        <div class="material-datatables">
+                            <table id="GatewayTable" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>@Localizer["No"]</th>
+                                        <th>@Localizer["Client ID"]</th>
+                                        <th>@Localizer["SubDomain"]</th>
+                                        <th>@Localizer["Client Name"]</th>
+                                        <th>@Localizer["Portal Name"]</th>
+                                        <th>@Localizer["Action"]</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                    <!-- end content-->
+                </div>
+                <!--  end card  -->
+            </div>
+            <!-- end col-md-12 -->
+        </div>
+        <!-- end row -->
+    </div>
+</div>
+@section scripts{
+
+
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <script src="~/assets/js/pages/gatewaylist.js?v=@abledoc.Utility.CommonHelper.Version"></script>
+    <!-- END PAGE LEVEL PLUGINS -->
+}

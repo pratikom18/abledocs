@@ -1,0 +1,59 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    int counter = 0;
+    if (ViewBag.JobDeliveryContactData != null)
+    {
+        foreach (var deliveryCon in ViewBag.JobDeliveryContactData)
+        {
+
+            var removeStyle = (counter > 0) ? "" : "display:none;";
+            var addStyle = (counter == 0) ? "" : "display:none;";
+            <div class="row cloneContact">
+                <div class="form-group col-sm-3"><label for="ContactID" class="col-form-label text-left">@Localizer["Delivery Contact"]</label></div>
+                <div class="form-group col-sm-3">
+
+                    @Html.DropDownList("JobDelivery[" + counter + "][ContactID]", abledoc.Utility.ComboHelper.GetJobContactList(Model.ClientID.ToString(), "", deliveryCon.ContactID.ToString(), ViewBag.loginusercountry, Model.databasename), "Contact", new { @id = "JobDelivery_" + counter + "_ContactID", @class = "form-control select2 select-dropdown1 deliveryContact contact-select2", @name = "JobDelivery[" + counter + "][ContactID]" })
+
+                </div>
+                <div class="form-group col-sm-3">
+                    @Html.DropDownList("JobDelivery[" + counter + "][ContactType]", abledoc.Utility.ComboHelper.GetContactType(), "Contact Type", new { @id = "JobDelivery_" + counter + "_ContactType", @class = "form-control select2 ContactType select-dropdown1 contact-select2", @name = "JobDelivery[" + counter + "][ContactType]" })
+                </div>
+                <div class="form-group col-sm-2">
+                    @*<button type="button" class="btn btn-primary-1 btn-sm addBtn" onclick="cloneContact(this)" style="@addStyle" @(ViewBag.SameCountryUser?"":"disabled")><i class="fa fa-plus-circle"></i>&nbsp;&nbsp; Add new</button>
+                        <button type="button" class="btn btn-danger btn-sm removeBtn" onclick="removeContact(this)" style="@removeStyle" @(ViewBag.SameCountryUser?"":"disabled")><i class="fa fa-minus-circle"></i>&nbsp;&nbsp; Remove</button>*@
+
+                    <button type="button" class="btn btn-primary-1 btn-sm addBtn" onclick="cloneContact(this)" style="@addStyle"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp; @Localizer["Add new"]</button>
+                    <button type="button" class="btn btn-danger btn-sm removeBtn" onclick="removeContact(this)" style="@removeStyle"><i class="fa fa-minus-circle"></i>&nbsp;&nbsp; @Localizer["Remove"]</button>
+                </div>
+            </div>
+            counter++;
+        }
+    }
+    else
+    {
+        var removeStyle = (counter > 0) ? "" : "display:none;";
+        var addStyle = (counter == 0) ? "" : "display:none;";
+        <div class="row cloneContact">
+            <div class="form-group col-sm-3"><label for="ContactID" class="col-form-label text-left">@Localizer["Delivery Contact"]</label></div>
+            <div class="form-group col-sm-3">
+
+                @Html.DropDownList("JobDelivery[" + counter + "][ContactID]", abledoc.Utility.ComboHelper.GetJobContactList(Model.ClientID.ToString(), "", "", ViewBag.loginusercountry, Model.databasename), Localizer["Select"].Value, new { @id = "JobDelivery_" + counter + "_ContactID", @class = "form-control select2 deliveryContact select-dropdown1  contact-select2", @name = "JobDelivery[" + counter + "][ContactID]" })
+
+            </div>
+            <div class="form-group col-sm-3">
+                @Html.DropDownList("JobDelivery[" + counter + "][ContactType]", abledoc.Utility.ComboHelper.GetContactType(), Localizer["Select"].Value, new { @id = "JobDelivery_" + counter + "_ContactType", @class = "form-control select2 ContactType contact-select2 select-dropdown1", @name = "JobDelivery[" + counter + "][ContactType]" })
+            </div>
+            <div class="form-group col-sm-2">
+                @*<button type="button" class="btn btn-primary-1 btn-sm addBtn" onclick="cloneContact(this)" style="@addStyle" @(ViewBag.SameCountryUser?"":"disabled")><i class="fa fa-plus-circle"></i>&nbsp;&nbsp; Add new</button>
+                    <button type="button" class="btn btn-danger btn-sm removeBtn" onclick="removeContact(this)" style="@removeStyle" @(ViewBag.SameCountryUser?"":"disabled")><i class="fa fa-minus-circle"></i>&nbsp;&nbsp; Remove</button>*@
+                <button type="button" class="btn btn-primary-1 btn-sm addBtn" onclick="cloneContact(this)" style="@addStyle"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp; @Localizer["Add new"]</button>
+                <button type="button" class="btn btn-danger btn-sm removeBtn" onclick="removeContact(this)" style="@removeStyle"><i class="fa fa-minus-circle"></i>&nbsp;&nbsp; @Localizer["Remove"]</button>
+            </div>
+        </div>
+    }
+    <input type="hidden" id="addition_contact_counter" value="@counter" />
+}
+
+
+

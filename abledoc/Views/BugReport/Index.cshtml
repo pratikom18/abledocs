@@ -1,0 +1,153 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model abledoc.Models.BugReport;
+@{
+        ViewData["Title"] = Localizer["Bug Report"];
+        ViewData["PageTitle"] = Localizer["Bug Report"];
+    }
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+            </div>
+        </div>
+    </section>
+
+    <input type="hidden" id="hiddenBugId" asp-for="bug.Bug_Text_Id" />
+    <input type="hidden" id="hdnMessage" value="@ViewBag.Message" />
+    <input type="hidden" id="hdnError" value="@ViewBag.isError" />
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <form method="post" id="bugReportForm" class="form-horizontal" asp-controller="BugReport" asp-action="create">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <input type="hidden" asp-for="bug.Bug_Text_Id" />
+                                <div class="col-md-12">
+                                    <div class="card card-primary">
+                                        <div class="card-header pointer" data-card-widget="collapse">
+                                            <h3 class="card-title">@Localizer["Bug Report"]</h3>
+
+                                        </div>
+                                        <!-- /.card-header -->
+                                        <div class="card-body">
+                                            <!-- form start -->
+
+                                            <div class="row">
+                                                <div class="form-group col-md-4">
+                                                    @*<input type="hidden" asp-for="bug.Summary" />*@
+                                                    <label asp-for="bug.Summary" class="col-form-label">@Localizer["Summary"]<span class="text-danger">*</span></label>
+                                                    @*<div class="col-sm-10">*@
+                                                </div>
+                                                <div class="form-group col-md-8">
+                                                    <input type="text" asp-for="bug.Summary" class="form-control" id="Company" placeholder=@Localizer["Summary"]>
+                                                    <span asp-validation-for="bug.Summary" class="text-danger"></span>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="form-group col-md-4">
+                                                    <label asp-for="bug.Severity" class="col-form-label">@Localizer["Severity"]<span class="text-danger">*</span></label>
+                                                </div>
+                                                <div class="form-group col-md-8">
+                                                    @Html.DropDownList("Severity", abledoc.Utility.ComboHelper.GetSeverityList(), Localizer["Select Severity"].Value, new { @id = "Severity", @class = "form-control selectpicker", @datastyle = "btn btn-link", @name = "Severity" })
+                                                    <span asp-validation-for="bug.Severity" class="text-danger"></span>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="form-group col-md-4">
+                                                    <label asp-for="bug.Priority" class="col-form-label">@Localizer["Priority"]<span class="text-danger">*</span></label>
+                                                </div>
+                                                <div class="form-group col-md-8">
+                                                    @Html.DropDownList("Priority", abledoc.Utility.ComboHelper.GetPriorityList(), Localizer["Select Priority"].Value, new { @id = "Priority", @class = "form-control selectpicker", @datastyle = "btn btn-link", @name = "Priority" })
+                                                    <span asp-validation-for="bug.Priority" class="text-danger"></span>
+                                                </div>
+
+                                            </div>
+
+
+
+                                            <div class="row">
+                                                <div class="form-group col-md-4">
+                                                    @*<input type="hidden" asp-for="bugText.Description" />*@
+                                                    <label asp-for="bugText.Description" class="col-form-label">@Localizer["Description"]<span class="text-danger">*</span></label>
+                                                </div>
+                                                <div class="form-group col-md-8">
+                                                    <textarea class="form-control" asp-for="bugText.Description" id="Description" placeholder=@Localizer["Description"]></textarea>
+                                                    <span asp-validation-for="bugText.Description" class="text-danger"></span>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="form-group col-md-4">
+                                                    @*<input type="hidden" asp-for="bugText.Steps_To_Reproduce" />*@
+                                                    <label asp-for="bugText.Steps_To_Reproduce" class="col-form-label">@Localizer["Steps To Reproduce"]<span class="text-danger">*</span></label>
+                                                </div>
+                                                <div class="form-group col-md-8">
+                                                    <textarea class="form-control" asp-for="bugText.Steps_To_Reproduce" id="Steps_To_Reproduce" placeholder=@Localizer["Steps To Reproduce"]></textarea>
+                                                    <span asp-validation-for="bugText.Steps_To_Reproduce" class="text-danger"></span>
+                                                </div>
+
+                                            </div>
+                                            <!-- /.card-body -->
+                                        </div>
+                                        <!-- /.card -->
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-10"></div>
+                                    <div class="col-md-2"><button type="submit" class="btn btn-success btn-primary-1" id="saveBtn">@Localizer["Save"]</button></div>
+</div>
+
+
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+@section scripts{
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#Priority').selectpicker('setStyle', 'btn btn-link');
+            $('#Severity').selectpicker('setStyle', 'btn btn-link');
+            $('.filter-option').addClass('filter-option-1');
+
+            if ($('#hdnMessage').val() != "") {
+                if (!$('#hdnError').val()) {
+                    $.notify({
+                        icon: 'add_alert',
+                        title: '<strong>Success!</strong>',
+                        message: $('#hdnMessage').val()
+                    }, {
+                        type: 'success'
+                    });
+                }
+                else {
+                    $.notify({
+                        icon: 'add_alert',
+                        title: '<strong>Error!</strong>',
+                        message: $('#hdnMessage').val()
+                    }, {
+                        type: 'danger'
+                    });
+                }
+            }
+
+
+
+
+        });
+    </script>
+}

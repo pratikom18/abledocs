@@ -1,0 +1,24 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<div class="modal fade" id="bootstrap-modal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title">
+                    @Localizer["ALT Confirm"]?
+                </h4>
+            </div>
+            <div id="demo-modal">
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger DenyCheckout" id="Cancel">@Localizer["Cancel"]</button>
+                    <button type="button" class="btn btn-success" id="Confirm" onclick="ALTTextCheckout(@ViewBag.FileID,@ViewBag.flag)">@Localizer["Confirm"]</button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="~/assets/js/pages/Confirm.js?v=@abledoc.Utility.CommonHelper.Version"></script>

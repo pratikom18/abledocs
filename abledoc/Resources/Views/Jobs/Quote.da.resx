@@ -1,0 +1,246 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Action" xml:space="preserve">
+    <value>Handling</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Tilføje</value>
+  </data>
+  <data name="Add Notes Here" xml:space="preserve">
+    <value>Tilføj bemærkninger her</value>
+  </data>
+  <data name="Add Offering Here" xml:space="preserve">
+    <value>Tilføj tilbud her</value>
+  </data>
+  <data name="All invoices are due within 30 days and subject to penalty of 2% per month" xml:space="preserve">
+    <value>Alle fakturaer forfalder inden for 30 dage og straffes med 2% pr. Måned.</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Tæt</value>
+  </data>
+  <data name="Country not selected for this client. Please set country first." xml:space="preserve">
+    <value>Land ikke valgt til denne klient. Indstil venligst land først.</value>
+  </data>
+  <data name="Default" xml:space="preserve">
+    <value>Standard</value>
+  </data>
+  <data name="Delete All" xml:space="preserve">
+    <value>Slet alt</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Beskrivelse</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Detaljer</value>
+  </data>
+  <data name="Download as Excel" xml:space="preserve">
+    <value>Download som Excel</value>
+  </data>
+  <data name="Download Sample File" xml:space="preserve">
+    <value>Download prøvefil</value>
+  </data>
+  <data name="Engagement" xml:space="preserve">
+    <value>Engagement</value>
+  </data>
+  <data name="Fillable" xml:space="preserve">
+    <value>Fyldbar</value>
+  </data>
+  <data name="Generate &amp; Download Quote" xml:space="preserve">
+    <value>Generer &amp; download tilbud</value>
+  </data>
+  <data name="Invoice" xml:space="preserve">
+    <value>Kreditnota</value>
+  </data>
+  <data name="Note: Price are listed in" xml:space="preserve">
+    <value>BEMÆRK: Prisen er angivet i</value>
+  </data>
+  <data name="Notes" xml:space="preserve">
+    <value>Bemærkninger</value>
+  </data>
+  <data name="OCR" xml:space="preserve">
+    <value>OCR</value>
+  </data>
+  <data name="Offering" xml:space="preserve">
+    <value>Tilbud</value>
+  </data>
+  <data name="PO" xml:space="preserve">
+    <value>PO</value>
+  </data>
+  <data name="Price" xml:space="preserve">
+    <value>Pris</value>
+  </data>
+  <data name="Quantity" xml:space="preserve">
+    <value>Antal</value>
+  </data>
+  <data name="Quote" xml:space="preserve">
+    <value>Quote</value>
+  </data>
+  <data name="QuoteSubject" xml:space="preserve">
+    <value>PDF Accessibility Remediation Services</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Fjerne</value>
+  </data>
+  <data name="Remove All" xml:space="preserve">
+    <value>Fjern alt</value>
+  </data>
+  <data name="Select" xml:space="preserve">
+    <value>Vælg</value>
+  </data>
+  <data name="Select Description" xml:space="preserve">
+    <value>Vælg beskrivelse</value>
+  </data>
+  <data name="Send to Client" xml:space="preserve">
+    <value>Send til klient</value>
+  </data>
+  <data name="Services Offerts" xml:space="preserve">
+    <value>Tjenesteforbud</value>
+  </data>
+  <data name="ServicesOffered" xml:space="preserve">
+    <value>Offering</value>
+  </data>
+  <data name="Set Default" xml:space="preserve">
+    <value>Sæt standard</value>
+  </data>
+  <data name="SubTotal" xml:space="preserve">
+    <value>Subtotal beløb</value>
+  </data>
+  <data name="Tax" xml:space="preserve">
+    <value>Skat</value>
+  </data>
+  <data name="Telephone" xml:space="preserve">
+    <value>+45 22807014</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>I alt</value>
+  </data>
+  <data name="Unit" xml:space="preserve">
+    <value>Enhed</value>
+  </data>
+  <data name="Unit Price" xml:space="preserve">
+    <value>Pris per stk</value>
+  </data>
+  <data name="Update Details" xml:space="preserve">
+    <value>Opdater detaljer</value>
+  </data>
+  <data name="Upload as Excel/csv" xml:space="preserve">
+    <value>Upload som Excel / csv</value>
+  </data>
+</root>

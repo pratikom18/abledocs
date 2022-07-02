@@ -1,0 +1,527 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    string firstid = string.Empty;
+    string secondid = string.Empty;
+    string thiredid = string.Empty;
+    string FirstName = string.Empty;
+    string LastName = string.Empty;
+    try
+    {
+        FirstName = HttpContextAccessor.HttpContext.Session.GetString("FirstName");
+        if (FirstName == null)
+        {
+            FirstName = "";
+        }
+    }
+    catch (Exception ex)
+    {
+
+    }
+
+    try
+    {
+        LastName = HttpContextAccessor.HttpContext.Session.GetString("LastName");
+        if (LastName == null)
+        {
+            LastName = "";
+        }
+    }
+    catch (Exception ex)
+    {
+
+    }
+
+    try
+    {
+        firstid = HttpContextAccessor.HttpContext.Session.GetString("firstid");
+        if (firstid == null)
+        {
+            firstid = "0";
+        }
+    }
+    catch (Exception ex)
+    {
+
+    }
+    try
+    {
+        secondid = HttpContextAccessor.HttpContext.Session.GetString("secondid");
+        if (secondid == null)
+        {
+            secondid = "0";
+        }
+    }
+    catch (Exception ex)
+    {
+
+    }
+    try
+    {
+        thiredid = HttpContextAccessor.HttpContext.Session.GetString("thiredid");
+        if (thiredid == null)
+        {
+            thiredid = "0";
+        }
+    }
+    catch (Exception ex)
+    {
+
+    }
+
+    List<AssignedMenu> AssignedMenuList = new List<AssignedMenu>();
+
+    AssignedMenuList = abledoc.Utility.Session.SessionExtensions.GetComplexData<List<AssignedMenu>>(HttpContextAccessor.HttpContext.Session, "AssignedMenu1");
+    string url1 = @Context.Request.Path;
+    int parentid = 0;
+    if (url1.Split('/').Count() > 1)
+    {
+
+        if (url1 == "/")
+        {
+
+            var h = AssignedMenuList.Where(s => s.pageurl.Contains("home"));
+
+            var i = AssignedMenuList.Where(s => s.pageurl.Contains("home")).Select(t => t.menumasterid);
+
+            parentid = abledoc.Utility.CommonHelper.GetDBInt(i.FirstOrDefault());
+
+        }
+        else
+        {
+
+            AssignedMenu p = AssignedMenuList.Where(a => a.pageurl.Contains(url1)).FirstOrDefault();
+
+            var q = AssignedMenuList.Where(a => a.pageurl.Contains(url1)).Select(b => b.ParentID);
+            if (abledoc.Utility.CommonHelper.GetDBInt(q.FirstOrDefault()) != 0)
+            {
+                parentid = abledoc.Utility.CommonHelper.GetDBInt(q.FirstOrDefault());
+            }
+            else
+            {
+                if (p != null)
+                {
+                    parentid = p.menumasterid;
+                }
+
+            }
+
+
+            var m = AssignedMenuList.Where(x => x.menumasterid == parentid).Select(n => n.ParentID);
+
+            if (abledoc.Utility.CommonHelper.GetDBInt(m.FirstOrDefault()) != 0)
+            {
+                parentid = abledoc.Utility.CommonHelper.GetDBInt(m.FirstOrDefault());
+            }
+
+
+        }
+
+
+
+
+
+        //  var s1 = AssignedMenuList.Where(x => x.pageurl.Contains(url1.Split('/')[1])).Select(x => x.ParentID);
+
+        // int parentID = abledoc.Utility.CommonHelper.GetDBInt(AssignedMenuList.Where(j => j.menumasterid == abledoc.Utility.CommonHelper.GetDBInt(AssignedMenuList.Where(x => x.pageurl.Contains(url1.Split('/')[1])).Select(x => x.ParentID))).Select(i => i.menumasterid));
+
+        //  string s = "";
+    }
+
+
+}
+<div class="sidebar sidebar-1" data-color="azure" data-background-color="blue">
+    <!--
+        Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
+
+        Tip 2: you can also add an image using data-image tag
+    -->
+    @*<div>
+            <i class="material-icons pinlogo">push_pin</i>
+        </div>*@
+
+    <div class="logo">
+        <a href="/" class="simple-text logo-mini">
+            <img class="logo-mini-1" src="~/Resources/Images/Logo/logo-positive-sm.svg" alt="AbleDocs">
+        </a>
+
+        <a href="/" class="simple-text logo-normal">
+            <img class="logo-normal-1" src="~/Resources/Images/Logo/logo-negative.svg" alt="AbleDocs">
+        </a>
+    </div>
+    <div class="sidebar-wrapper">
+        <div class="user">
+            <div class="photo">
+                <i class="material-icons" style="font-size:36px;color:white;">account_circle</i>
+                @*<img src="../../assets/img/faces/avatar.jpg" />*@
+            </div>
+            <div class="user-info">
+                <a data-toggle="collapse" href="#collapseExample" class="username">
+                    <span style="color:white;">
+                        @FirstName @LastName
+                    </span>
+                </a>
+            </div>
+        </div>
+        <ul class="nav">
+            @if (AssignedMenuList != null)
+            {
+                if (AssignedMenuList.Count > 0)
+                {
+                    foreach (var parentMenu in AssignedMenuList)
+                    {
+                        if (parentMenu.ParentID == 0)
+                        {
+                            @*<li class="nav-item @(parentMenu.menuname.ToLower().Replace(" ","") == url1.Split('/')[1] ? "active" : "" )">*@
+                            <li class="nav-item @((parentMenu.menumasterid == parentid ||(abledoc.Utility.CommonHelper.GetDBInt(firstid)!=0?parentMenu.menumasterid == abledoc.Utility.CommonHelper.GetDBInt(firstid):false)) ? "active" : "" )">
+                                <a href="@(AssignedMenuList.Where(x=>x.ParentID == parentMenu.menumasterid && x.ParentID != 0).Count() > 0?"#"+parentMenu.menuname:parentMenu.pageurl)" class="nav-link @(AssignedMenuList.Where(x=>x.ParentID == parentMenu.menumasterid && x.ParentID != 0).Count() > 0?" collapse ":"")" @(AssignedMenuList.Where(x => x.ParentID == parentMenu.menumasterid && x.ParentID != 0).Count() > 0 ? " data-toggle=collapse" : "") @((AssignedMenuList.Where(x => x.ParentID == parentMenu.menumasterid).ToList().Count > 0) && (parentMenu.menumasterid == parentid || (abledoc.Utility.CommonHelper.GetDBInt(firstid) != 0 ? parentMenu.menumasterid == abledoc.Utility.CommonHelper.GetDBInt(firstid) : false)) ? "aria-expanded=true" : "aria-expanded=false") @(AssignedMenuList.Where(x => x.ParentID == parentMenu.menumasterid && x.ParentID != 0).Count() > 0 ? "" : "onclick=setMenu(" + parentMenu.menumasterid + ",0,0)")>
+                                    @*<i class="nav-icon fas @parentMenu.IconName"></i>*@
+                                    <i class="material-icons">@parentMenu.IconName</i>
+                                    <p class="p-menuname">
+          
+
+                                        @Localizer[parentMenu.menuname]
+
+                                        @if (AssignedMenuList.Where(x => x.ParentID == parentMenu.menumasterid && x.ParentID != 0).Count() > 0)
+                                        {
+                                            <b class="caret"></b>
+                                        }
+                                    </p>
+                                </a>
+                                @if (AssignedMenuList.Where(x => x.ParentID == parentMenu.menumasterid).ToList().Count > 0)
+                                {
+                                    <div id="@parentMenu.menuname" class="collapse @((AssignedMenuList.Where(x => x.ParentID == parentMenu.menumasterid).ToList().Count > 0) && (parentMenu.menumasterid == parentid ||(abledoc.Utility.CommonHelper.GetDBInt(firstid)!=0?parentMenu.menumasterid == abledoc.Utility.CommonHelper.GetDBInt(firstid):false)) ? "show" : "")">
+                                        <ul class="nav" @(ViewBag.Pin == "true" ? "" : "style=padding-left:7%;")>
+                                            @foreach (var subMenu in AssignedMenuList.Where(x => x.ParentID == parentMenu.menumasterid))
+                                            {
+                                                <li class="nav-item @((url1.Contains(subMenu.pageurl.ToLower().Replace(" ", "")) ||(abledoc.Utility.CommonHelper.GetDBInt(secondid)!=0?subMenu.menumasterid == abledoc.Utility.CommonHelper.GetDBInt(secondid):false)) ? "active" : "")">
+                                                    <a href="@(AssignedMenuList.Where(x=>x.ParentID == @subMenu.menumasterid && x.ParentID != 0).Count() > 0?"#"+@subMenu.menuname:@subMenu.pageurl)" class="nav-link @(AssignedMenuList.Where(x=>x.ParentID == @subMenu.menumasterid && x.ParentID != 0).Count() > 0?" collapse ":"")" @(AssignedMenuList.Where(x => x.ParentID == @subMenu.menumasterid && x.ParentID != 0).Count() > 0 ? " data-toggle=collapse" : "") @((AssignedMenuList.Where(x => x.ParentID == @subMenu.menumasterid).ToList().Count > 0) && (url1.Contains(subMenu.menuname.ToLower().Replace(" ", "")) || (abledoc.Utility.CommonHelper.GetDBInt(secondid) != 0 ? subMenu.menumasterid == abledoc.Utility.CommonHelper.GetDBInt(secondid) : false)) ? "aria-expanded=true" : "aria-expanded=false") @(AssignedMenuList.Where(x => x.ParentID == subMenu.menumasterid && x.ParentID != 0).Count() > 0 ? "" : "onclick=setMenu(" + parentMenu.menumasterid + "," + subMenu.menumasterid + ",0)")>
+                                                        @*<i class="nav-icon fas @subMenu.IconName"></i>*@
+                                                        <i class="material-icons">@subMenu.IconName</i>
+                                                        <p class="p-menuname">
+                                                            @Localizer[subMenu.menuname]
+                                                            @if (AssignedMenuList.Where(x => x.ParentID == subMenu.menumasterid && x.ParentID != 0).Count() > 0)
+                                                            {
+                                                                <b class="caret"></b>
+                                                            }
+                                                        </p>
+                                                    </a>
+                                                    @if (AssignedMenuList.Where(x => x.ParentID == subMenu.menumasterid).ToList().Count > 0)
+                                                    {
+                                                        <div id="@subMenu.menuname" class="collapse @((AssignedMenuList.Where(x => x.ParentID == subMenu.menumasterid).ToList().Count > 0) && (url1.Contains(subMenu.menuname.ToLower().Replace(" ", "")) ||(abledoc.Utility.CommonHelper.GetDBInt(secondid)!=0?subMenu.menumasterid == abledoc.Utility.CommonHelper.GetDBInt(secondid):false)) ? "show" : "")">
+                                                            <ul class="nav" @(ViewBag.Pin == "true" ? "" : "style=padding-left:7%;")>
+                                                                @foreach (var subMenu1 in AssignedMenuList.Where(x => x.ParentID == subMenu.menumasterid))
+                                                                {
+                                                                    <li class="nav-item @((url1.Contains(subMenu1.pageurl.ToLower().Replace(" ", "")) ||(abledoc.Utility.CommonHelper.GetDBInt(thiredid)!=0?subMenu1.menumasterid == abledoc.Utility.CommonHelper.GetDBInt(thiredid):false)) ? "active" : "" )">
+                                                                        <a href="@subMenu1.pageurl" class="nav-link" onclick="setMenu(@parentMenu.menumasterid,@subMenu.menumasterid,@subMenu1.menumasterid)">
+                                                                            @*<i class="nav-icon fas @subMenu.IconName"></i>*@
+                                                                            <i class="material-icons">@subMenu1.IconName</i>
+                                                                            <p class="p-menuname">
+                                                                                @Localizer[subMenu1.menuname]
+
+                                                                            </p>
+                                                                        </a>
+
+                                                                    </li>
+                                                                }
+                                                            </ul>
+                                                        </div>
+                                                    }
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                }
+
+                            </li>
+                        }
+                    }
+                }
+            }
+        </ul>
+    </div>
+</div>
+@*<li class="nav-item ">
+                    <a class="nav-link" data-toggle="collapse" href="#crudExamples">
+                        <i class="material-icons">apps</i>
+                        <p class="p-menuname">
+                            CRUD Users - Roles
+                            <b class="caret"></b>
+                        </p>
+                    </a>
+                    <div class="collapse" id="crudExamples">
+                        <ul class="nav">
+                            <li class="nav-item ">
+                                <a class="nav-link" href="/Users">
+                                    <span class="sidebar-mini p-menuname"> UM </span>
+                                    <span class="sidebar-normal p-menuname"> USERS Manager </span>
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="/Users/RolesManager">
+                                    <span class="sidebar-mini p-menuname"> RM </span>
+                                    <span class="sidebar-normal p-menuname"> Roles Manager</span>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="collapse" href="#pagesExamples">
+                        <i class="material-icons">image</i>
+                        <p class="p-menuname">
+                            Pages
+                            <b class="caret"></b>
+                        </p>
+                    </a>
+                    <div class="collapse" id="pagesExamples">
+                        <ul class="nav">
+                            <li class="nav-item ">
+                                <a class="nav-link" href="pages/pricing.html">
+                                    <span class="sidebar-mini p-menuname"> P </span>
+                                    <span class="sidebar-normal p-menuname"> Pricing </span>
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="pages/rtl.html">
+                                    <span class="sidebar-mini p-menuname"> RS </span>
+                                    <span class="sidebar-normal p-menuname"> RTL Support </span>
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="pages/timeline.html">
+                                    <span class="sidebar-mini p-menuname"> T </span>
+                                    <span class="sidebar-normal p-menuname"> Timeline </span>
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="/Identity/Account/Login">
+                                    <span class="sidebar-mini p-menuname"> LP </span>
+                                    <span class="sidebar-normal p-menuname"> Login Page </span>
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="/Identity/Account/Register">
+                                    <span class="sidebar-mini p-menuname"> RP </span>
+                                    <span class="sidebar-normal p-menuname"> Register Page </span>
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="/Identity/Account/AccessDenied">
+                                    <span class="sidebar-mini p-menuname"> LSP </span>
+                                    <span class="sidebar-normal p-menuname"> Lock Screen Page </span>
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="pages/user.html">
+                                    <span class="sidebar-mini p-menuname"> UP </span>
+                                    <span class="sidebar-normal p-menuname"> User Profile </span>
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="pages/error.html">
+                                    <span class="sidebar-mini p-menuname"> E </span>
+                                    <span class="sidebar-normal p-menuname"> Error Page </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" data-toggle="collapse" href="#componentsExamples">
+                        <i class="material-icons">apps</i>
+                        <p class="p-menuname">
+                            Components
+                            <b class="caret"></b>
+                        </p>
+                    </a>
+                    <div class="collapse" id="componentsExamples">
+                        <ul class="nav">
+                            <li class="nav-item ">
+                                <a class="nav-link" data-toggle="collapse" href="#componentsCollapse">
+                                    <span class="sidebar-mini p-menuname"> MLT </span>
+                                    <span class="sidebar-normal p-menuname">
+                                        Multi Level Collapse
+                                        <b class="caret"></b>
+                                    </span>
+                                </a>
+                                <div class="collapse" id="componentsCollapse">
+                                    <ul class="nav">
+                                        <li class="nav-item ">
+                                            <a class="nav-link" href="#0">
+                                                <span class="sidebar-mini p-menuname"> E </span>
+                                                <span class="sidebar-normal p-menuname"> Example </span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="components/buttons.html">
+                                    <span class="sidebar-mini p-menuname"> B </span>
+                                    <span class="sidebar-normal p-menuname"> Buttons </span>
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="components/grid.html">
+                                    <span class="sidebar-mini p-menuname"> GS </span>
+                                    <span class="sidebar-normal p-menuname"> Grid System </span>
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="components/panels.html">
+                                    <span class="sidebar-mini p-menuname"> P </span>
+                                    <span class="sidebar-normal"> Panels </span>
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="components/sweet-alert.html">
+                                    <span class="sidebar-mini p-menuname"> SA </span>
+                                    <span class="sidebar-normal p-menuname"> Sweet Alert </span>
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="components/notifications.html">
+                                    <span class="sidebar-mini p-menuname"> N </span>
+                                    <span class="sidebar-normal p-menuname"> Notifications </span>
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="components/icons.html">
+                                    <span class="sidebar-mini p-menuname"> I </span>
+                                    <span class="sidebar-normal p-menuname"> Icons </span>
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="components/typography.html">
+                                    <span class="sidebar-mini p-menuname"> T </span>
+                                    <span class="sidebar-normal p-menuname"> Typography </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" data-toggle="collapse" href="#formsExamples">
+                        <i class="material-icons">content_paste</i>
+                        <p class="p-menuname">
+                            Forms
+                            <b class="caret"></b>
+                        </p>
+                    </a>
+                    <div class="collapse" id="formsExamples">
+                        <ul class="nav">
+                            <li class="nav-item ">
+                                <a class="nav-link" href="forms/regular.html">
+                                    <span class="sidebar-mini p-menuname"> RF </span>
+                                    <span class="sidebar-normal p-menuname"> Regular Forms </span>
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="forms/extended.html">
+                                    <span class="sidebar-mini p-menuname"> EF </span>
+                                    <span class="sidebar-normal p-menuname"> Extended Forms </span>
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="forms/validation.html">
+                                    <span class="sidebar-mini p-menuname"> VF </span>
+                                    <span class="sidebar-normal p-menuname"> Validation Forms </span>
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="forms/wizard.html">
+                                    <span class="sidebar-mini p-menuname"> W </span>
+                                    <span class="sidebar-normal p-menuname"> Wizard </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" data-toggle="collapse" href="#tablesExamples">
+                        <i class="material-icons">grid_on</i>
+                        <p class="p-menuname">
+                            Tables
+                            <b class="caret"></b>
+                        </p>
+                    </a>
+                    <div class="collapse" id="tablesExamples">
+                        <ul class="nav">
+                            <li class="nav-item ">
+                                <a class="nav-link" href="tables/regular.html">
+                                    <span class="sidebar-mini p-menuname"> RT </span>
+                                    <span class="sidebar-normal p-menuname"> Regular Tables </span>
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="tables/extended.html">
+                                    <span class="sidebar-mini p-menuname"> ET </span>
+                                    <span class="sidebar-normal p-menuname"> Extended Tables </span>
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="tables/datatables.net.html">
+                                    <span class="sidebar-mini p-menuname"> DT </span>
+                                    <span class="sidebar-normal p-menuname"> DataTables.net </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" data-toggle="collapse" href="#mapsExamples">
+                        <i class="material-icons">place</i>
+                        <p class="p-menuname">
+                            Maps
+                            <b class="caret"></b>
+                        </p>
+                    </a>
+                    <div class="collapse" id="mapsExamples">
+                        <ul class="nav">
+                            <li class="nav-item ">
+                                <a class="nav-link" href="maps/google.html">
+                                    <span class="sidebar-mini p-menuname"> GM </span>
+                                    <span class="sidebar-normal p-menuname"> Google Maps </span>
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="maps/fullscreen.html">
+                                    <span class="sidebar-mini p-menuname"> FSM </span>
+                                    <span class="sidebar-normal p-menuname"> Full Screen Map </span>
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="maps/vector.html">
+                                    <span class="sidebar-mini p-menuname"> VM </span>
+                                    <span class="sidebar-normal p-menuname"> Vector Map </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="/Widgets">
+                        <i class="material-icons">widgets</i>
+                        <p class="p-menuname"> Widgets </p>
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="/Charts">
+                        <i class="material-icons">timeline</i>
+                        <p class="p-menuname"> Charts </p>
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="/Calendar">
+                        <i class="material-icons">date_range</i>
+                        <p class="p-menuname"> Calendar </p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>*@

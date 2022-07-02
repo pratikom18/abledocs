@@ -1,0 +1,3 @@
+INSERT INTO `abledocs`.`common_master` (`commonid`, `type`, `typename`, `typecode`, `country_required`, `display_order`) VALUES ('28', 'EmailFor', 'Quote Send To Client', 'Quote_Send_To_Client', '0', '2');
+
+INSERT INTO `abledocs`.`common_master` (`commonid`, `type`, `typename`, `typecode`, `country_required`, `display_order`) VALUES ('29', 'EmailFor', 'Send For Approval', 'Send_For_Approval', '0', '3');

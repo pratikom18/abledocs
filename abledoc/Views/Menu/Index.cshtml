@@ -1,0 +1,71 @@
+﻿@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    string addbtn = ViewBag.isAdd;
+    string editbtn = ViewBag.isEdit;
+
+}
+
+@{
+    ViewData["Title"] = Localizer["Menu"];
+    ViewData["PageTitle"] = Localizer["Menu"];
+}
+
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        @if (@addbtn == "yes")
+                        {
+                        <button type="button" class="btn btn-primary btn-sm float-sm-right newMenu btn-primary-1">
+                            <i class="fa fa-plus-circle"></i>@Localizer["ADD MENU"]
+                        </button>
+                        }
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                            <!--        Here you can write extra buttons/actions for the toolbar              -->
+                        </div>
+                        <div class="material-datatables">
+                            <table id="ClientsTable" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th width="25%">@Localizer["No"]</th>
+                                        <th width="25%">@Localizer["Menu Name"]</th>
+                                        <th width="25%">@Localizer["Page URL"]</th>
+                                        <th width="25%">@Localizer["Display Order"]</th>
+                                        <th width="25%">@Localizer["Is Active"]</th>
+                                        <th width="25%">@Localizer["Show In Menu"]</th>
+                                        <th width="25%" class="disabled-sorting">@Localizer["Actions"]</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                    <!-- end content-->
+                </div>
+                <!--  end card  -->
+            </div>
+            <!-- end col-md-12 -->
+        </div>
+        <!-- end row -->
+    </div>
+</div>
+<div id="MenuDetail">
+</div>
+<input type="hidden" name="myedit" id="myedit" value="@Localizer["Edit"]" />
+
+@section scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <script src="~/assets/js/pages/Menu.js?v=@abledoc.Utility.CommonHelper.Version"></script>
+    <!-- END PAGE LEVEL PLUGINS -->
+}

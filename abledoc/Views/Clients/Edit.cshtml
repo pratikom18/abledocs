@@ -1,0 +1,631 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model abledoc.Models.Clients;
+@{
+    ViewData["Title"] = Localizer["Client Profile"];
+    ViewData["PageTitle"] = Localizer["Client Profile"];
+
+
+}
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/common.css">
+}
+<input type="hidden" id="success" value="@ViewBag.Save" />
+<div class="alert alert-success" id="message" style="display:none">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <i class="material-icons">@Localizer["close"]</i>
+    </button>
+    <span>
+        @Localizer["Client details save successfully"]
+    </span>
+</div>
+
+<form method="post" class="form-horizontal" id="clientsForm" asp-controller="clients" asp-action="edit">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="ID" />
+    <input type="hidden" asp-for="Code" />
+    <input type="hidden" asp-for="flag" />
+    <div class="row">
+        <div class="col-md-6">
+
+            <div class="card">
+                <div class="card-header card-header-icon card-header-rose">
+                    <div class="card-icon card-header-success-1 card-icon-1">
+                        <i class="material-icons">
+                            <img src="~/Resources/Images/Icon/feather-user.svg" />
+                        </i>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="bmd-label-floating">@Localizer["Company"] <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" asp-for="Company" id="Company" aria-describedby="Company">
+                                <span asp-validation-for="Company" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="bmd-label-floating">@Localizer["Code"] <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" asp-for="Code" id="Code" aria-describedby="Code">
+                                <span asp-validation-for="Code" class="text-danger"></span>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="bmd-label-floating">@Localizer["Manage by office"]</label>
+                                @Html.DropDownList("OfficeCode", abledoc.Utility.ComboHelper.GetManageCompanyList(), Localizer["Select Office"].Value, new { @id = "OfficeCode", @class = "form-control select2", @datastyle = "btn btn-link", @name = "OfficeCode" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="SalesRepresentative" class="bmd-label-floating">@Localizer["Sales Representative"]</label>
+                                @Html.DropDownList("SalesRepresentative", abledoc.Utility.ComboHelper.GetSupervisorList(""), Localizer["Select"].Value, new { @id = "SalesRepresentative", @class = "form-control select2", @name = "SalesRepresentative", @tabindex = "3", @placeholder = "Sales Representative" })
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="bmd-label-floating">@Localizer["Address Line 1"]</label>
+                                <input type="text" class="form-control" asp-for="Address1" id="Address1" aria-describedby="Address Line 1">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="bmd-label-floating">@Localizer["Address Line 2"]</label>
+                                <input type="text" class="form-control" asp-for="Address2" id="Address2" aria-describedby="Address Line 2">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+
+                                @Html.DropDownList("Country", abledoc.Utility.ComboHelper.GetCountryList(), Localizer["Select Country"].Value, new { @id = "Country", @class = "form-control select2", @datastyle = "btn btn-link", @name = "Country", @tabindex = "3", @placeholder = "Country" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+
+                                <select class="form-control select2 selectpicker" data-style="btn btn-link" asp-for="Province" id="Province">
+                                    <option value="">@Localizer["Select state"]</option>
+
+                                    @if (ViewBag.StateList != null)
+                                    {
+                                        foreach (var state in ViewBag.StateList)
+                                        {
+                                            <option value="@state.state">@state.state</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="bmd-label-floating">@Localizer["City"]</label>
+                                <input type="text" class="form-control" asp-for="City" id="City" aria-describedby="City">
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="bmd-label-floating">@Localizer["Postal Code"]</label>
+                                <input type="text" class="form-control" asp-for="PostalCode" id="PostalCode" aria-describedby="Postal Code">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="bmd-label-floating">@Localizer["Email"]</label>
+                                @if (ViewBag.SameCountryUser)
+                                {
+                                    <input type="email" class="form-control" asp-for="Email" id="Email" aria-describedby="Email" placeholder="">
+                                }
+                                else
+                                {
+                                    <input type="hidden" asp-for="Email" value="@Model.Email" />
+                                    <input type="text" class="form-control" name="Email1" id="Email1" value="XXXXX" aria-describedby="Email" placeholder="">
+                                }
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="bmd-label-floating">@Localizer["Client Since"]</label>
+                                <input type="text" class="form-control datepicker" asp-for="ClientSince" id="ClientSince" aria-describedby="Client Since" placeholder="">
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="bmd-label-floating">@Localizer["Note On Client"]</label>
+                                <input type="text" class="form-control" asp-for="NoteOnClient" id="NoteOnClient" aria-describedby="Note On Client" placeholder="">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="bmd-label-floating">@Localizer["API Key"]</label>
+                                <input type="text" class="form-control" asp-for="apiKey" id="apiKey" aria-describedby="API Key" placeholder="">
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <!--<div class="card-footer text-right">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-10">-->
+                @*<button type="submit" class="btn btn-primary btn-sm btn-primary-1" @(ViewBag.SameCountryUser?"":"disabled")>*@
+                <!--<button type="submit" class="btn btn-primary btn-sm btn-primary-1">
+                            Save
+                        </button>
+                    </div>
+
+                </div>-->
+            </div>
+            <div class="card">
+                <div class="card-header card-header-icon card-header-rose">
+
+                    <h4 class="card-title">@Localizer["Billing"]</h4>
+
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="HourlyRate" class="bmd-label-floating">@Localizer["Hourly Rate"]</label>
+                                <input type="number" class="form-control" asp-for="HourlyRate" aria-describedby="Hourly Rate" id="HourlyRate">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="PageRate" class="bmd-label-floating">@Localizer["Page Rate"]</label>
+                                <input type="number" class="form-control" asp-for="PageRate" aria-describedby="Page Rate" id="PageRate">
+                            </div>
+                        </div>
+                    </div>
+                    @await Html.PartialAsync("_multirate")
+                    @*<div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="MultiPageRate" class="bmd-label-floating">Multi Page Rate</label>
+                                    <input type="number" class="form-control" asp-for="MultiPageRate" aria-describedby="Multi Page Rate" id="MultiPageRate">
+                                </div>
+                            </div>
+                        </div>*@
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="Currency" class="bmd-label-floating">@Localizer["Currency"]</label>
+                                <input type="text" class="form-control" asp-for="Currency" aria-describedby="Currency" id="Currency" maxlength="3">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="bmd-label-floating">@Localizer["PO"]</label>
+                                <input type="text" class="form-control" asp-for="PO" aria-describedby="PO" id="PO">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="bmd-label-floating">@Localizer["Terms"]</label>
+                                <input type="text" class="form-control" asp-for="Terms" aria-describedby="Terms" id="Terms">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="bmd-label-floating">@Localizer["Billing Company"]</label>
+                                <input type="text" class="form-control" asp-for="Billing_Company" aria-describedby="Billing Company" id="Billing_Company">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="bmd-label-floating">@Localizer["Billing Contact"]</label>
+                                <select class="form-control select2 selectpicker" data-style="btn btn-link" asp-for="BillingContactID" id="Billing_Contact">
+                                    <option value=""></option>
+                                    @if (ViewBag.ContactList != null)
+                                    {
+                                        @foreach (var contact in ViewBag.ContactList)
+                                        {
+                                            if (contact.IsSecBillingContact == 1)
+                                            {
+                                                <option value="@contact.ID">@contact.FullName</option>
+
+                                            }
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="bmd-label-floating">@Localizer["Delivery Contact II"]</label>
+                                <select class="form-control select2 selectpicker" data-style="btn btn-link" asp-for="SecDeliveryContactID" id="SecDeliveryContactID">
+                                    <option value=""></option>
+                                    <option value=""></option>
+                                    @if (ViewBag.ContactList != null)
+                                    {
+                                        @foreach (var contact in ViewBag.ContactList)
+                                        {
+                                            if (contact.IsSecDeliveryContact == 1)
+                                            {
+                                                <option value="@contact.ID">@contact.FullName</option>
+
+                                            }
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="bmd-label-floating">@Localizer["Language"]</label>
+                                @Html.DropDownList("Language", abledoc.Utility.ComboHelper.GetLangList(), "", new { @id = "Language", @class = "form-control select2 selectpicker", @datastyle = "btn btn-link", @name = "Language", @tabindex = "3", @placeholder = "Language" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="bmd-label-floating">@Localizer["Billing Mode"]</label>
+                                <select class="form-control select2 selectpicker filter-option-1" datastyle="btn btn-link" asp-for="BillingMode" id="BillingMode">
+                                    <option value="">@Localizer["Select"]</option>
+                                    <option value="MonthlyInvoice">@Localizer["Monthly Invoice"]</option>
+                                    <option value="Perjob">@Localizer["Per Job"]</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header card-header-icon card-header-rose">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="card-title">@Localizer["ADScan"]</h4>
+                        </div>
+                        <div class="col-md-6">
+                            @*<button type="button" class="btn btn-primary-1 btn-sm float-sm-right addUrl" @(ViewBag.SameCountryUser?"":"disabled")>*@
+                            <button type="button" class="btn btn-primary-1 btn-sm float-sm-right addUrl">
+                                <i class="fa fa-plus-circle"></i> @Localizer["Add URL"]
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="card-body">
+                    <div class="material-datatables">
+                        <table class="client-datatables table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>@Localizer["URL"]</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (ViewBag.ADscanList != null)
+                                {
+                                    foreach (var scan in ViewBag.ADscanList)
+                                    {
+                                        <tr>
+                                            <td>@scan.starturl</td>
+                                            @*<td style="width:15%;"><a href="javascript:;" class="btn btn-info btn-sm"><i class="fas fa-edit"></i> Edit</a></td>*@
+                                            <td style="width:15%;">
+                                                @*@if (ViewBag.SameCountryUser)
+                                                    {*@
+                                                <a href="/adscan/edit/@scan.ID?flag=@Model.flag" class="btn btn-sm"><i class="fa fa-edit"></i> @Localizer["Edit"]</a>
+                                                @*}
+                                                    else
+                                                    {
+                                                        <a asp-controller="adscan" asp-action="edit" asp-route-id="@scan.ID" class="btn btn-sm" aria-current="page"><i class="fa fa-edit"></i> Edit</a>
+                                                    }*@
+
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+
+                <div class="card-header card-header-icon card-header-rose">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="card-title">@Localizer["Contacts"]</h4>
+                        </div>
+
+                        <div class="col-md-6">
+                            @*<button type="button" class="btn btn-primary-1 btn-sm float-sm-right addContact" @(ViewBag.SameCountryUser?"":"disabled")>*@
+                            <button type="button" class="btn btn-primary-1 btn-sm float-sm-right addContact">
+                                <i class="fa fa-plus-circle"></i> @Localizer["Add Contact"]
+                            </button>
+                        </div>
+
+
+                    </div>
+
+                </div>
+                <div class="card-body">
+                    <table class="client-datatables table table-striped table-no-bordered table-hover" width="100%">
+                        <thead class="thin-border-bottom">
+                            <tr>
+                                <th>@Localizer["Name"]</th>
+                                <th>@Localizer["Email"]</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.ContactList != null)
+                            {
+                                @foreach (var contact in ViewBag.ContactList)
+                                {
+                                    <tr>
+                                        <td>@(contact.FullName)</td>
+                                        <td>@(contact.Email)</td>
+                                        <td style="width:15%;">
+                                            @*@if (ViewBag.SameCountryUser)
+                                                {*@
+                                            <a href="/contacts/edit/@contact.ID?flag=@Model.flag" class="btn btn-sm"><i class="fa fa-edit"></i> @Localizer["Edit"]</a>
+                                            @*}
+                                                else
+                                                {
+                                                    <a asp-controller="contacts" asp-action="edit" asp-route-id="@contact.ID" class="btn btn-sm" aria-current="page"><i class="fa fa-edit"></i> Edit</a>
+                                                }*@
+
+                                        </td>
+
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+
+
+            </div>
+            <div class="card">
+                <div class="card-header card-header-icon card-header-rose">
+
+                    <h4 class="card-title">@Localizer["Job Settings"]</h4>
+
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="bmd-label-floating">@Localizer["Security"]</label>
+                                <input type="text" class="form-control" asp-for="Security" aria-describedby="Security" id="Security">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="bmd-label-floating">@Localizer["Custom Password"]</label>
+                                <input type="text" class="form-control" asp-for="CustomPassword" aria-describedby="Custom Password" id="CustomPassword">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="bmd-label-floating">@Localizer["Acrobat Security"]</label>
+                                <input type="text" class="form-control" asp-for="Acrobat_Security_Settings" aria-describedby="Acrobat Security" id="Acrobat_Security_Settings">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="bmd-label-floating">@Localizer["Tagging Instructions"]</label>
+                                <input type="text" class="form-control" asp-for="Tagging_Instructions" aria-describedby="Tagging Instructions" id="Tagging_Instructions">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="bmd-label-floating">@Localizer["Logo ALT-Text"]</label>
+                                <input type="text" class="form-control" asp-for="Logo_altText" aria-describedby="Logo ALT-Text" id="Logo_altText">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="bmd-label-floating">@Localizer["PO Required"]</label>
+                                <select asp-for="PORequired" class="form-control select2 selectpicker" data-style="btn btn-link" id="field_PORequired" data-mini="true">
+                                    <option value=""></option>
+                                    <option value="0" selected="">@Localizer["Not Required"]</option>
+                                    <option value="1">@Localizer["Required"]</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="card-footer" style="display:none">
+                    <div class="col-md-12">
+                        <div class="pull-right">
+                            @*<button type="button" onclick="alert('This function is blank');" class="btn btn-sm btn-primary btn-primary-1" @(ViewBag.SameCountryUser?"":"disabled")>*@
+                            <button type="button" onclick="alert('This function is blank');" class="btn btn-sm btn-primary btn-primary-1">
+                                @Localizer["Save All Alt"]
+                            </button>
+                            @*<button type="button" onclick="alert('This function is blank');" class="btn btn-sm btn-primary btn-primary-1" @(ViewBag.SameCountryUser ? "" : "disabled")>*@
+                            <button type="button" onclick="alert('This function is blank');" class="btn btn-sm btn-primary btn-primary-1">
+                                @Localizer["Upload Figure Tags"]
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header card-header-icon card-header-rose">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="card-title">@Localizer["ADGateway"]</h4>
+                        </div>
+                        <div class="col-md-6">
+                            @*<button type="button" class="btn btn-primary-1 btn-sm float-sm-right addGateway" @(ViewBag.SameCountryUser?"":"disabled")>*@
+                            <button type="button" class="btn btn-primary-1 btn-sm float-sm-right addGateway">
+                                <i class="fa fa-plus-circle"></i> @Localizer["Add ADGateway"]
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body">
+
+                    <table class="client-datatables table table-striped table-no-bordered table-hover" width="100%">
+                        <thead>
+                            <tr>
+                                <th>@Localizer["ADGateway"]</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.GatewaysList != null)
+                            {
+                                @foreach (var gateway in ViewBag.GatewaysList)
+                                {
+                                    <tr>
+                                        <td>@gateway.subdomain</td>
+                                        <td style="width:50%;">
+                                            @*@if (ViewBag.SameCountryUser)
+                                                {*@
+                                            <a href="@("/gateways/edit?subdomain=" + gateway.subdomain + "&flag=" + Model.flag)" class="btn  btn-sm"><i class="fa fa-edit"></i> @Localizer["Edit"]</a>
+                                            <a href="javascript:;" class="btn btn-danger btn-sm deleteGateway" data-subdomain="@gateway.subdomain" data-clientid="@gateway.ClientID"><i class="fa fa-trash"></i> @Localizer["Delete"]</a>
+                                            @*}
+                                                else
+                                                {
+                                                    <a href="/gateways/edit?subdomain=@gateway.subdomain" class="btn  btn-sm" aria-current="page"><i class="fa fa-edit"></i> Edit</a>
+                                                    <a href="javascript:;" class="btn btn-danger btn-sm deleteGateway" data-subdomain="@gateway.subdomain" data-clientid="@gateway.ClientID" aria-current="page"><i class="fa fa-trash"></i> Delete</a>
+                                                }*@
+
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header card-header-icon card-header-rose">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="card-title">@Localizer["ADLegacy"]</h4>
+                        </div>
+                        <div class="col-md-6">
+                            @if (!string.IsNullOrEmpty(ViewBag.ADLegacyCustom.ClientID))
+                            {
+
+                                <a href="@("/legacy/edit?id=" + ViewBag.ADLegacyCustom.ClientID + "&flag=" + Model.flag)" class="btn btn-primary-1 btn-sm float-sm-right"><i class="fa fa-cog"></i> @Localizer["Edit ADLegacy"]</a>
+                            }
+                            else
+                            {
+
+                                <a href="javascript:;" id="AddLegacy" class="btn btn-primary-1 btn-sm float-sm-right"><i class="fa fa-plus-circle"></i> @Localizer["Add Custom ADLegacy Settings"]</a>
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="updateCSR">
+                @await Html.PartialAsync("_csrlist")
+            </div>
+
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <div class="card-footer">
+                <div class="col-md-2"></div>
+                <div class="col-md-10">
+                    <button type="submit" class="btn btn-primary btn-sm btn-primary-1">
+                        @Localizer["Save"]
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</form>
+
+<div id="popupModal">
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#Country').selectpicker('setStyle', 'btn btn-link');
+            $('#Language').selectpicker('setStyle', 'btn btn-link');
+            $('.filter-option').addClass('filter-option-1');
+        });
+
+        var success = $("#success").val();
+        if (success == 1) {
+            $('#message').css('display', 'block').delay(4000).fadeOut();
+        }
+
+    </script>
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <script src="~/assets/js/pages/Clients.js?v=@abledoc.Utility.CommonHelper.Version"></script>
+    <!-- END PAGE LEVEL PLUGINS -->
+}

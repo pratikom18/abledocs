@@ -1,0 +1,71 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model abledoc.Models.Jobs;
+@{
+    string actual = string.Empty;
+    if (Model.DeliveryEmailTemplate != null)
+    {
+        actual = Model.DeliveryEmailTemplate.DeliveryEmail;
+        Model.DeliveryEmailTemplate.DeliveryEmail = actual.Replace("[FirstName]", ViewBag.selectedFirstName);
+    }
+
+
+
+
+    GenerateDelivery queryGD = new GenerateDelivery();
+    queryGD.databasename = Model.databasename;
+    var rowGD = queryGD.GetGenerateDeliveryByJobID(Model.ID);
+    var sendButtonName = "";
+    if (rowGD != null)
+    {
+        DateTime lastGDTimestamp = rowGD.Timestamp;
+        sendButtonName = "Sent to Client: " + lastGDTimestamp + " - Send Again?";
+    }
+    else
+    {
+        sendButtonName = "Send To Client!";
+    }
+}
+<input type="hidden" id="CurrentPage" value="1" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-collapse">
+                    <div class="card-header" role="tab" id="headingOne">
+                        <h5 class="mb-0">
+                            <a class="collapsed accordion" data-toggle="collapse" onclick="fileTreeDataTableToBeDeliverd(@Model.ID)" href="#collapseTen" aria-expanded="false" aria-controls="collapseTen">
+                                @Localizer["Select Files To Be Delivered"]
+                                <i class="material-icons">keyboard_arrow_down</i>
+                            </a>
+                        </h5>
+                    </div>
+                    <div id="collapseTen" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
+                        <div class="card-body FileTreeDeliverd" data-name="FileTreeDeliverd">
+
+                        </div>
+                        <!-- /.card-body -->
+                        <div class="card-body">
+                            <h4><b>@Localizer["All Files List To Be Delivered"]:</b></h4>
+
+                            <div>
+                                @await Html.PartialAsync("_ComplianceReportTreeview")
+                            </div>
+                            <input type="hidden" id="subjectmail" value="@(@Model.DeliveryEmailTemplate != null?Model.DeliveryEmailTemplate.subject:"")" />
+                            <textarea class="form-control contactMail" id="deliveryMessageID" style="height:285px !important">@(Model.DeliveryEmailTemplate != null ? Model.DeliveryEmailTemplate.DeliveryEmail:"")</textarea>
+                        </div>
+
+
+                        <div class="card-footer">
+                            <button type="button" class="btn btn-success" style="width: 100%;" onclick="DoDelivery(); return false;">
+                                <i class="fa fa-angle-double-right"></i> @sendButtonName
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

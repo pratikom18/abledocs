@@ -1,0 +1,158 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model abledoc.Models.ADSales;
+@{
+
+    ViewData["Title"] = Localizer["Pipeline"];
+    ViewData["PageTitle"] = Localizer["Pipeline"];
+    int i = 0;
+    int totalDeal1 = Model.adsaleslist == null ? 0 : Model.adsaleslist.Count();
+    decimal totalValue1 = Model.adsaleslist == null ? 0 : Model.adsaleslist.Sum(x => x.value);
+}
+
+@section Styles{
+    <link rel="stylesheet" href="~/assets/css/adsales.css">
+    @*<link rel="stylesheet" href="~/assets/css/pipline.css">*@
+}
+
+<header class="toolbar-header with-chrome static-header-toolbar" scroll-class="fixed-header">
+    <div class="page-title pull-left" style="margin-top: -15px;">
+        @Localizer["Deals"]
+    </div>
+    @*<ul class="nav nav-pills pull-left sep-left" style="border: 1px solid #e1e2e7; border-radius: 5px; padding-left: 0px; margin-top: -20px;">
+            <li uib-tooltip="Pipeline" type="button" class="btn btn-link btn-icon pipeline-view-icon active" style="color: #1E66A3; background-color: #f3f3f5; padding: 7px;"> <span class="icon16 icon-pipeline"></span> </li>
+            <li uib-tooltip="List" ui-sref="crm.deals(::getLinkUrlParam('crm.deals'))" class="btn btn-link btn-icon list-view-icon" style="padding: 7px;" href="#/deals?pipelineId=all"> <span class="icon16 icon-list"></span> </li>
+            <li uib-tooltip="Timeline" ui-sref="crm.timeline.detail(::getLinkUrlParam('crm.timeline.detail'))" class="btn btn-link btn-icon timeline-view-icon" style="padding: 7px;" href="#/timeline/2021-4-1?pipelineId=all"> <span class="icon16 icon-timeline"></span> </li>
+        </ul>*@
+
+    <div class="pull-right" style="margin-top: -30px;">
+
+        <!-- ngIf: checkPermissions('export')||checkPermissions('import') -->
+        @if (ViewBag.isAdd == "yes")
+        {
+            <div id="add_deal" class="btn-group pull-right" style="margin-left:10px;" ng-show="pipeline.stages.length">
+                <a class="btn btn-primary-1" href="/adsales/Create"><i class="material-icons" style="font-size: 15px;">add</i>@Localizer["Add deal"]</a>
+            </div>
+        }
+
+    </div>
+    <div class="pull-right" style="margin-top: -10px;">
+        <span class="stageCurrency">@(ViewBag.Code.ToString().Trim()+" "+totalValue1)</span>
+        <span class="stageCurrency">@(" - "+ totalDeal1 +" " +Localizer["Deals"].Value)</span>
+
+    </div>
+
+</header>
+
+<div class="page" id="main_content" style="background-color:white">
+    <div class="container-fluid">
+        <div class="row">
+            <div id="main" class="col-sm-12">
+                <div id="panel" class="header-none">
+                    <div class="content-panel pipeline" style="padding-bottom: 0px !important;">
+                        <section class="pipeline-wraper horizontal-scroll">
+                            <ul class="stages face-22 stages-width" style="padding-bottom: 0px !important;">
+                                <!-- <div style="display:block;" class="divStage"> --> <!-- ngRepeat: stage in pipeline.stages -->
+                                @foreach (CommonMaster item in Model.Pipelinelist)
+                                {
+                                    i++;
+                                    int totalDeal = 0;
+                                    decimal totalValue = 0;
+                                    if (Model.adsaleslist != null)
+                                    {
+                                        totalDeal = Model.adsaleslist.Where(x => x.stage == item.typecode).Count();
+                                        totalValue = Model.adsaleslist.Where(x => x.stage == item.typecode).Sum(x => x.value);
+                                    }
+
+                                    <li class="stage" style="width: 20%;">
+                                        <div class="stage-header">
+                                            <div class="header-inner @("pipeline-"+i)">
+                                                <div class="stage-name">@item.typename</div>
+                                                <div class="stage-value">
+                                                    <span class="value" data-tooltip="@(ViewBag.Code.ToString()+" "+ totalValue)" tooltip-enable="@totalValue>1000000">
+                                                        <span class="stageCurrency">@(ViewBag.Code.ToString()+" " + totalValue)</span>
+                                                    </span>
+                                                    <span class="count" data-tooltip="@(totalDeal+" deals")" tooltip-enable="@totalDeal>9">@totalDeal @Localizer["deals"]</span>
+                                                </div> <div class="ng-hide">
+                                                    <!-- ngRepeat: goal in goalData[stage.id].objects| limitTo: 4 -->
+                                                </div>
+                                                <div class="ng-hide">
+                                                    <!-- ngRepeat: goal in goalData[stage.id].objects -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="stage-body connected-deal-list ng-pristine ng-untouched ng-valid ui-sortable">
+                                            <!-- ngRepeat: deal in stage.deals -->
+                                            @if (Model.adsaleslist != null)
+                                            {
+                                                @foreach (ADSales item1 in Model.adsaleslist.Where(x => x.stage == item.typecode))
+                                                {
+                                                    <article style="cursor:default" class="deal warning ui-sortable-handle">
+                                                        <div class="deal-wrap">
+                                                            <!-- ngIf: deal.is_rotten -->
+                                                            <div id="ob_won_lost" class="deal-body">
+                                                                <a href="@(ViewBag.isEdit == "yes"?"/adsales/edit?id="+item1.adsalesid+"&flag="+item1.flag:"javascript:;")">
+                                                                    <!-- ngIf: deal.owner -->
+                                                                    <div class="face">
+
+                                                                    </div>
+                                                                    <h4 id="ob_view_deal" class="title">@item1.title</h4>
+                                                                    <div class="meta">
+                                                                        <span class="value">@item1.Company</span>
+                                                                    </div>
+                                                                    <div class="meta">
+                                                                        <span class="value">@(item1.currencycode.Trim() == "USD"?"$" + " " + item1.value : item1.currencycode+" "+item1.value)</span>
+                                                                    </div>
+                                                                </a>
+                                                                <div class="actions">
+                                                                    <a href="javascript:;" class="activity-trigger a-1">
+                                                                        <i class="material-icons" style="font-size: 15px;">play_circle</i>
+                                                                    </a>
+                                                                </div> <!-- ngIf: deal.tags -->
+                                                            </div> <!-- ngIf: deal.status !== 'open' -->
+                                                        </div>
+                                                    </article>
+                                                }
+                                            }
+
+
+                                            <!-- end ngRepeat: deal in stage.deals -->
+
+                                        </div>
+                                    </li>
+                                }
+
+                            </ul>
+
+                        </section>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.stage').tooltip({
+                content: function (result) {
+                    result('<p>' + $(this).find(".value").attr("data-tooltip") + '</p>')
+                },
+                classes: {
+                    "ui-tooltip": "highlight"
+                },
+                //show: "slideDown",
+                position: { my: 'left center', at: 'right+10 center' },
+                open: function (event, ui) {
+                    ui.tooltip.hover(function () {
+                        $(this).fadeTo("slow", 0.5);
+                    });
+                }
+            });
+
+        });
+    </script>
+} 

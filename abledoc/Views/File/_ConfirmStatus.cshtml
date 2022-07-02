@@ -1,0 +1,33 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<div class="modal fade" id="bootstrap-Status" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title">
+                    @Localizer["Change Status"]?
+                </h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="oldStatus" value="@ViewBag.oldStatus" />
+                <input type="hidden" id="oldStatus1" value="@ViewBag.oldStatus1" />
+                <input type="hidden" id="newStatus" value="@ViewBag.newStatus" />
+                <input type="hidden" id="newStatus1" value="@ViewBag.newStatus1" />
+                <h4 class="modal-title">
+                    @(Localizer["Are you sure you want to change the status from"].Value+" " + ViewBag.oldStatus1+" "+ Localizer["to"].Value+" "+ ViewBag.newStatus1+" ?")
+                </h4>
+            </div>
+            <div id="demo-modal">
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger DenyCheckoutStatus" id="Cancel">@Localizer["Cancel"]</button>
+                    <button type="button" class="btn btn-success" id="ConfirmStatus">@Localizer["Confirm"]</button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+@*<script src="~/assets/js/pages/Confirm.js"></script>*@

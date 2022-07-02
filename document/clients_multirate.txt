@@ -1,0 +1,6 @@
+CREATE TABLE `abledocs`.`clients_multirate` (
+  `clientsmultirate_id` INT NOT NULL AUTO_INCREMENT,
+  `clientid` INT NULL,
+  `typecode` VARCHAR(50) NULL,
+  `rate` DECIMAL(8,2) NULL DEFAULT '0.00',
+  PRIMARY KEY (`clientsmultirate_id`));

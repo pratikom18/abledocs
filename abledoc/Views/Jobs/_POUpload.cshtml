@@ -1,0 +1,334 @@
+﻿@model abledoc.Models.Jobs;
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@*@{ Layout = null; }*@
+<div class="modal fade" id="bootstrap-modal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">@Localizer["PO Upload"]</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+
+                <div class="row" id="PODiv">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="bmd-label-floating">@Localizer["PO"]</label>
+                            <input type="text" class="form-control" asp-for="POText" id="POText" aria-describedby="PO">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="UploadFile" style="width: 100%">
+
+                            <div id="downloadBox" class="dropzone" style="position: relative;">
+                                <form name="upload" id="upload" data-ajax="false" method="POST" action="/Jobs/upload" enctype="multipart/form-data">
+                                    <div id="drop" style="padding: 0px;">
+                                        <a id="uploadText" class="ui-link text-center" style="overflow: hidden; width: 90%; left: 5%;height:250px;">
+                                            <br />
+                                            <br />
+                                            <i class="material-icons" style="font-size:50px">cloud_upload</i>
+
+                                            <div id="uploadDragDrop" style="color: #000;">
+                                                <br>@Localizer["Drop"]
+                                                <br>@Localizer["Files Here"]
+                                            </div>
+                                        </a>
+                                        <div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset" style="border-color: transparent;display:none;">
+                                            <input type="file" name="upl" multiple="true">
+                                        </div>
+                                    </div>
+                                    <ul id="uploadedFiles" style="overflow-y: scroll; height: 250px; margin-left:-9%"></ul>
+                                    @*<input id="uploads" type="button" value="upload selected files" style="margin-left: 147px;margin-top: 20px" />*@
+                                </form>
+                                <input type="hidden" id="uploadFlag" value="@ViewBag.Status" />
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+
+                <div class="card-footer text-right">
+                    <button type="button" class="btn btn-success btn-primary-1 left" id="uploads" data-toggle="modal">
+                        <i class="fa fa-upload"></i> @Localizer["Save and close"]
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times-circle"></i> @Localizer["Cancel"]</button>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<style type="text/css">
+    #uploadText {
+        width: 100%;
+        position: absolute;
+        left: 0px;
+    }
+
+    #upload ul li, #upload ul li {
+        top: 0px;
+        height: 75px;
+        /*  overflow-y: scroll;*/
+    }
+</style>
+<script type="text/javascript">
+
+    $("#uploadText").click(function () {
+        // creating input on-the-fly
+        var input = $(document.createElement("input"));
+        input.attr("type", "file");
+        input.attr("id", "fileToUpload");
+        input.attr("onchange", "fileToUpload(this)");
+        input.attr("multiple", "true");
+
+        input.trigger("click"); // opening dialog
+
+
+        return true;
+
+
+    });
+
+    var selectedFiles = [];
+
+    function fileToUpload(input) {
+       // debugger;
+        var file = input.files;
+
+
+        if (file.length > 1) {
+            for (var i = 0; i < file.length; i++) {
+                var files = file[i];//[0];
+               // debugger;
+                selectedFiles.push(files);
+                $("#uploadText").css('background-color', '');
+                $("#uploadText i").css('background-color', '');
+                $("#uploadDragDrop").css('background-color', '');
+                $("#uploadedFiles").append("<li class='success' style='top:0px;height:50px;color:white;background-color:#1883C6B3;background-image: -webkit-linear-gradient(top, #1883C6B3, #1883C6);'>" + files.name + "<br/>" + files.size + "</li>");
+
+
+            }
+        } else {
+            var files = file[0];
+            selectedFiles.push(files);
+            $("#uploadText").css('background-color', '');
+            $("#uploadText i").css('background-color', '');
+            $("#uploadDragDrop").css('background-color', '');
+            $("#uploadedFiles").append("<li class='success' style='top:0px;height:50px;color:white;background-color:#1883C6B3;background-image: -webkit-linear-gradient(top, #1883C6B3, #1883C6);'>" + files.name + "<br/>" + files.size + "</li>");
+
+        }
+
+    }
+
+
+    var JobID = parseInt($("#JobID").val());
+    var uploadFlag = $("#uploadFlag").val();
+    var flag = $("#flag").val();
+
+    var FileID = parseInt($("#fileid").val());
+        var FileType = "OTHER" //$("#Type").val();
+        var selectedFiles=[];
+        $(document).ready(function () {
+            $("#uploads").click(function () {
+                var POText = $("#POText").val();
+
+                var uploadstatus = "";
+                var uploadpotext = "";
+                var uploadhtml = "";
+                var uploadmsg = "";
+                var count = 1;
+
+
+
+
+           // data.append("state", FileType)
+            //data.append("qcType", "")
+
+        //        debugger;
+        //for (var i=0; i < selectedFiles.length; i++) {
+        //    debugger;
+        //    if (selectedFiles[i].length == 1) {
+        //        var files = selectedFiles[i][0]
+        //        data.append(files.name, files);
+        //    } else if (selectedFiles[i].length > 1) {
+        //        var files = selectedFiles[i]
+        //        for (var j = 0; j < files.length; j++) {
+        //            data.append(files[j].name, files[j]);
+        //        }
+        //    }
+
+        //    }
+                if (selectedFiles.length > 1) {
+                    for (var i = 0; i < selectedFiles.length; i++) {
+                        var files = selectedFiles[i];//[0]
+                        var data = new FormData();
+                        data.append("Add_JobID", JobID)
+                        data.append("Add_FileID", FileID)
+                        data.append("uploadFlag", uploadFlag)
+                        data.append("POText", POText)
+                        data.append("flag", flag)
+                        data.append(files.name, files);
+
+                        jqxhr = $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("Upload", "Jobs")',
+                            contentType: false,
+                            processData: false,
+                            dataType:"JSON",
+                            data: data,
+                            success: function (result) {
+                                uploadstatus = result.status;
+                                uploadpotext = result.potext;
+                                uploadhtml = result.html;
+                                uploadmsg = result.msg;
+
+                                count = i;
+
+
+                            },
+                            error: function () {
+                            alert("There was error uploading files!");
+                            }
+                        }).done(function (done) {
+
+
+
+                        });
+                    }
+
+                    jqxhr.always(function () {
+                        if (uploadstatus != "") {
+                            $("#filesRefresh").html(uploadhtml);
+
+                            sourceDatatable();
+
+                            fileTotalPageCount();
+
+                            if (uploadstatus == "sourceFile") {
+                                //$("#sourceBtn").click();
+                                uploadCategory("source", $("#sourceBtn"));
+                                msg = "Source File Uploaded successfully.";
+                            } else if (uploadstatus == "otherFile") {
+                                //$("#othersBtn").click();
+                                uploadCategory("others", $("#othersBtn"));
+                                $("#POTextJob").val(uploadpotext);
+                                msg = "Other File Uploaded successfully.";
+                            } else if (uploadstatus == "referenceFile") {
+                                //$("#referenceBtn").click();
+                                uploadCategory("reference", $("#referenceBtn"));
+                                msg = "Reference File Uploaded successfully.";
+                            }
+                            $.notify({
+                                icon: 'add_alert',
+                                title: '<strong>Success!</strong>',
+                                message: count + " " + uploadmsg
+                            }, {
+                                type: 'success'
+                            });
+
+                            $('#bootstrap-modal').modal('hide');
+
+
+                        }
+                    });
+                    //loop end
+                    @*var time = i * 800;
+
+                    setTimeout(function () {
+
+
+
+
+                    }, time);*@//end
+
+
+                } else {
+                    var files = selectedFiles[0];
+                    //data.append(files.name, files);
+                    var data = new FormData();
+                    data.append("Add_JobID", JobID)
+                    data.append("Add_FileID", FileID)
+                    data.append("uploadFlag", uploadFlag)
+                    data.append("POText", POText)
+                    data.append("flag", flag)
+                    data.append(files.name, files);
+
+                    $.ajax({
+            type: "POST",
+            url: '@Url.Action("Upload", "Jobs")',
+            contentType: false,
+            processData: false,
+            dataType:"JSON",
+            data: data,
+            success: function (result) {
+
+                uploadstatus = result.status;
+                uploadpotext = result.potext;
+                uploadhtml = result.html;
+                uploadmsg = result.msg;
+                count = 1;
+
+                $("#filesRefresh").html(uploadhtml);
+
+                sourceDatatable();
+
+                fileTotalPageCount();
+
+                if (uploadstatus == "sourceFile") {
+                    //$("#sourceBtn").click();
+                    uploadCategory("source", $("#sourceBtn"));
+                    msg = "Source File Uploaded successfully.";
+                } else if (uploadstatus == "otherFile") {
+                    //$("#othersBtn").click();
+                    uploadCategory("others", $("#othersBtn"));
+                    $("#POTextJob").val(uploadpotext);
+                    msg = "Other File Uploaded successfully.";
+                } else if (uploadstatus == "referenceFile") {
+                    //$("#referenceBtn").click();
+                    uploadCategory("reference", $("#referenceBtn"));
+                    msg = "Reference File Uploaded successfully.";
+                }
+                $.notify({
+                    icon: 'add_alert',
+                    title: '<strong>Success!</strong>',
+                    message: count + " " + uploadmsg
+                }, {
+                    type: 'success'
+                });
+
+                $('#bootstrap-modal').modal('hide');
+
+
+
+
+            },
+            error: function () {
+            alert("There was error uploading files!");
+            }
+            });
+                }
+
+
+
+
+
+
+            });
+});
+
+</script>

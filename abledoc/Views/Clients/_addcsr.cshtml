@@ -1,0 +1,96 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model abledoc.Models.ClientSpecificRequirements;
+<div class="modal fade" id="bootstrap-csr" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">@Localizer["Add CSR"]</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form method="post" id="contactForm" asp-controller="clients" asp-action="Upsert">
+                <input type="hidden" name="ID" asp-for="@Model.id" value="@Model.id" />
+                <input type="hidden" asp-for="@Model.flag" value="@Model.flag" />
+                <input type="hidden" name="ClientID" id="ClientID" value="@ViewBag.clientid" />
+                <input type="hidden" name="client_code" id="client_code" value="@ViewBag.client_code" />
+                <!-- Modal body -->
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label>@Localizer["Remediation Requirements"]</label>
+                        <textarea asp-for="remediation_requirements" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>@Localizer["Common Alt"]</label>
+                        <textarea asp-for="common_alt" class="form-control"></textarea>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label>@Localizer["Author"]</label>
+                        <textarea asp-for="author" class="form-control"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <label>@Localizer["unsecured"]</label>
+                                <input class="form-check-input" asp-for="unsecured" type="checkbox" />
+                                <span class="form-check-sign">
+                                    <span class="check"></span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <label>@Localizer["secured"] </label>
+                                <input class="form-check-input" asp-for="secured" type="checkbox" />
+                                <span class="form-check-sign">
+                                    <span class="check"></span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <label>@Localizer["pdf"]</label>
+                                <input class="form-check-input" asp-for="pdf" type="checkbox" />
+                                <span class="form-check-sign">
+                                    <span class="check"></span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <label>@Localizer["pac_reports"]</label>
+                                <input class="form-check-input" asp-for="pac_reports" type="checkbox" />
+                                <span class="form-check-sign">
+                                    <span class="check"></span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>@Localizer["Notes"]</label>
+                        <textarea asp-for="notes" class="form-control"></textarea>
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary-1" id="saveBtn1">@Localizer["Save"]</button>
+                    &nbsp;&nbsp;
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">@Localizer["Close"]</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,299 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model GenerateInvoicePdf;
+@{ Layout = null; }
+@{
+
+    string currencyInfo = string.Empty;
+    decimal subTotal = 0;
+    string str = string.Empty;
+    string currency = string.Empty;
+
+    Countries objCounntry = new Countries();
+    objCounntry.code = Model.clients.Country;
+    var modelCountry = objCounntry.GetCountryByCode();
+    var country_currency_symbol = "$";
+    var country_currency_code = "USD";
+    if (modelCountry != null)
+    {
+        country_currency_symbol = modelCountry.currency;
+        country_currency_code = modelCountry.currency_code;
+    }
+
+    string provinceid = null;
+    if (Model.clients.stateid.ToString() != "" || Model.clients.stateid.ToString() != null)
+    {
+        provinceid = Model.clients.stateid.ToString();
+    }
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style type="text/css">
+        @@font-face {
+            font-family: 'dejavu';
+            src: url('/fonts/DejaVuSansCondensed.ttf');
+        }
+
+        .classname {
+            font-family: 'dejavu';
+        }
+
+        .table, .th, .td {
+            border: 1px solid #0A81C4;
+            border-collapse: collapse;
+        }
+    </style>
+
+</head>
+<body class="classname" style="color:black">
+    <table style="width: 100%;">
+        <tr>
+            <td>
+                <a href="http://www.evopdf.com">
+                    <img alt="AdminLTE Logo" src="~/Resources/Images/Logo/able_top.png" style="width:50%"/>
+                </a>
+            </td>
+            <td style="text-align:right;">
+                <span class="classname" style="color:#0A81C4;font-size: 18px; font-weight: bold;">@Localizer["CompanyName"].Value</span><br />
+                <span class="classname" style="font-size:14px;">
+                    @Localizer["Address"]
+                    <br /><br />
+                    P: @Localizer["Telephone"].Value <br />
+                    E: @Localizer["BillingEmail"].Value <br />
+                    <br />
+                    <br />
+                    <br />
+                    @Localizer["Date"].Value: @Model.currentDate.ToShortDateString()
+                    <br />
+                    @if (Model.CreditNoteFlag == 1 && Model.State == "CreditNoteEmailSend")
+                    {
+                        @(Localizer["Credit"].Value + ": #" + Model.creditMemoIDQB);
+                    }
+                    else if (Model.State == "InvoiceEmailSend" || Model.invoiceInstance.InvoiceIDQB != 0)
+                    {
+                        @(Localizer["Invoice"].Value + ": #" + Model.invoiceInstance.InvoiceIDQB);
+                    }
+                    <br />
+                    @(Localizer["Engagement"].Value + ": #" + Model.EngagementNum);
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:right;" colspan="2">
+                @if (Model.CreditNoteFlag == 1)
+                {
+                    <span class="classname" style="font-size: 20px; font-weight: bold;">@Localizer["Credit"].Value</span>
+                }
+                else
+                {
+                    <span class="classname" style="font-size: 20px; font-weight: bold;">@Localizer["Invoice"].Value</span>
+                }
+
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="border-top:1px solid #0A81C4;"></td>
+        </tr>
+        <tr>
+            @if (Model.BillingContact != null)
+            {
+                <td style="text-align:left;">
+                    <span class="classname" style="font-size: 16px;">
+                        <b>@Localizer["BillingContact"].Value:</b><br />
+                        @Model.BillingContact.FirstName @Model.BillingContact.LastName<br />
+                        @Model.invoiceInstance.CompanyName<br />
+                        @Model.BillingContact.Address1 @Model.BillingContact.Address2<br />
+                        @Model.BillingContact.City, @Model.BillingContact.Province, @Model.BillingContact.PostalCode, @Model.BillingContact.Country<br />
+                        @Model.BillingContact.Email<br />
+                        @Model.BillingContact.Telephone
+                    </span>
+                </td>
+            }
+            @if (Model.MainContact != null)
+            {
+                <td style="text-align:left;">
+                    <span class="classname" style="font-size: 16px;">
+                        <b>@Localizer["Contact"].Value:</b><br />
+                        @Model.MainContact.FirstName @Model.MainContact.LastName<br />
+                        @Model.invoiceInstance.CompanyName<br />
+                        @Model.MainContact.Address1 @Model.MainContact.Address2<br />
+                        @Model.MainContact.City, @Model.MainContact.Province, @Model.MainContact.PostalCode, @Model.MainContact.Country<br />
+                        @Model.MainContact.Email<br />
+                        @Model.MainContact.Telephone
+                    </span>
+                </td>
+            }
+
+        </tr>
+        <tr>
+            <td colspan="2" style="border-top:1px solid #0A81C4;"></td>
+        </tr>
+        <tr>
+            <td style="text-align:left;" colspan="2">
+                <span class="classname" style="font-size: 16px;">
+                    @if (!string.IsNullOrEmpty(Model.clients.POText))
+                    {
+                        @(Localizer["PO"].Value + ": " + Model.clients.POText)
+                        <br />
+                    }
+                    @if (!string.IsNullOrEmpty(Model.clients.ContractDate))
+                    {
+                        @(Localizer["ContractDate"].Value + ": " + Model.clients.ContractDate)
+                    }
+
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <br />
+                <br />
+                <table class="table" style="border-color:#0A81C4;width:100%">
+                    <tr class="classname" style="color:white;background-color:#0A81C4;border-color:#0A81C4;font-size:14px;font-weight:bold">
+                        <td style="border-color:#0A81C4;text-align:left;">@Localizer["Description"].Value</td>
+                        <td style="border-color:#0A81C4;text-align:center;">@Localizer["Quantity"].Value</td>
+                        <td style="border-color:#0A81C4;text-align:center;">@Localizer["Unit"].Value</td>
+                        <td style="border-color:#0A81C4;text-align:right;">@(Localizer["UnitPrice"].Value)(@country_currency_symbol)</td>
+                        <td style="border-color:#0A81C4;text-align:right;">@(Localizer["Total"].Value)(@country_currency_symbol)</td>
+                    </tr>
+                    @{
+
+
+                        decimal taxRate = 0;
+                        string taxText = string.Empty;
+                        if (Model.invoiceTmpList != null)
+                        {
+
+                            foreach (var row in Model.invoiceTmpList)
+                            {
+                                if (Model.CreditNoteFlag == 1 && row.Quantity == 0)
+                                {
+                                    continue;
+                                }
+
+                                currencyInfo = row.Tax;
+                                taxText = row.Tax;
+                                <tr class="classname" style="font-size:14px;">
+                                    <td class="td" style="text-align: left;">
+                                        @row.Description.Replace("/[\n\r]/", ",")
+                                    </td>
+                                    <td class="td" style="text-align: center;">
+                                        @row.Quantity
+                                    </td>
+                                    <td class="td" style="text-align: center;">
+                                        @row.PricePer
+                                    </td>
+                                    <td class="td" style="text-align: right;">
+                                        @(country_currency_symbol+""+row.Price)
+                                    </td>
+                                    @{
+                                        var total = (row.Price * row.Quantity);
+                                        subTotal = subTotal + abledoc.Utility.CommonHelper.GetDBDecimal((row.Price * row.Quantity));
+                                    }
+
+                                    <td class="td" style="text-align: right;">
+                                        @if (Model.CreditNoteFlag == 1)
+                                        {
+                                            @("-"+ country_currency_symbol+"" + total.ToString("#,##0.00"))
+                                        }
+                                        else
+                                        {
+                                            @(country_currency_symbol + "" + total.ToString("#,##0.00"))
+                                        }
+
+                                    </td>
+
+                                </tr>
+
+                            }
+                        }
+                    }
+                    @{
+                        string[] currencyInfo1 = currencyInfo.Split(" ");
+                        if (currencyInfo1[0] == "US")
+                        {
+                            currency = "USD";
+                            int usInvoiceFlag = 1;
+                        }
+                        else if (currencyInfo1[0] == "No")
+                        {
+                            // Getting the Currency
+                            currency = Model.clients.Currency;
+
+                        }
+                        else
+                        {
+                            currency = "CAD";
+                        }
+
+                    }
+                    @{
+                        var modelJobPopulate = new JobQuoteAutopopulate().GetJobPopulateList(Model.clients.Country,provinceid);
+                        if (modelJobPopulate != null)
+                        {
+                            if (modelJobPopulate.Count > 0)
+                            {
+
+                                foreach (var row in new JobQuoteAutopopulate().GetJobPopulateList(Model.clients.Country, provinceid))
+                                {
+
+                                    if (taxText == row.Information)
+                                    {
+                                        taxRate = @row.tax;
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                    <tr class="classname" style="font-size:14px;">
+                        <td class="td" rowspan="3" colspan="3">
+                            <span>@Localizer["TermsText"].Value</span>
+                            <br />
+                            <span>@Localizer["PricesInCurrency"].Value @country_currency_code</span>
+                        </td>
+                        <td class="td" style="text-align:right;font-size:16px;font-weight:bold;">@Localizer["SubTotal"].Value</td>
+                        <td class="td" style="text-align:right;font-size:16px;font-weight:bold;">
+                            @if (Model.CreditNoteFlag == 1)
+                            {
+                                @("-"+ country_currency_symbol + "" + subTotal.ToString("#,##0.00"));
+                            }
+                            else
+                            {
+                                @(country_currency_symbol + "" + subTotal.ToString("#,##0.00"));
+                            }
+
+                        </td>
+
+                    </tr>
+                    <tr class="classname">
+                        <td class="td" style="text-align:right;font-size:16px;">
+                            @taxText
+                        </td>
+                        <td class="td" style="text-align:right;font-size:16px;">
+                            @{
+
+                                decimal taxTotal = abledoc.Utility.CommonHelper.GetDBDecimal((abledoc.Utility.CommonHelper.GetDBDecimal(taxRate) * subTotal) / 100);
+                                @(country_currency_symbol+""+taxTotal.ToString("#,##0.00"));
+                            }
+                        </td>
+                    </tr>
+                    <tr class="classname">
+                        <td class="td" style="text-align:right;font-size:16px;font-weight:bold;">@Localizer["Total"].Value</td>
+                        <td class="td" style="text-align:right;font-size:16px;font-weight:bold;">
+                            @{
+
+                                var totalAmount = taxTotal + subTotal;
+                                @(country_currency_symbol+""+totalAmount.ToString("#,##0.00"));
+                            }
+                        </td>
+                    </tr>
+                </table>
+
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

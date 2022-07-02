@@ -1,0 +1,49 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model abledoc.Models.ClientsContacts;
+<div class="modal fade" id="bootstrap-modal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">@Localizer["Add Contact"]</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form method="post" id="contactForm" asp-controller="contacts" asp-action="create">
+                <input type="hidden" name="ClientID" asp-for="@Model.ClientID" value="@ViewBag.modelClient.ID" />
+                <input type="hidden" asp-for="@Model.Address1" value="@ViewBag.modelClient.Address1" />
+                <input type="hidden" asp-for="@Model.Address2" value="@ViewBag.modelClient.Address2" />
+                <input type="hidden" asp-for="@Model.Country" value="@ViewBag.modelClient.Country" />
+                <input type="hidden" asp-for="@Model.Province" value="@ViewBag.modelClient.Province" />
+                <input type="hidden" asp-for="@Model.City" value="@ViewBag.modelClient.City" />
+                <input type="hidden" asp-for="@Model.PostalCode" value="@ViewBag.modelClient.PostalCode" />
+                <input type="hidden" asp-for="@Model.flag" value="@ViewBag.modelClient.flag" />
+                <!-- Modal body -->
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label>@Localizer["First Name"] <span class="text-danger">*</span></label>
+                        <input type="text" name="FirstName" asp-for="@Model.FirstName" id="FirstName" class="form-control" />
+
+                    </div>
+                    <div class="form-group">
+                        <label>@Localizer["Last Name"] <span class="text-danger">*</span></label>
+                        <input type="text" name="LastName" asp-for="@Model.LastName" id="LastName" class="form-control" />
+                    </div>
+
+
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary-1" id="saveBtn">@Localizer["Save"]</button>
+                    &nbsp;&nbsp;
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">@Localizer["Close"]</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+<script src="~/assets/js/pages/Contacts.js?v=@abledoc.Utility.CommonHelper.Version"></script>

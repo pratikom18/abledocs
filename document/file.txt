@@ -1,0 +1,4 @@
+file -> Reference
+	-> jobfileversion and reference_linking match fileid and jobid
+     -> Link Popup
+	-> jobfileversion statu close and jobfileversion not add reference_linking table file

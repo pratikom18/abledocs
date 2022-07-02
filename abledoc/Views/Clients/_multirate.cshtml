@@ -1,0 +1,61 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="MultiPageRate" class="bmd-label-floating">@Localizer["Multi Page Rate"]</label>
+            @{
+                @*<button type="button" class="btn btn-primary-1 btn-sm addBtn" onclick="cloneContact(this)" @(ViewBag.SameCountryUser?"":"disabled")><i class="fa fa-plus-circle"></i>&nbsp;&nbsp; Add new</button>*@
+                <button type="button" class="btn btn-primary-1 btn-sm addBtn" onclick="cloneContact(this)"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp; @Localizer["Add new"]</button>
+                int counter = 1;
+                if (ViewBag.JobDeliveryContactData != null)
+                {
+                    foreach (var deliveryCon in ViewBag.JobDeliveryContactData)
+                    {
+
+                        var removeStyle = (counter > 0) ? "" : "display:none;";
+                        var addStyle = (counter == 0) ? "" : "display:none;";
+                        <div class="row cloneContact">
+                            <div class="form-group col-sm-5">
+                                @Html.DropDownList("TypeFilter[" + counter + "][RateType]", abledoc.Utility.ComboHelper.GetCommonMasterList("Rate", deliveryCon.typecode), Localizer["Select"].Value, new { @id = "TypeFilter_" + counter + "_RateType", @class = "form-control select2 RateType select-dropdown1 contact-select2 updatemultirate", @name = "TypeFilter[" + counter + "][RateType]", @placeholder = "Type" })
+                            </div>
+                            <div class="form-group col-sm-4">
+                                <input type="number" class="form-control MultiRate updatemultirate" aria-describedby="Rate" name="@("TypeFilter[" + counter + "][Rate]")" id="@("TypeFilter_" + counter + "_Rate")" value="@deliveryCon.rate">
+                            </div>
+                            <div class="form-group col-sm-2">
+                                @*<button type="button" class="btn btn-primary-1 btn-sm addBtn" onclick="cloneContact(this)" style="@addStyle"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp; Add new</button>*@
+                                @*<button type="button" @(ViewBag.SameCountryUser ? "" : "disabled") class="btn btn-danger btn-sm removeBtn" onclick="removeContact(this)" style="@removeStyle" data-id="@deliveryCon.clientsmultirate_id"><i class="fa fa-minus-circle"></i>&nbsp;&nbsp; Remove</button>*@
+                                <button type="button" class="btn btn-danger btn-sm removeBtn" onclick="removeContact(this)" style="@removeStyle" data-id="@deliveryCon.clientsmultirate_id"><i class="fa fa-minus-circle"></i>&nbsp;&nbsp; @Localizer["Remove"]</button>
+                            </div>
+                        </div>
+                        counter++;
+                    }
+                }
+                //else
+                //{
+                // var removeStyle1  = (counter > 0) ? "" : "display:none;";
+                //var addStyle = (counter == 0) ? "" : "display:none;";
+                <div class="row cloneContact1" style="display:none;">
+                    <div class="form-group col-sm-5">
+                        @Html.DropDownList("TypeFilter[" + counter + "][RateType]", abledoc.Utility.ComboHelper.GetCommonMasterList("Rate"), Localizer["Select"].Value, new { @id = "TypeFilter_" + counter + "_RateType", @class = "form-control select2 RateType select-dropdown1 contact-select2 updatemultirate", @name = "TypeFilter[" + counter + "][RateType]", @placeholder = "Type" })
+                    </div>
+                    <div class="form-group col-sm-4">
+                        <input type="number" class="form-control MultiRate updatemultirate" aria-describedby="Rate" name="@("TypeFilter[" + counter + "][Rate]")" id="@("TypeFilter_" + counter + "_Rate")">
+                    </div>
+                    <div class="form-group col-sm-2">
+                        @*<button type="button" class="btn btn-primary-1 btn-sm addBtn" onclick="cloneContact(this)" style="@addStyle"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp; Add new</button>*@
+                        <button type="button" class="btn btn-danger btn-sm removeBtn" onclick="removeContact(this)" data-id="0"><i class="fa fa-minus-circle"></i>&nbsp;&nbsp; @Localizer["Remove"]</button>
+                    </div>
+                </div>
+                //}
+
+                <div class="cloneContact"></div>
+                <input type="hidden" id="addition_contact_counter" value="@counter" />
+            }
+        </div>
+    </div>
+</div>
+
+
+
+

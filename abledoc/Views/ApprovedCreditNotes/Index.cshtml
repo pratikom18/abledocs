@@ -1,0 +1,80 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["ApprovedCreditNotes"];
+    ViewData["PageTitle"] = Localizer["ApprovedCreditNotes"];
+}
+
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+
+                    <div class="row col-md-12">
+
+                        <div class="form-group col-md-4">
+                            <input type="text" id="startdate" class="form-control datepicker" autocomplete="off" placeholder="@Localizer["Start Date"]" />
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <input type="text" id="enddate" class="form-control datepicker" autocomplete="off" placeholder="@Localizer["End Date"]" />
+                        </div>
+                        <div class="form-group col-md-4">
+                            @*<input type="button" id="setdate" class="btn btn-success btn-sm float-sm-right   btn-primary-1" value=@Localizer["Clear Range"] />*@
+                            <input type="button" id="setdate" class="btn btn-success btn-sm float-sm-right   btn-primary-1" value=@Localizer["Search"] />
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="toolbar">
+
+                            <!--        Here you can write extra buttons/actions for the toolbar              -->
+                        </div>
+                        <input type="hidden" id="currentDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                        <input type="hidden" id="forDue2Days" value="@DateTime.Today.AddDays(2).ToString("yyyy-MM-dd")" />
+                        <div class="material-datatables">
+                            <table id="ApprovedCreditNotesTable" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th width="10%">@Localizer["InvoiceID"]</th>
+                                        <th width="15%">@Localizer["JobID"]</th>
+                                        <th width="10%">@Localizer["Date"]</th>
+                                        <th width="20%">@Localizer["Client"]</th>
+                                        <th width="10%">@Localizer["PreTaxAmount"]</th>
+                                        <th width="20%">@Localizer["Tax"]</th>
+                                        <th width="15%">@Localizer["Full Amount"]</th>
+
+                                        @*<th class="disabled-sorting">Actions</th>*@
+                                    </tr>
+
+                                </thead>
+
+
+
+                                <tbody>
+                                </tbody>
+
+
+                            </table>
+                        </div>
+
+
+
+                    </div>
+                    <!-- end content-->
+                </div>
+                <!--  end card  -->
+            </div>
+            <!-- end col-md-12 -->
+        </div>
+        <!-- end row -->
+    </div>
+</div>
+@section scripts{
+
+
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <script src="~/assets/js/pages/ApprovedCreditNotes.js?v=@abledoc.Utility.CommonHelper.Version"></script>
+    <!-- END PAGE LEVEL PLUGINS -->
+}

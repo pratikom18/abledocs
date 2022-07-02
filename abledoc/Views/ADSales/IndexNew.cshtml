@@ -1,0 +1,232 @@
+﻿@{
+    ViewData["Title"] = "ADSales";
+    ViewData["PageTitle"] = "ADSales";
+}
+
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    
+                    @*<div id="MultDiv1">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <button class="btn btn-sm" id="multiassigndate">Multi Assign Date</button>
+                            </div>
+
+                            <div class="col-md-6">
+                                <select data-mini="true" name="user" class="form-control assignedChangeBatch" form="multiassign" id="MultiUser" style="color:white;" required>
+                                    <option value="" style="color: black;">Multi Assign</option>
+                                    @foreach (var assign in ViewBag.AssigneUserList)
+                                    {
+                                        <option value="@assign.ID" style="color: black;">@(assign.FirstName + " " + assign.LastName[0] + ".")</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>*@
+
+                    <div class="card-header card-header-primary card-header-icon">
+                        @*<div class="row">
+            <div class="form-group col-sm-3">
+                <select class="form-control select2" id="searchby">
+                    <option value="">--Select--</option>
+                    <option value="ClientName">Client Name</option>
+                    <option value="JobNumber">Job Number</option>
+                </select>
+            </div>
+
+            <div class="form-group col-sm-7">
+                <input type="text" id="txtSearch" class="form-control col-sm-12" value="@ViewBag.Search" />
+                <br />
+                <span class="text-danger search-error field-validation-error" style="display:none;" data-valmsg-for="Search" data-valmsg-replace="true"><span id="Search-error" class="">Please enter search text.</span></span>
+            </div>
+            <div class="form-group col-sm-2">
+                <button type="button" class="btn btn-primary btn-sm float-sm-right btnSearch btn-primary-1">
+                    <i class="fa fa-search"></i> Search
+                </button>
+            </div>
+        </div>*@
+
+                        <button type="button" class="btn btn-success btn-sm statusBtn" rel="Prospect">
+                            Prospect (6)
+                        </button>
+                        <button type="button" class="btn btn-primary-1 btn-sm statusBtn" rel="Customer Interest">
+                            Customer Interest (6)
+                        </button>
+                        <button type="button" class="btn btn-primary-1 btn-sm statusBtn" rel="Qualified to Buy">
+                            Qualified to Buy (6)
+                        </button>
+                        <button type="button" class="btn btn-primary-1 btn-sm statusBtn" rel="Prospect">
+                            Proposal (6)
+                        </button>
+                        <button type="button" class="btn btn-primary-1 btn-sm statusBtn" rel="Executive Presentation Approval">
+                            Executive Presentation/Approval (6)
+                        </button>
+                        <button type="button" class="btn btn-primary-1 btn-sm statusBtn" rel="Prospect">
+                            Verbal Commitment (6)
+                        </button>
+
+                        <input type="hidden" id="status" value="Prospect" />
+
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                            <!--        Here you can write extra buttons/actions for the toolbar              -->
+                        </div>
+                        <div class="material-datatables">
+                            <table id="ProductionTable" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th width="15%">Title</th>
+                                        <th width="15%" class="text-right">Value</th>
+                                        <th width="15%">Organization</th>
+                                        <th width="15%">Contact person</th>
+                                        <th width="15%">Expected close date</th>
+                                        <th width="15%">Next activity date</th>
+                                        <th width="10%">Owner</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>test deal</td>
+                                        <td class="text-right">$10</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>2021/04/20</td>
+                                        <td></td>
+                                        <td>test</td>
+                                    </tr>
+                                    <tr>
+                                        <td>test deal</td>
+                                        <td class="text-right">$10</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>2021/04/20</td>
+                                        <td></td>
+                                        <td>test</td>
+                                    </tr>
+                                    <tr>
+                                        <td>test deal</td>
+                                        <td class="text-right">$10</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>2021/04/20</td>
+                                        <td></td>
+                                        <td>test</td>
+                                    </tr>
+                                    <tr>
+                                        <td>test deal</td>
+                                        <td class="text-right">$10</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>2021/04/20</td>
+                                        <td></td>
+                                        <td>test</td>
+                                    </tr>
+                                    <tr>
+                                        <td>test deal</td>
+                                        <td class="text-right">$10</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>2021/04/20</td>
+                                        <td></td>
+                                        <td>test</td>
+                                    </tr>
+                                    <tr>
+                                        <td>test deal</td>
+                                        <td class="text-right">$10</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>2021/04/20</td>
+                                        <td></td>
+                                        <td>test</td>
+                                    </tr>
+                                    <tr>
+                                        <td>test deal</td>
+                                        <td class="text-right">$10</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>2021/04/20</td>
+                                        <td></td>
+                                        <td>test</td>
+                                    </tr>
+                                    <tr>
+                                        <td>test deal</td>
+                                        <td class="text-right">$10</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>2021/04/20</td>
+                                        <td></td>
+                                        <td>test</td>
+                                    </tr>
+                                    <tr>
+                                        <td>test deal</td>
+                                        <td class="text-right">$10</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>2021/04/20</td>
+                                        <td></td>
+                                        <td>test</td>
+                                    </tr>
+                                    <tr>
+                                        <td>test deal</td>
+                                        <td class="text-right">$10</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>2021/04/20</td>
+                                        <td></td>
+                                        <td>test</td>
+                                    </tr>
+                                    <tr>
+                                        <td>test deal</td>
+                                        <td class="text-right">$10</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>2021/04/20</td>
+                                        <td></td>
+                                        <td>test</td>
+                                    <tr>
+                                        <td>test deal</td>
+                                        <td class="text-right">$10</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>2021/04/20</td>
+                                        <td></td>
+                                        <td>test</td>
+                                    </tr>
+                                    <tr>
+                                        <td>test deal</td>
+                                        <td class="text-right">$10</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>2021/04/20</td>
+                                        <td></td>
+                                        <td>test</td>
+                                    </tr>
+                                    <tr>
+                                        <td>test deal</td>
+                                        <td class="text-right">$10</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>2021/04/20</td>
+                                        <td></td>
+                                        <td>test</td>
+                                    </tr>
+                                    </tr>
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                    <!-- end content-->
+                </div>
+                <!--  end card  -->
+            </div>
+            
+            <!-- end col-md-12 -->
+        </div>
+        <!-- end row -->
+    </div>
+</div>

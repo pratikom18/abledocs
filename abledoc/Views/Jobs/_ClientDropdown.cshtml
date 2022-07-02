@@ -1,0 +1,8 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{ Layout = null; }
+
+@{ string id = ViewBag.id;}
+
+
+@Html.DropDownList("ClientID", abledoc.Utility.ComboHelper.GetCompanyList(), Localizer["Select"].Value, new { @id = "ClientID", @class = "form-control select-dropdown", @name = "ClientID" })

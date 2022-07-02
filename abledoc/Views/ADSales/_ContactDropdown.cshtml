@@ -1,0 +1,12 @@
+﻿@{ Layout = null; }
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    string id = ViewBag.id;
+    string databasename = ViewBag.databasename;
+    string loginusercountry = ViewBag.loginusercountry;
+}
+
+
+<label class="bmd-label-floating">@Localizer["Contact Person"]</label>
+@Html.DropDownList("contactid", abledoc.Utility.ComboHelper.GetJobContactList(id, "", "", loginusercountry, databasename), Localizer["Select Contact"].Value, new { @id = "contactid", @class = "form-control select-dropdown select2 filter-option-1", @name = "contactid" })

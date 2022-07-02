@@ -1,0 +1,495 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model ApprovedTimesheet
+<div class="modal fade" id="modal-daysperemaployee" role="dialog">
+    <div class="modal-dialog" style=" max-width: 40%;">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" style="max-height: calc(100vh - 200px); overflow-y: auto;">
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row col-md-12">
+                            <div class="form-group col-sm-3">
+                                <label for="empname" class="col-form-label">@Localizer["Employee Name"]:</label>
+                            </div>
+                            <div class="form-group col-sm-9">
+                                <input type="text" name="empname" class="form-control" id="empname" value="@ViewBag.name" placeholder=@Localizer["Employee Name"] readonly>
+                            </div>
+                        </div>
+                        <div class="row col-md-12">
+                            <div class="form-group col-sm-3">
+                                <label for="week" class="col-form-label">@Localizer["Week"]:</label>
+                            </div>
+                            <div class="form-group col-sm-9">
+                                <input type="text" name="week" class="form-control" id="week" value="@Model.timesheetWeekRange" placeholder=@Localizer["Week"] readonly>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                @for (int i = 0; i < Model.weeklyHourList.Count && i < 14; i++)
+                                {
+                                    <div class="">
+                                        <div class="">
+                                            <div class="card-collapse">
+                                                <div class="card-header" role="tab" id="@("heading_"+i)">
+                                                    <h5 class="mb-0">
+                                                        <a data-toggle="collapse" href="@("#collapseApprovedTimesheet_"+i)" aria-expanded="false" aria-controls="collapseTwo" class="collapsed accordion">
+                                                            <label class="col-sm-6 ApprovedTimesheet-label text-left">@Model.weekDays[i]</label>
+                                                            <label class="col-sm-5 ApprovedTimesheet-label text-right">@(Model.weeklyHourList[i] == "0" ? "0.00": String.Format("{0:0.00}", abledoc.Utility.CommonHelper.GetDBDouble(Model.weeklyHourList[i])))</label>
+                                                            <i class="material-icons">keyboard_arrow_down</i>
+                                                        </a>
+                                                    </h5>
+                                                </div>
+                                                <div id="@("collapseApprovedTimesheet_"+i)" class="collapse" role="tabpanel" aria-labelledby="@("heading_"+i)" data-parent="#accordion" style="">
+                                                    <div class="card-body">
+                                                        @if (Model.weeklyHourList[i] != "0")
+                                                        {
+
+                                                            <div class="material-datatables">
+                                                                <table id="datatables1" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                                                                    <tbody>
+                                                                        @if (Model.clubbedFileList1[i] != null)
+                                                                        {
+                                                                            List<clubbedFile> ListclubbedFile = Model.clubbedFileList1[i];
+
+                                                                            @foreach (clubbedFile item in ListclubbedFile)
+                                                                            {
+                                                                                double textValTime = 0.00;
+                                                                                if (item.OverrideTime != 0.00)
+                                                                                {
+                                                                                    textValTime = item.OverrideTime;
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    textValTime = item.textValTime;
+                                                                                }
+                                                                                <tr>
+                                                                                    <td>
+                                                                                        @item.QueryType
+                                                                                    </td>
+                                                                                    <td class="text-right">@(String.Format("{0:0.00}", abledoc.Utility.CommonHelper.GetDBDouble(textValTime)))</td>
+                                                                                </tr>
+                                                                            }
+                                                                        }
+                                                                        @*<tr>
+                                                                                <td>OT</td>
+                                                                                <td class="text-right">0</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>Personal</td>
+                                                                                <td class="text-right">0</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>Stat holiday</td>
+                                                                                <td class="text-right">0</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>Training</td>
+                                                                                <td class="text-right">0</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>Admin/Meetings</td>
+                                                                                <td class="text-right">0</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>Lunch</td>
+                                                                                <td class="text-right">0</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>Other: description</td>
+                                                                                <td></td>
+                                                                            </tr>*@
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        }
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
+                                @*<div class="">
+                                        <div class="">
+                                            <div class="card-collapse">
+                                                <div class="card-header" role="tab" id="@("heading_Monday")">
+                                                    <h5 class="mb-0">
+                                                        <a data-toggle="collapse" href="@("#collapseApprovedTimesheet_Monday")" aria-expanded="false" aria-controls="collapseTwo" class="collapsed accordion">
+                                                            <label class="col-sm-6 ApprovedTimesheet-label text-left">Monday</label>
+                                                            <label class="col-sm-5 ApprovedTimesheet-label text-right">8.25</label>
+                                                            <i class="material-icons">keyboard_arrow_down</i>
+                                                        </a>
+                                                    </h5>
+                                                </div>
+                                                <div id="@("collapseApprovedTimesheet_Monday")" class="collapse" role="tabpanel" aria-labelledby="@("heading_Monday")" data-parent="#accordion" style="">
+                                                    <div class="card-body">
+                                                        <div class="material-datatables">
+                                                            <table id="datatables1" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td>ADI</td>
+                                                                        <td>1234</td>
+                                                                        <td class="text-right">0.25</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>MOH</td>
+                                                                        <td>3636</td>
+                                                                        <td class="text-right">6</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>COO</td>
+                                                                        <td>9876</td>
+                                                                        <td class="text-right">0.5</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2">OT</td>
+                                                                        <td class="text-right">0.25</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2">Personal</td>
+                                                                        <td class="text-right">0.25</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2">Stat holiday</td>
+                                                                        <td class="text-right">0</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2">Training</td>
+                                                                        <td class="text-right">0.5</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2">Admin/Meetings</td>
+                                                                        <td class="text-right">0</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2">Lunch</td>
+                                                                        <td class="text-right">0</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2">Other: description</td>
+                                                                        <td class="text-right">0.5</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="">
+                                        <div class="">
+                                            <div class="card-collapse">
+                                                <div class="card-header" role="tab" id="@("heading_Tuesday")">
+                                                    <h5 class="mb-0">
+                                                        <a data-toggle="collapse" href="@("#collapseApprovedTimesheet_Tuesday")" aria-expanded="false" aria-controls="collapseTwo" class="collapsed accordion">
+                                                            <label class="col-sm-6 ApprovedTimesheet-label text-left">Tuesday</label>
+                                                            <label class="col-sm-5 ApprovedTimesheet-label text-right">8.25</label>
+                                                            <i class="material-icons">keyboard_arrow_down</i>
+                                                        </a>
+                                                    </h5>
+                                                </div>
+                                                <div id="@("collapseApprovedTimesheet_Tuesday")" class="collapse" role="tabpanel" aria-labelledby="@("heading_Tuesday")" data-parent="#accordion" style="">
+                                                    <div class="card-body">
+                                                        <div class="material-datatables">
+                                                            <table id="datatables1" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td>DIG</td>
+                                                                        <td>7798</td>
+                                                                        <td class="text-right">6.0</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2">OT</td>
+                                                                        <td class="text-right">0.5</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2">Personal</td>
+                                                                        <td class="text-right">0.5</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2">Stat holiday</td>
+                                                                        <td class="text-right">0</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2">Training</td>
+                                                                        <td class="text-right">0.5</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2">Admin/Meetings</td>
+                                                                        <td class="text-right">0.5</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2">Lunch</td>
+                                                                        <td class="text-right">0.25</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2">Other: description</td>
+                                                                        <td class="text-right">0.5</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="">
+                                        <div class="">
+                                            <div class="card-collapse">
+                                                <div class="card-header" role="tab" id="@("heading_Wednesday")">
+                                                    <h5 class="mb-0">
+                                                        <a data-toggle="collapse" href="@("#collapseApprovedTimesheet_Wednesday")" aria-expanded="false" aria-controls="collapseTwo" class="collapsed accordion">
+                                                            <label class="col-sm-6 ApprovedTimesheet-label text-left">Wednesday</label>
+                                                            <label class="col-sm-5 ApprovedTimesheet-label text-right">8</label>
+                                                            <i class="material-icons">keyboard_arrow_down</i>
+                                                        </a>
+                                                    </h5>
+                                                </div>
+                                                <div id="@("collapseApprovedTimesheet_Wednesday")" class="collapse" role="tabpanel" aria-labelledby="@("heading_Wednesday")" data-parent="#accordion" style="">
+                                                    <div class="card-body">
+                                                        <div class="material-datatables">
+                                                            <table id="datatables1" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td>OT</td>
+                                                                        <td class="text-right">0</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Personal</td>
+                                                                        <td class="text-right">0</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Stat holiday</td>
+                                                                        <td class="text-right">8</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Training</td>
+                                                                        <td class="text-right">0</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Admin/Meetings</td>
+                                                                        <td class="text-right">0</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Lunch</td>
+                                                                        <td class="text-right">0</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Other: description</td>
+                                                                        <td></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="">
+                                        <div class="">
+                                            <div class="card-collapse">
+                                                <div class="card-header" role="tab" id="@("heading_Thursday")">
+                                                    <h5 class="mb-0">
+                                                        <a data-toggle="collapse" href="@("#collapseApprovedTimesheet_Thursday")" aria-expanded="false" aria-controls="collapseTwo" class="collapsed accordion">
+                                                            <label class="col-sm-6 ApprovedTimesheet-label text-left">Thursday</label>
+                                                            <label class="col-sm-5 ApprovedTimesheet-label text-right">8.25</label>
+                                                            <i class="material-icons">keyboard_arrow_down</i>
+                                                        </a>
+                                                    </h5>
+                                                </div>
+                                                <div id="@("collapseApprovedTimesheet_Thursday")" class="collapse" role="tabpanel" aria-labelledby="@("heading_Thursday")" data-parent="#accordion" style="">
+                                                    <div class="card-body">
+                                                        <div class="material-datatables">
+                                                            <table id="datatables1" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td>RDM</td>
+                                                                        <td>1234</td>
+                                                                        <td class="text-right">0.25</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>DXU</td>
+                                                                        <td>3636</td>
+                                                                        <td class="text-right">6</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>DXU</td>
+                                                                        <td>9876</td>
+                                                                        <td class="text-right">0.5</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2">OT</td>
+                                                                        <td class="text-right">0.25</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2">Personal</td>
+                                                                        <td class="text-right">0.25</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2">Stat holiday</td>
+                                                                        <td class="text-right">0</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2">Training</td>
+                                                                        <td class="text-right">0.5</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2">Admin/Meetings</td>
+                                                                        <td class="text-right">0</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2">Lunch</td>
+                                                                        <td class="text-right">0</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2">Other: description</td>
+                                                                        <td class="text-right">0.5</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="">
+                                        <div class="">
+                                            <div class="card-collapse">
+                                                <div class="card-header" role="tab" id="@("heading_Friday")">
+                                                    <h5 class="mb-0">
+                                                        <a data-toggle="collapse" href="@("#collapseApprovedTimesheet_Friday")" aria-expanded="false" aria-controls="collapseTwo" class="collapsed accordion">
+                                                            <label class="col-sm-6 ApprovedTimesheet-label text-left">Friday</label>
+                                                            <label class="col-sm-5 ApprovedTimesheet-label text-right">8.25</label>
+                                                            <i class="material-icons">keyboard_arrow_down</i>
+                                                        </a>
+                                                    </h5>
+                                                </div>
+                                                <div id="@("collapseApprovedTimesheet_Friday")" class="collapse" role="tabpanel" aria-labelledby="@("heading_Friday")" data-parent="#accordion" style="">
+                                                    <div class="card-body">
+                                                        <div class="material-datatables">
+                                                            <table id="datatables1" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td>DXU</td>
+                                                                        <td>7798</td>
+                                                                        <td class="text-right">6.0</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2">OT</td>
+                                                                        <td class="text-right">0.5</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2">Personal</td>
+                                                                        <td class="text-right">0.5</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2">Stat holiday</td>
+                                                                        <td class="text-right">0</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2">Training</td>
+                                                                        <td class="text-right">0.5</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2">Admin/Meetings</td>
+                                                                        <td class="text-right">0.5</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2">Lunch</td>
+                                                                        <td class="text-right">0.25</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2">Other: description</td>
+                                                                        <td class="text-right">0.5</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="">
+                                        <div class="">
+                                            <div class="card-collapse">
+                                                <div class="card-header" role="tab" id="@("heading_Saturday")">
+                                                    <h5 class="mb-0">
+                                                        <a data-toggle="collapse" href="@("#collapseApprovedTimesheet_Saturday")" aria-expanded="false" aria-controls="collapseTwo" class="collapsed accordion">
+                                                            <label class="col-sm-6 ApprovedTimesheet-label text-left">Saturday</label>
+                                                            <label class="col-sm-5 ApprovedTimesheet-label text-right">8</label>
+                                                            <i class="material-icons">keyboard_arrow_down</i>
+                                                        </a>
+                                                    </h5>
+                                                </div>
+                                                <div id="@("collapseApprovedTimesheet_Saturday")" class="collapse" role="tabpanel" aria-labelledby="@("heading_Saturday")" data-parent="#accordion" style="">
+                                                    <div class="card-body">
+                                                        <div class="material-datatables">
+                                                            <table id="datatables1" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td>OT</td>
+                                                                        <td class="text-right">0</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Personal</td>
+                                                                        <td class="text-right">0</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Stat holiday</td>
+                                                                        <td class="text-right">8</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Training</td>
+                                                                        <td class="text-right">0</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Admin/Meetings</td>
+                                                                        <td class="text-right">0</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Lunch</td>
+                                                                        <td class="text-right">0</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Other: description</td>
+                                                                        <td></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>*@
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class=""><button type="button" class="btn btn-danger modal-cls" data-dismiss="modal">@Localizer["Close"]</button></div>
+            </div>
+        </div>
+
+    </div>
+</div>

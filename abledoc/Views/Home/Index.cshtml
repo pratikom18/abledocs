@@ -1,0 +1,678 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Dashboard"];
+    ViewData["PageTitle"] = Localizer["Dashboard"];
+}
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/common.css">
+    <link rel="stylesheet" href="~/assets/css/flags.css" />
+}
+<div class="content">
+    <div class="container-fluid">
+        @if (ViewBag.SettingList != null)
+        {
+            @foreach (Setting item in ViewBag.SettingList)
+            {
+                if (item.SectionName == "Global Sales")
+                {
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header card-header-success card-header-icon">
+                                    <div class="card-icon card-header-success-1 card-icon-1">
+                                        <i class="material-icons"></i>
+                                    </div>
+                                    <h4 class="card-title">
+                                        @Localizer["Global Sales by Top Locations"]
+                                    </h4>
+                                </div>
+                                <div class="card-body GlobalSalesdata">
+                                    @await Html.PartialAsync("_GlobalSales.cshtml")
+                                </div>
+                            </div>
+
+
+                            @*<div class="card ">
+                                    <div class="card-body">
+                                        <div class="card-header card-header-success card-header-icon">
+                                            <div class="card-icon card-header-success-1 card-icon-1">
+                                                <i class="material-icons"></i>
+                                            </div>
+                                        </div>
+                                        <div class="card-collapse">
+                                            <div class="card-header" role="tab" id="headingTwo">
+                                                <h4 class="card-title">
+                                                    <a data-toggle="collapse" href="#collapseGlobalSales" aria-expanded="true" aria-controls="collapseOne" class="collapsed accordion GlobalSales">
+                                                        Global Sales by Top Locations
+                                                        <i class="material-icons">keyboard_arrow_down</i>
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapseGlobalSales" class="collapse show" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+                                                <div class="card-body GlobalSalesdata">
+                                                    @await Html.PartialAsync("_GlobalSales.cshtml")
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>*@
+                        </div>
+                    </div>
+                }
+                else if (item.SectionName == "Visualization")
+                {
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header card-header-success card-header-icon">
+                                    <div class="card-icon card-header-success-1 card-icon-1">
+                                        <i class="material-icons">assignment</i>
+                                    </div>
+                                    <h4 class="card-title">
+                                        @Localizer["Visualization"]
+                                    </h4>
+                                </div>
+                                <div class="card-body GlobalSalesdata">
+                                    @await Html.PartialAsync("_Visualization.cshtml")
+                                </div>
+                            </div>
+                            <!--<div class="card ">
+                            <div class="card-body">
+                                <div class="card-header card-header-success card-header-icon">
+                                    <div class="card-icon card-header-success-1 card-icon-1">
+                                        <i class="material-icons">assignment</i>
+                                    </div>
+                                </div>
+                                <div class="card-collapse">
+                                    <div class="card-header" role="tab" id="headingThree">
+                                        <h4 class="card-title">
+                                            <a data-toggle="collapse" href="#collapseVisualization" aria-expanded="false" aria-controls="collapseOne" class="collapsed accordion Visualization">
+                                                Visualization
+                                                <i class="material-icons">keyboard_arrow_down</i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseVisualization" class="collapse" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion" style="">
+                                        <div class="card-body Visualizationdata">-->
+                            @*@await Html.PartialAsync("_Visualization.cshtml")*@
+                            <!--</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>-->
+                        </div>
+                    </div>
+                }
+                else if (item.SectionName == "Billing Office")
+                {
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header card-header-success card-header-icon">
+                                    <div class="card-icon card-header-success-1 card-icon-1">
+                                        <i class="material-icons">assignment</i>
+                                    </div>
+                                    <h4 class="card-title">
+                                        @Localizer["Total billing per office"]
+                                    </h4>
+                                </div>
+                                <div class="card-body GlobalSalesdata">
+                                    @await Html.PartialAsync("_BillingOffice.cshtml")
+                                </div>
+                            </div>
+                            <!--<div class="card ">
+                            <div class="card-body">
+                                <div class="card-header card-header-success card-header-icon">
+                                    <div class="card-icon card-header-success-1 card-icon-1">
+                                        <i class="material-icons">assignment</i>
+                                    </div>
+                                </div>
+                                <div class="card-collapse">
+                                    <div class="card-header" role="tab" id="headingFour">
+                                        <h4 class="card-title">
+                                            <a data-toggle="collapse" href="#collapseBillingOffice" aria-expanded="false" aria-controls="collapseOne" class="collapsed accordion BillingOffice">
+                                                Total billing per office
+                                                <i class="material-icons">keyboard_arrow_down</i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseBillingOffice" class="collapse" role="tabpanel" aria-labelledby="headingFour" data-parent="#accordion" style="">
+                                        <div class="card-body BillingOfficedata">-->
+                            @*@await Html.PartialAsync("_Visualization.cshtml")*@
+                            <!--</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>-->
+                        </div>
+                    </div>
+                }
+                else if (item.SectionName == "Weekly Summary")
+                {
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header card-header-success card-header-icon">
+                                    <div class="card-icon card-header-success-1 card-icon-1">
+                                        <i class="material-icons">assignment</i>
+                                    </div>
+                                    <h4 class="card-title">
+                                        @Localizer["Weekly summary"]
+                                    </h4>
+                                </div>
+                                <div class="card-body GlobalSalesdata">
+                                    <div class="table-responsive">
+                                        <table table id="WeeklySummaryTable" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                                            <thead>
+                                                <tr>
+                                                    <td>@Localizer["Invoice Number"]</td>
+                                                    <td>@Localizer["Invoice Date"]</td>
+                                                    <td>@Localizer["Notes"]</td>
+                                                    <td>@Localizer["Date Paid"]</td>
+                                                    <td>@Localizer["Engagement"]</td>
+                                                    <td>@Localizer["Billing Conatct"]</td>
+                                                    <td> @Localizer["Product"]</td>
+                                                    <td class="text-center">@Localizer["Documents/ Domains/ Licences"]</td>
+                                                    <td class="text-center">@Localizer["Pages"]</td>
+                                                    <td class="text-right">@Localizer["Billed"]</td>
+                                                    <td class="text-right">@Localizer["Net With HST"]</td>
+                                                    <td class="text-right">@Localizer["HST Amount"]</td>
+                                                    <td>@Localizer["Currency"]</td>
+                                                    <td class="text-right">@Localizer["Foregin Currency Value"]</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <th colspan="7"></th>
+                                                    <th style="text-align:center"></th>
+                                                    <th style="text-align:center"></th>
+                                                    <th style="text-align:right"></th>
+                                                    <th style="text-align:right"></th>
+                                                    <th style="text-align:right"></th>
+                                                    <th style="text-align:right"></th>
+                                                    <th style="text-align:right"></th>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            @*<div class="card">
+                                    <div class="card-body">
+                                        <div class="card-header card-header-icon card-header-rose">
+                                            <div class="card-icon card-header-success-1 card-icon-1">
+                                                <i class="material-icons">assignment</i>
+                                            </div>
+                                        </div>
+                                        <div class="card-collapse">
+                                            <div class="card-header" role="tab" id="headingOne">
+                                                <h4 class="card-title">
+                                                    <a data-toggle="collapse" href="#collapseGeneral" aria-expanded="false" aria-controls="collapseOne" class="collapsed accordion Weeklysummary">
+                                                        Weekly summary
+                                                        <i class="material-icons">keyboard_arrow_down</i>
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapseGeneral" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" style="">
+                                                <div class="card-body">
+                                                    <div class="table-responsive">
+                                                        <table table id="WeeklySummaryTable" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                                                            <thead>
+                                                                <tr>
+                                                                    <td>Invoice Number</td>
+                                                                    <td>Invoice Date</td>
+                                                                    <td>Notes</td>
+                                                                    <td>Date Paid</td>
+                                                                    <td>Engagement</td>
+                                                                    <td>Billing Conatct</td>
+                                                                    <td>Product</td>
+                                                                    <td class="text-center">Documents/ Domains/ Licences</td>
+                                                                    <td class="text-center">Pages</td>
+                                                                    <td class="text-right">Billed</td>
+                                                                    <td class="text-right">Net With HST</td>
+                                                                    <td class="text-right">HST Amount</td>
+                                                                    <td>Currency</td>
+                                                                    <td class="text-right">Foregin Currency Value</td>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            </tbody>
+                                                            <tfoot>
+                                                                <tr>
+                                                                    <th colspan="7"></th>
+                                                                    <th style="text-align:center"></th>
+                                                                    <th style="text-align:center"></th>
+                                                                    <th style="text-align:right"></th>
+                                                                    <th style="text-align:right"></th>
+                                                                    <th style="text-align:right"></th>
+                                                                    <th style="text-align:right"></th>
+                                                                    <th style="text-align:right"></th>
+                                                                </tr>
+                                                            </tfoot>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>*@
+                        </div>
+                    </div>
+                }
+
+
+
+            }
+        }
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header card-header-icon card-header-rose">
+                    <div class="card-icon card-header-success-1 card-icon-1">
+                        <i class="material-icons">insert_chart</i>
+                    </div>
+
+                    <h4 class="card-title">
+                        Weekly Chart
+                        @*@Localizer["Clients Chart"]*@
+                        @*<small>- Bar Chart</small>*@
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div id="multipleBarsChart" class="ct-chart weeklyBarChart">
+                    </div>
+                </div>
+            </div>
+        </div>
+        @if (ViewBag.SettingList != null)
+        {
+            @foreach (Setting item in ViewBag.SettingList)
+            {
+                @if (item.SectionName == "Clients Chart")
+                {
+
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header card-header-icon card-header-rose">
+                                <div class="card-icon card-header-success-1 card-icon-1">
+                                    <i class="material-icons">insert_chart</i>
+                                </div>
+
+                                <h4 class="card-title">
+                                    @Localizer["Clients Chart"]
+                                    @*<small>- Bar Chart</small>*@
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <div id="multipleBarsChart" class="ct-chart clientsBarChart">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                }
+                else if (item.SectionName == "Jobs Chart")
+                {
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header card-header-icon card-header-rose">
+                                <div class="card-icon card-header-success-1 card-icon-1">
+                                    <i class="material-icons">insert_chart</i>
+                                </div>
+
+                                <h4 class="card-title">
+                                    @Localizer["Jobs Chart"]
+                                    @*<small>- Bar Chart</small>*@
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <div id="multipleBarsChart" class="ct-chart jobsBarChart">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else if (item.SectionName == "Production Chart")
+                {
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header card-header-icon card-header-rose">
+                                <div class="card-icon card-header-success-1 card-icon-1">
+                                    <i class="material-icons">insert_chart</i>
+                                </div>
+
+                                <h4 class="card-title">
+                                    @Localizer["Production Chart"]
+                                    @*<small>- Bar Chart</small>*@
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <div id="multipleBarsChart" class="ct-chart productionBarChart">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        }
+    </div>
+        <div class="row">
+            @if (ViewBag.SettingList != null)
+            {
+                @foreach (Setting item in ViewBag.SettingList)
+                {
+
+
+                    @if (item.SectionName == "Clients")
+                    {
+                        <div class="col-lg-3 col-md-6 col-sm-6 draggable">
+                            <div class="card card-stats">
+                                <div class="card-header card-header-success card-header-icon">
+                                    <div class="card-icon card-header-success-1 card-icon-1">
+                                        <i class="material-icons">weekend</i>
+                                    </div>
+                                    <p class="card-category">@Localizer["Clients"]</p>
+                                    <h3 class="card-title">@ViewBag.TotalClients</h3>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="stats">
+
+                                        <a href="/clients" class="small-box-footer a-1">@Localizer["More info"] <i class="material-icons">play_circle</i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else if (item.SectionName == "Contacts")
+                    {
+                        <div class="col-lg-3 col-md-6 col-sm-6 draggable">
+                            <div class="card card-stats">
+                                <div class="card-header card-header-success card-header-icon">
+                                    <div class="card-icon card-header-success-1 card-icon-1">
+                                        <i class="material-icons">equalizer</i>
+                                    </div>
+                                    <p class="card-category">@Localizer["Contacts"]</p>
+                                    <h3 class="card-title">@ViewBag.TotalContacts</h3>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="stats">
+
+                                        <a href="/contacts" class="small-box-footer a-1">@Localizer["More info"] <i class="material-icons">play_circle</i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else if (item.SectionName == "Jobs")
+                    {
+                        <div class="col-lg-3 col-md-6 col-sm-6 draggable">
+                            <div class="card card-stats">
+                                <div class="card-header card-header-success card-header-icon">
+                                    <div class="card-icon card-header-success-1 card-icon-1">
+                                        <i class="material-icons">store</i>
+                                    </div>
+                                    <p class="card-category">@Localizer["Jobs"]</p>
+                                    <h3 class="card-title">@ViewBag.TotalJobs</h3>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="stats">
+
+                                        <a href="/jobs" class="small-box-footer a-1">@Localizer["More info"] <i class="material-icons">play_circle</i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else if (item.SectionName == "Production")
+                    {
+                        <div class="col-lg-3 col-md-6 col-sm-6 draggable">
+                            <div class="card card-stats">
+                                <div class="card-header card-header-success card-header-icon">
+                                    <div class="card-icon card-header-success-1 card-icon-1">
+                                        <i class="fa fa-twitter"></i>
+                                    </div>
+                                    <p class="card-category">@Localizer["Production"]</p>
+                                    <h3 class="card-title">@ViewBag.TotalProduction</h3>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="stats">
+
+                                        <a href="/production" class="small-box-footer a-1">@Localizer["More info"] <i class="material-icons">play_circle</i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else if (item.SectionName == "Pending Jobs")
+                    {
+                        <div class="col-lg-3 col-md-6 col-sm-6 draggable">
+                            <div class="card card-stats">
+                                <div class="card-header card-header-success card-header-icon">
+                                    <div class="card-icon card-header-success-1 card-icon-1">
+                                        <i class="fa fa-twitter"></i>
+                                    </div>
+                                    <p class="card-category">@Localizer["Pending - Jobs"]</p>
+                                    <h3 class="card-title"> @ViewBag.TotalPENDING</h3>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="stats">
+
+                                        <a href="/jobs?currenttab=pending" class="small-box-footer a-1">@Localizer["More info"] <i class="material-icons">play_circle</i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else if (item.SectionName == "Quote Jobs")
+                    {
+                        <div class="col-lg-3 col-md-6 col-sm-6 draggable">
+                            <div class="card card-stats">
+                                <div class="card-header card-header-success card-header-icon">
+                                    <div class="card-icon card-header-success-1 card-icon-1">
+                                        <i class="fa fa-twitter"></i>
+                                    </div>
+                                    <p class="card-category">@Localizer["Quote - Jobs"]</p>
+                                    <h3 class="card-title"> @ViewBag.TotalQUOTE</h3>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="stats">
+
+                                        <a href="/jobs?currenttab=quote" class="small-box-footer a-1">@Localizer["More info"] <i class="material-icons">play_circle</i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else if (item.SectionName == "Open Jobs")
+                    {
+                        <div class="col-lg-3 col-md-6 col-sm-6 draggable">
+                            <div class="card card-stats">
+                                <div class="card-header card-header-success card-header-icon">
+                                    <div class="card-icon card-header-success-1 card-icon-1">
+                                        <i class="fa fa-twitter"></i>
+                                    </div>
+                                    <p class="card-category">@Localizer["Open - Jobs"]</p>
+                                    <h3 class="card-title"> @ViewBag.TotalOPEN</h3>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="stats">
+
+                                        <a href="/jobs?currenttab=open" class="small-box-footer a-1">@Localizer["More info"] <i class="material-icons">play_circle</i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else if (item.SectionName == "To Be Deliverd Jobs")
+                    {
+                        <div class="col-lg-3 col-md-6 col-sm-6 draggable">
+                            <div class="card card-stats">
+                                <div class="card-header card-header-success card-header-icon">
+                                    <div class="card-icon card-header-success-1 card-icon-1">
+                                        <i class="fa fa-twitter"></i>
+                                    </div>
+                                    <p class="card-category">@Localizer["To be Deliverd - Jobs"]</p>
+                                    <h3 class="card-title"> @ViewBag.TotalTOBEDELIVERED</h3>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="stats">
+
+                                        <a href="/jobs?currenttab=tobedelivered" class="small-box-footer a-1">@Localizer["More info"] <i class="material-icons">play_circle</i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    else if (item.SectionName == "Deliverd Jobs")
+                    {
+                        <div class="col-lg-3 col-md-6 col-sm-6 draggable">
+                            <div class="card card-stats">
+                                <div class="card-header card-header-success card-header-icon">
+                                    <div class="card-icon card-header-success-1 card-icon-1">
+                                        <i class="fa fa-twitter"></i>
+                                    </div>
+                                    <p class="card-category">@Localizer["Deliverd - Jobs"]</p>
+                                    <h3 class="card-title"> @ViewBag.TotalDELIVERED</h3>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="stats">
+
+                                        <a href="/jobs?currenttab=delivered" class="small-box-footer a-1">@Localizer["More info"] <i class="material-icons">play_circle</i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+
+
+
+                    @foreach (KeyValuePair<string, int> item1 in ViewBag.PhasesList)
+                    {
+                        if (item1.Key == "Phase1" && item.SectionName == "Phase 1")
+                        {
+                            @*<div class="col-lg-3 col-md-6 col-sm-6"></div>
+                                <div class="col-lg-3 col-md-6 col-sm-6"></div>
+                                <div class="col-lg-3 col-md-6 col-sm-6"></div>*@
+
+                            <div class="col-lg-3 col-md-6 col-sm-6 draggable">
+                                <div class="card card-stats">
+                                    <div class="card-header card-header-success card-header-icon">
+                                        <div class="card-icon card-header-success-1 card-icon-1">
+                                            <i class="fa fa-twitter"></i>
+                                        </div>
+                                        <p class="card-category">@Localizer["Phase 1"]</p>
+                                        <h3 class="card-title"> @item1.Value</h3>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="stats">
+
+                                            @*<a href="/production" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>*@
+                                            <a href="/phases/phase1" class="small-box-footer a-1">@Localizer["More info"] <i class="material-icons">play_circle</i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        }
+                        else if (item1.Key == "Phase2" && item.SectionName == "Phase 2")
+                        {
+
+                            <div class="col-lg-3 col-md-6 col-sm-6 draggable">
+                                <div class="card card-stats">
+                                    <div class="card-header card-header-success card-header-icon">
+                                        <div class="card-icon card-header-success-1 card-icon-1">
+                                            <i class="fa fa-twitter"></i>
+                                        </div>
+                                        <p class="card-category">@Localizer["Phase 2"]</p>
+                                        <h3 class="card-title"> @item1.Value</h3>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="stats">
+
+                                            <a href="/phases/phase2" class="small-box-footer a-1">@Localizer["More info"] <i class="material-icons">play_circle</i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else if (item1.Key == "Phase3" && item.SectionName == "Phase 3")
+                        {
+
+                            <div class="col-lg-3 col-md-6 col-sm-6 draggable">
+                                <div class="card card-stats">
+                                    <div class="card-header card-header-success card-header-icon">
+                                        <div class="card-icon card-header-success-1 card-icon-1">
+                                            <i class="fa fa-twitter"></i>
+                                        </div>
+                                        <p class="card-category">@Localizer["Phase 3"]</p>
+                                        <h3 class="card-title"> @item1.Value</h3>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="stats">
+
+                                            <a href="/phases/phase3" class="small-box-footer a-1">@Localizer["More info"] <i class="material-icons">play_circle</i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else if (item1.Key == "alttext" && item.SectionName == "ALT Text")
+                        {
+                            <div class="col-lg-3 col-md-6 col-sm-6 draggable">
+                                <div class="card card-stats">
+                                    <div class="card-header card-header-success card-header-icon">
+                                        <div class="card-icon card-header-success-1 card-icon-1">
+                                            <i class="fa fa-twitter"></i>
+                                        </div>
+                                        <p class="card-category">@Localizer["ALT Text"]</p>
+                                        <h3 class="card-title"> @item1.Value</h3>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="stats">
+
+                                            <a href="/phases/alttext" class="small-box-footer a-1">@Localizer["More info"] <i class="material-icons">play_circle</i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        @*else if (item1.Key == "Phase4" && item.SectionName == "Phase 4")
+                            {
+
+                                <div class="col-lg-3 col-md-6 col-sm-6 draggable">
+                                    <div class="card card-stats">
+                                        <div class="card-header card-header-success card-header-icon">
+                                            <div class="card-icon card-header-success-1 card-icon-1">
+                                                <i class="fa fa-twitter"></i>
+                                            </div>
+                                            <p class="card-category">Phase 4</p>
+                                            <h3 class="card-title"> @item1.Value</h3>
+                                        </div>
+                                        <div class="card-footer">
+                                            <div class="stats">
+                                                <i class="material-icons">update</i> Just Updated
+                                                &nbsp;&nbsp;&nbsp;
+                                                <a href="/phases/phase4" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }*@
+
+                    }
+                }
+            }
+        </div>
+
+    </div>
+</div>
+@section Scripts {
+    <script src="~/assets/js/pages/home.js?v=@abledoc.Utility.CommonHelper.Version"></script>
+
+}

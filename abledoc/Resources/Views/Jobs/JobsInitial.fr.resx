@@ -1,0 +1,291 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Acrobat Security" xml:space="preserve">
+    <value>Sécurité d'Acrobat</value>
+  </data>
+  <data name="Add Client" xml:space="preserve">
+    <value>Ajouter un client</value>
+  </data>
+  <data name="Add contact" xml:space="preserve">
+    <value>Ajouter le contact</value>
+  </data>
+  <data name="ADLegacy" xml:space="preserve">
+    <value>ADLegacy</value>
+  </data>
+  <data name="ADScan" xml:space="preserve">
+    <value>ADScan</value>
+  </data>
+  <data name="ADStream" xml:space="preserve">
+    <value>ADStream</value>
+  </data>
+  <data name="Allowed" xml:space="preserve">
+    <value>Permise</value>
+  </data>
+  <data name="ALT Provided" xml:space="preserve">
+    <value>ALT fourni</value>
+  </data>
+  <data name="Assigned To" xml:space="preserve">
+    <value>Assigné à</value>
+  </data>
+  <data name="Billing" xml:space="preserve">
+    <value>Facturation</value>
+  </data>
+  <data name="Billing Contact" xml:space="preserve">
+    <value>Contact de facturation</value>
+  </data>
+  <data name="Button disabled - as Invoice has been approved or denied at higher level." xml:space="preserve">
+    <value>Bouton désactivé - car la facture a été approuvée ou refusée à un niveau supérieur.</value>
+  </data>
+  <data name="Cancel Job" xml:space="preserve">
+    <value>Annuler le travail</value>
+  </data>
+  <data name="Client" xml:space="preserve">
+    <value>Cliente</value>
+  </data>
+  <data name="Comment - Invoice" xml:space="preserve">
+    <value>Commentaire - Facture</value>
+  </data>
+  <data name="Comments..." xml:space="preserve">
+    <value>Commentaires...</value>
+  </data>
+  <data name="Contact" xml:space="preserve">
+    <value>Contacter</value>
+  </data>
+  <data name="Credit Note" xml:space="preserve">
+    <value>Note de crédit</value>
+  </data>
+  <data name="Custom Password" xml:space="preserve">
+    <value>Mot de passe personnalisé</value>
+  </data>
+  <data name="DeadLine Date" xml:space="preserve">
+    <value>Date limite</value>
+  </data>
+  <data name="DeadLine Time" xml:space="preserve">
+    <value>Heure de la date limite</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Télécharger</value>
+  </data>
+  <data name="Download All Files" xml:space="preserve">
+    <value>Télécharger tous les fichiers</value>
+  </data>
+  <data name="File Tree" xml:space="preserve">
+    <value>Arborescence des fichiers</value>
+  </data>
+  <data name="Following job was cancelled and for this one no mirrored job was made" xml:space="preserve">
+    <value>Le travail suivant a été annulé et pour celui-ci aucun travail en miroir n'a été effectué</value>
+  </data>
+  <data name="Following job was cancelled and for this one no mirrored job was made!" xml:space="preserve">
+    <value>Le travail suivant a été annulé et pour celui-ci aucun travail en miroir n'a été fait !</value>
+  </data>
+  <data name="Following job was cancelled. Please follow its mirrored image here" xml:space="preserve">
+    <value>Le travail suivant a été annulé. Veuillez suivre son image en miroir ici</value>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>Générale</value>
+  </data>
+  <data name="Invoice" xml:space="preserve">
+    <value>Facturer</value>
+  </data>
+  <data name="Job details saved successfully" xml:space="preserve">
+    <value>Détails du travail enregistrés avec succès</value>
+  </data>
+  <data name="Job From ADapi" xml:space="preserve">
+    <value>Travail de ADapi</value>
+  </data>
+  <data name="Job Settings" xml:space="preserve">
+    <value>Paramètres du travail</value>
+  </data>
+  <data name="Job Type" xml:space="preserve">
+    <value>Type d'emploi</value>
+  </data>
+  <data name="Logo ALT-Text" xml:space="preserve">
+    <value>Logo ALT-Texte</value>
+  </data>
+  <data name="Multi Language" xml:space="preserve">
+    <value>Multilingue</value>
+  </data>
+  <data name="Multi-DeadLine" xml:space="preserve">
+    <value>Multi-DeadLine</value>
+  </data>
+  <data name="Non-PDF Files" xml:space="preserve">
+    <value>Fichiers non PDF</value>
+  </data>
+  <data name="Non-Production Related" xml:space="preserve">
+    <value>Non lié à la production</value>
+  </data>
+  <data name="PO" xml:space="preserve">
+    <value>Bon de commande</value>
+  </data>
+  <data name="PO Upload" xml:space="preserve">
+    <value>Téléchargement de bon de commande</value>
+  </data>
+  <data name="Priority" xml:space="preserve">
+    <value>Priorité</value>
+  </data>
+  <data name="Production" xml:space="preserve">
+    <value>Production</value>
+  </data>
+  <data name="Purchase Order" xml:space="preserve">
+    <value>Bon de commande</value>
+  </data>
+  <data name="Quote" xml:space="preserve">
+    <value>Citation</value>
+  </data>
+  <data name="Restricted" xml:space="preserve">
+    <value>Limitée</value>
+  </data>
+  <data name="Sample" xml:space="preserve">
+    <value>Goûter</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Sauvegarder</value>
+  </data>
+  <data name="Save &amp; Close" xml:space="preserve">
+    <value>Sauvegarder et fermer</value>
+  </data>
+  <data name="Security" xml:space="preserve">
+    <value>Sécurité</value>
+  </data>
+  <data name="Select" xml:space="preserve">
+    <value>Sélectionner</value>
+  </data>
+  <data name="Select Contact" xml:space="preserve">
+    <value>Sélectionnez Contact</value>
+  </data>
+  <data name="Stamp ADLegacy" xml:space="preserve">
+    <value>Timbre ADLegacy</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Statut</value>
+  </data>
+  <data name="Tagging Instructions" xml:space="preserve">
+    <value>Instructions de marquage</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Mettre à jour</value>
+  </data>
+  <data name="Update Comment" xml:space="preserve">
+    <value>Mettre à jour le commentaire</value>
+  </data>
+  <data name="User Restrictions" xml:space="preserve">
+    <value>Restrictions d'utilisateur</value>
+  </data>
+</root>

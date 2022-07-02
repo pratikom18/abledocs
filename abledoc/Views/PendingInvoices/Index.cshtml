@@ -1,0 +1,57 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["PendingInvoices"];
+    ViewData["PageTitle"] = Localizer["PendingInvoices"];
+}
+
+
+<input type="hidden" id="myapprove" value="@Localizer["Approve"]" />
+<input type="hidden" id="myvariance" value="@Localizer["Variance"]" />
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        @*<div class="card-icon">
+                                <i class="material-icons">assignment</i>
+                            </div>
+                            <h4 class="card-title">DataTables.net</h4>*@
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                            <!--        Here you can write extra buttons/actions for the toolbar              -->
+                        </div>
+
+                        <div class="material-datatables">
+                            <table id="PendingInvoicesTable" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th width="20%">@Localizer["EngagementNum#"]</th>
+                                        <th width="15%">@Localizer["Date"]</th>
+                                        <th width="15%">@Localizer["PreTaxAmount"]</th>
+                                        <th width="15%">@Localizer["Tax"]</th>
+                                        <th width="15%">@Localizer["FullAmount"]</th>
+                                        <th width="20%" class="disabled-sorting">@Localizer["Actions"] </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- end content-->
+                </div>
+                <!--  end card  -->
+            </div>
+            <!-- end col-md-12 -->
+        </div>
+        <!-- end row -->
+    </div>
+</div>
+<div id="popupSendFile">
+</div>
+@section scripts{
+    <script src="~/assets/js/pages/PendingInvoices.js?v=@abledoc.Utility.CommonHelper.Version"></script>
+}

@@ -1,0 +1,438 @@
+﻿@model AltTxtFile;
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    var file = Localizer["ALT-Text FIle"].Value;
+    ViewData["Title"] = file+ " #" + ViewBag.FileID;
+    ViewData["PageTitle"] = file+ " #" + ViewBag.FileID;
+}
+@{
+    string lastCheckout = "";
+    string currentCheckout = "";
+    int limitCount = 1;
+    int count = 0;
+    if (Model.jobsfilescheckoutslist != null)
+    {
+        foreach (JobsFilesCheckouts item in Model.jobsfilescheckoutslist)
+        {
+            Users objUsers = new Users();
+
+            if (limitCount == 1)
+            {
+                objUsers = objUsers.GetActiveUserById(item.UserID);
+                currentCheckout = objUsers.FirstName + " " + objUsers.LastName;
+            }
+            else if (limitCount == 2)
+            {
+                objUsers = objUsers.GetActiveUserById(item.UserID);
+                lastCheckout = objUsers.FirstName + " " + objUsers.LastName;
+            }
+            limitCount++;
+        }
+    }
+    string lastTimerTotal = "00:00:00";
+    if (Model.allTimers != null)
+    {
+        lastTimerTotal = Model.allTimers.TotalTimerNow;
+
+        if (lastTimerTotal == "")
+        {
+            lastTimerTotal = "00:00:00";
+        }
+    }
+}
+<input type="hidden" asp-for="@Model.flag" />
+<div class="row">
+    <div class="col-md-6">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-header card-header-icon card-header-rose">
+                            <div class="card-icon card-header-success-1 card-icon-1">
+                                <i class="material-icons">
+                                    insert_drive_file
+                                </i>
+                            </div>
+                        </div>
+                        <div class="card-collapse">
+                            <div class="card-header" role="tab" id="headingOne">
+                                <h5 class="mb-0">
+                                    <a data-toggle="collapse" href="#collapseGeneral" aria-expanded="true" aria-controls="collapseOne" class="collapsed accordion">
+                                        @Localizer["General"]
+                                        <i class="material-icons">keyboard_arrow_down</i>
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="collapseGeneral" class="collapse show" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" style="">
+                                <div class="card-body">
+                                    <div class="form-group row">
+                                        <div class="col-md-4">
+                                            <label class="col-form-label">@Localizer["Client"]:</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <label class="col-form-label">@Model.clients.Company</label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="col-form-label">@Localizer["Client"] & @Localizer["Job"]:</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <label class="col-form-label">@Model.jobsjobid.EngagementNum</label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="col-form-label">@Localizer["Job Quoted As"]:</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <label class="col-form-label">@Model.jobsFiles.HourValue</label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="col-form-label">@Localizer["DeadLine"]:</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <label class="col-form-label">@(Model.jobsFiles.Deadline + " @ " + Model.jobsFiles.DeadlineTime  )</label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="col-form-label">@Localizer["Pages"]:</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <label class="col-form-label">@Model.jobsFiles.Pages</label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="col-form-label">@Localizer["Last Checkout"]:</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <label class="col-form-label">@lastCheckout</label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="col-form-label">@Localizer["Current Checkout"]:</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <label class="col-form-label">@currentCheckout</label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="col-form-label">@Localizer["Instructions"]:</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <label class="col-form-label">@Model.jobsjobid.Tagging_Instructions</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-collapse">
+                            <div class="card-header" role="tab" id="headingTwo">
+                                <h5 class="mb-0">
+                                    <a data-toggle="collapse" href="#collapseAltTextForm" aria-expanded="true" aria-controls="collapseTwo" class="collapsed accordion">
+                                        @Localizer["ALT-Text Form"]
+                                        <i class="material-icons">keyboard_arrow_down</i>
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="collapseAltTextForm" class="collapse show" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+                                <div class="card-body">
+                                    <!-- form start -->
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label class="col-form-label" id="stopWatch">@lastTimerTotal</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <button type="button" class="btn btn-primary-1" data-toggle="modal" id="start" onclick="start()">
+                                                    @Localizer["Start"]
+                                                </button>
+                                                <button type="button" class="btn btn-danger" data-toggle="modal" id="stop" onclick="stop()" style="display:none;">
+                                                    @Localizer["Stop"]
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <form method="post" class="form-horizontal" id="AltTextCreate">
+                                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                            <input type="hidden" id="State" value="ALT" />
+                                            <input type="hidden" id="ClientID" value="@Model.jobsfileid.ClientID" />
+                                            <input type="hidden" id="FileID" value="@ViewBag.FileID" />
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group row">
+                                                        <textarea class="col-md-11 form-control" name="altText" rows="8" id="altText" placeholder="@Localizer["ALT-Text"].Value ..."></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group row">
+                                                        <input type="number" id="pageNum" class="form-control" name="pageNum" value="" min="0" placeholder="@Localizer["Page"].Value ...">
+
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <label for="saveAsFrequent" class="form-check-label">
+                                                            <input class="form-check-input" name="saveAsFrequent" id="saveAsFrequent" type="checkbox"> @Localizer["Save As Frequent"]
+                                                            <span class="form-check-sign">
+                                                                <span class="check"></span>
+                                                            </span>
+                                                        </label>
+                                                    </div>
+
+                                                    <div class="form-group row">
+
+                                                        <button type="button" class="btn btn-primary-1" id="add" onclick="AddAltText();">
+                                                            <i class="fa fa-plus-square"></i> @Localizer["Add"]
+                                                        </button>
+                                                    </div>
+
+
+                                                </div>
+                                            </div>
+
+                                        </form>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-collapse">
+                            <div class="card-header" role="tab" id="headingThree">
+                                <h5 class="mb-0">
+                                    <a data-toggle="collapse" href="#collapseFrequentlyUsed" aria-expanded="true" aria-controls="collapseThree" class="collapsed accordion">
+                                        @Localizer["Frequently Used"]
+                                        <i class="material-icons">keyboard_arrow_down</i>
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="collapseFrequentlyUsed" class="collapse show" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion" style="">
+                                <div class="card-body auto-scrool">
+                                    @if (Model.alttextslistbyclients != null)
+                                    {
+                                        if (Model.alttextslistbyclients.Count > 0)
+                                        {
+                                            foreach (AltTexts item in Model.alttextslistbyclients)
+                                            {
+                                                <div class="form-group row">
+                                                    <div class="col-md-10">
+                                                        <textarea class="form-control" required placeholder="@Localizer["Add FrequentText Here"].Value ..." id="freqLoadID_@item.ID">@item.FrequentText</textarea>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <button type="button" onclick="FrequentLoadText(@item.ID); return false;" class="btn btn-outline-primary btn-sm btn-outline-primary-1 addBtn"><i class="fa fa-upload"></i></button>
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-body">
+                        <!-- form start -->
+                        <div>
+                            <div class="btn-group w-100 mb-2">
+                                <a class="btn btn-info active show-File-ALT-Text" href="javascript:void(0)" data-filter="1"> @Localizer["File ALT-Text"] </a>
+                                <a class="btn btn-info show-Brandmarks" href="javascript:void(0)" data-filter="2"> @Localizer["Brandmarks"] </a>
+
+                            </div>
+                        </div>
+                        <div>
+                            <div class="filter-container p-0 row">
+                                <div class="filtr-item col-md-12 auto-scrool File-ALT-Text" data-category="1">
+                                    @if (Model.alttextslistbyfile != null)
+                                    {
+                                        if (Model.alttextslistbyfile.Count > 0)
+                                        {
+                                            foreach (AltTexts item in Model.alttextslistbyfile)
+                                            {
+                                                <div class="form-group row altID_@item.ID">
+                                                    <div class="col-md-2">
+                                                        <input type="hidden" id="altID_@item.ID" value="@item.ID" />
+                                                        <input type="text" class="form-control" placeholder="Page Num" id="altPage_@item.ID" readonly value="@item.PageNum" />
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <textarea class="form-control" readonly placeholder="@Localizer["Add AltText Here"].Value .." id="altTextDetail_@item.ID">@item.AltText</textarea>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <button type="button" id="altEdit_@item.ID" onclick="EditAltText(@item.ID); return false;" class="btn btn-outline-primary btn-sm btn-outline-primary-1 addBtn"><i class="fa fa-edit"></i></button>
+                                                        <button type="button" id="altSave_@item.ID" onclick="SaveAltText(@item.ID); return false;" style="display:none;" class="btn btn-outline-primary btn-sm btn-outline-primary-1 addBtn"><i class="fa fa-save"></i></button>
+                                                        <button type="button" onclick="DeleteAltTxt(@item.ID,@Model.flag); return false;" class="btn btn-outline-primary btn-sm btn-outline-primary-1 addBtn"><i class="fa fa-trash"></i></button>
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                    }
+                                </div>
+                                <div class="filtr-item col-md-12 auto-scrool Brandmarks" style="display:none" data-category="2">
+                                    @if (Model.brandimagelist != null)
+                                    {
+                                        if (Model.brandimagelist.Count > 0)
+                                        {
+                                            foreach (BrandImage item in Model.brandimagelist)
+                                            {
+                                                <iframe id="imageIFrame_@item.ID" onload="FrameLoaded(@item.ID);" class="imageIFrame" src="@item.PhysicalPath" style="border: none; padding: 5px; width: 200px; height: 200px;"></iframe>
+                                                <input type="text" class="form-control imageIFrameText" id="imageIFrameText_@item.ID" placeholder="ALT..." value="@item.AltTextImage" />
+                                            }
+                                        }
+                                    }
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-collapse">
+                            <div class="card-header" role="tab" id="headingReferenceFiles">
+                                <h5 class="mb-0">
+                                    <a data-toggle="collapse" href="#collapseReferenceFiles" aria-expanded="true" aria-controls="collapseReferenceFiles" class="collapsed accordion">
+                                        @Localizer["Reference Files"]
+                                        <i class="material-icons">keyboard_arrow_down</i>
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="collapseReferenceFiles" class="collapse show" role="tabpanel" aria-labelledby="headingReferenceFiles" data-parent="#accordion" style="">
+                                <div class="card-body">
+                                    <!-- form start -->
+                                    <table id="datatables" class="example1 table table-striped table-bordered table-hover responsive" width="100%">
+                                        <thead class="thin-border-bottom">
+                                            <tr>
+                                                <th>@Localizer["File Name"]</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.jobsFilesVersionsList != null)
+                                            {
+                                                @foreach (JobsFilesVersions item1 in Model.jobsFilesVersionsList)
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            <a href="/fileget?ID=@item1.ID&flag=@Model.flag" title="@item1.Filename">@item1.Filename</a>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-body">
+                        @if (ViewBag.IsSecure)
+                        {
+                            if (Model.JobsFilesVersionsSource != null)
+                            {
+                                <a href="/fileget?ID=@Model.JobsFilesVersionsSource.ID&flag=@Model.flag" class="btn btn-success btn-primary-1">@Localizer["Source File"]</a>
+                            }
+
+                            if (Model.JobsFilesVersionsTaging != null)
+                            {
+                                <a href="/fileget?ID=@Model.JobsFilesVersionsTaging.ID&flag=@Model.flag" class="btn btn-success btn-primary-1">@Localizer["Tagged File"]</a>
+                            }
+                            else
+                            {
+                                <input type="button" class="btn btn-success btn-primary-1" data-role="button" data-inline="true" data-mini="true" data-ajax="false" draggable="true" value="Last Tagged File" disabled />
+                            }
+                        }
+                        else
+                        {
+                            if (Model.JobsFilesVersionsSource != null)
+                            {
+                                <a href="/fileget?ID=@Model.JobsFilesVersionsSource.ID&flag=@Model.flag" class="btn btn-success btn-primary-1">@Localizer["Source File"]</a>
+                            }
+
+                            if (Model.JobsFilesVersionsTaging != null)
+                            {
+                                <a href="/fileget?ID=@Model.JobsFilesVersionsTaging.ID&flag=@Model.flag" class="btn btn-success btn-primary-1">@Localizer["Tagged File"]</a>
+                            }
+                            else
+                            {
+                                <input type="button" class="btn btn-success btn-primary-1" data-role="button" data-inline="true" data-mini="true" data-ajax="false" draggable="true" value="Last Tagged File" disabled />
+                            }
+                        }
+
+                        <div class="form-group row">
+                            <div class="col-sm-10">
+                                @Html.DropDownList("altTextStatusID", abledoc.Utility.ComboHelper.GetAltTextStatusList(), Localizer["Select"].Value, new { @id = "altTextStatusID", @class = "form-control selectpicker", @datastyle = "btn btn-link", @name = "altTextStatusID" })
+                            </div>
+                        </div>
+                        <input id="doneAltText" type="button" class="btn btn-success btn-primary-1" onclick="DoneAltText(); return false;" value="@Localizer["Done"].Value" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+
+                <div class="card-collapse">
+                    <div class="card-header" role="tab" id="headingOriginal">
+                        <h5 class="mb-0">
+                            <a data-toggle="collapse" href="#collapseOriginal" aria-expanded="true" aria-controls="collapseOriginal" class="collapsed">
+                                @if (Convert.ToInt32(ViewBag.LastFile) > 0)
+                                {
+                                    @(Localizer["Version File"].Value +" #" + ViewBag.LastFile)
+                                }
+                                else
+                                {
+                                    @(Localizer["Original File"].Value +" #" + ViewBag.File)
+                                }
+                                <i class="material-icons">keyboard_arrow_down</i>
+                            </a>
+                        </h5>
+                    </div>
+                    <div id="collapseOriginal" class="collapse show" role="tabpanel" aria-labelledby="headingOriginal" data-parent="#accordion" style="">
+                        <div class="card-body">
+                            @{ViewBag.flag = Model.flag;}
+                            @await Html.PartialAsync("/views/jobs/_IFramePdf.cshtml")
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" name="TotalFileVersions" ID="TotalFileVersions" value="@count">
+<input type="hidden" name="ID" ID="ID" value="@ViewBag.FileID">
+<input type="hidden" name="LastTimerTotal" ID="LastTimerTotal" value="@lastTimerTotal">
+<input type="hidden" name="JobID" ID="JobID" value="@Model.jobsFiles.JobID">
+<div id="popupSendFile" class="modal fade" tabindex="-1" data-width="1200">
+</div>
+<div id="popupDelete">
+</div>
+@section Scripts {
+    <script src="~/assets/js/pages/timestartstop.js?v=@abledoc.Utility.CommonHelper.Version"></script>
+    <script src="~/assets/js/pages/AltTxtFile.js??v=@abledoc.Utility.CommonHelper.Version"></script>
+    <!-- END PAGE LEVEL PLUGINS -->
+}

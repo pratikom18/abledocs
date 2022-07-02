@@ -1,0 +1,2 @@
+ALTER TABLE `discription_master` ADD `unit` TEXT NOT NULL AFTER `country_code`;
+ALTER TABLE `jobs_files` ADD `description_id` INT NOT NULL DEFAULT '0' AFTER `OldDescription`;

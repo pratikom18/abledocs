@@ -1,0 +1,16 @@
+﻿<div class="card-body pdfView">
+    @if (ViewBag.Physical_Path != null)
+    {
+
+        <embed id="pdfView1" src="@(ViewBag.Physical_Path)#navpanes=0&scrollbar=0" width="100%">
+
+    }
+</div>
+<script>
+    function autoResizeDiv() {
+        
+        document.getElementById('pdfView1').style.height = window.innerHeight + 'px';
+    }
+    window.onresize = autoResizeDiv;
+    autoResizeDiv();
+</script>

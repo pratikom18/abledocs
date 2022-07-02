@@ -1,0 +1,39 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<div class="row">
+    <div class="col-md-6">
+        <div class="table-responsive table-sales">
+            <table class="table">
+                <tbody>
+
+                    @foreach (InvoiceInstance items in ViewBag.CountryList)
+                    {
+                        if (!string.IsNullOrEmpty(items.countryname))
+                        {
+                            decimal percetage = (items.InvoiceAmount * 100) / ViewBag.Totalamount;
+                            string percentagevalue = percetage.ToString("0.00");
+                            string logo = "flag-" + items.Country.ToLowerInvariant();
+                            <tr>
+                                <td>
+                                    <span class="flag @logo"></span>
+                                </td>
+                                <td>@items.countryname</td>
+                                <td class="text-right">
+                                    @("$" +items.InvoiceAmount)
+                                </td>
+                                <td class="text-right">
+                                    @percentagevalue %
+                                </td>
+                            </tr>
+                        }
+
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-md-6 ml-auto mr-auto">
+        <div id="worldMap" style="height: 300px;"></div>
+    </div>
+</div>

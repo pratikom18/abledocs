@@ -1,0 +1,75 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    var userid = HttpContextAccessor.HttpContext.Session.GetString("ID");
+}
+
+@{
+    ViewData["Title"] = "Phase4";
+    ViewData["PageTitle"] = "Phase4";
+}
+
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        @*<div class="card-icon">
+                                <i class="material-icons">assignment</i>
+                            </div>
+                            <h4 class="card-title">DataTables.net</h4>*@
+                        <div class="row">
+                            <div class="form-group col-sm-10">
+                                <input type="text" id="txtSearch" class="form-control col-sm-12" value="@ViewBag.Search" />
+                                <br />
+                                @*<span class="text-danger search-error field-validation-error" style="display:none;" data-valmsg-for="Search" data-valmsg-replace="true"><span id="Search-error" class="">Please enter search text.</span></span>*@
+                            </div>
+                            <div class="form-group col-sm-2">
+                                <button type="button" class="btn btn-primary btn-sm float-sm-right btnSearch btn-primary-1">
+                                    <i class="fa fa-search"></i> Search
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                            <!--        Here you can write extra buttons/actions for the toolbar              -->
+                        </div>
+                        <input type="hidden" id="currentDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                        <input type="hidden" id="forDue2Days" value="@DateTime.Today.AddDays(2).ToString("yyyy-MM-dd")" />
+                        <input type="hidden" id="sessionid" value="@userid" />
+                        <div class="material-datatables">
+                            <table id="FinalTable" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        @*<th width="20%">Engagement Num#</th>
+                                        <th width="10%">File ID</th>
+                                        <th width="30%">File Name</th>
+                                        <th width="20%">DeadLine</th>
+                                        <th width="20%">Assigned To</th>
+                                        <th class="disabled-sorting">Actions</th>*@
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                    <!-- end content-->
+                </div>
+                <!--  end card  -->
+            </div>
+            <!-- end col-md-12 -->
+        </div>
+        <!-- end row -->
+    </div>
+</div>
+@section scripts{
+
+
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <script src="~/assets/js/pages/final.js?v=@abledoc.Utility.CommonHelper.Version"></script>
+    <!-- END PAGE LEVEL PLUGINS -->
+}

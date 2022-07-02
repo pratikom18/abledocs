@@ -1,0 +1,427 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model abledoc.Models.Jobs;
+
+@{
+    var errormsg = "";
+    var modelClient = ViewBag.modelClient;
+    var modelClientContact = ViewBag.modelClientContact;
+    var language = (modelClient.Language == "") ? "EN" : modelClient.Language;
+
+    var clientName = modelClient.Company;
+    var billingCompany = modelClient.Billing_Company;
+    var displayBillingContact = "";
+    if (modelClientContact != null)
+    {
+        displayBillingContact = modelClientContact.FirstName + " " + modelClientContact.LastName + " - ";
+    }
+
+    billingCompany = (billingCompany == "") ? clientName : billingCompany;
+
+    clientName = displayBillingContact + billingCompany;
+
+    var clientID = modelClient.ID;
+
+    var hourlyRate = modelClient.HourlyRate;
+    var pageRate = modelClient.PageRate;
+
+    var modelInstance = ViewBag.GetInvoiceInstance;
+
+    var companyName = modelInstance.CompanyName;
+    var address1 = modelInstance.Address1;
+    var address2 = modelInstance.Address2;
+    var clientFN = modelInstance.ClientFirstName;
+    var clientLN = modelInstance.ClientLastName;
+    var email = modelInstance.Email;
+    var telephone = modelInstance.Telephone;
+    var city = modelInstance.City;
+    var province = modelInstance.Province;
+    var country = modelInstance.Country;
+    var postalCode = modelInstance.PostalCode;
+
+    int currentInvoiceRowID = modelInstance.ID;
+
+    var modelBillingContact = ViewBag.modelBillingContact;
+    var modelRegularContact = ViewBag.modelRegularContact;
+
+    var jobQuotedAs = modelClient.JobQuotedAs;
+
+    double subTotal = 0;
+    var allFileId = "";
+    allFileId = allFileId + "'" + Model.ID + " ";
+
+    string taxDB = "-1";
+    decimal taxTotal = 0;
+    Int64 taxSelected = 0;
+    string taxSelectedString = "0";
+    ERPClass erpObj = new ERPClass();
+    erpObj.databasename = Model.databasename;
+    var erpRecordedTotalHoursJob = erpObj.FetchJobERPRecordedHours(Model.ID);
+    var erpAlteredHours = erpObj.FetchJobERPAlteredHours(Model.ID);
+    double sumAlterHour = 0.00;
+    if (erpAlteredHours != null)
+    {
+        foreach (ERPClass row in erpAlteredHours)
+        {
+            if (row.OverrideTime == 0.00)
+            {
+                sumAlterHour += row.ActualTime;
+            }
+            else
+            {
+                sumAlterHour += row.OverrideTime;
+            }
+        }
+    }
+    var erpAlteredTotalHoursJob = sumAlterHour;
+
+    Countries objCounntry = new Countries();
+    objCounntry.code = modelClient.Country;
+    var modelCountry = objCounntry.GetCountryByCode();
+    var country_currency_symbol = "$";
+    var country_currency_code = "USD";
+    if (modelCountry != null)
+    {
+        country_currency_symbol = modelCountry.currency;
+        country_currency_code = modelCountry.currency_code;
+    }
+    else
+    {
+        errormsg = Localizer["Country not selected for this client. Please set country first."].Value;
+
+
+    }
+    string provinceid = null;
+    if (modelClient.stateid.ToString() != "" || modelClient.stateid.ToString() != null)
+    {
+        provinceid = modelClient.stateid.ToString();
+    }
+}
+<style>
+    select {
+        text-align-last: center;
+    }
+</style>
+<div class="modal fade" id="bootstrap-modal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">@companyName</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" style="max-height: calc(100vh - 200px); overflow-y: auto;">
+                @if (errormsg == "")
+                {
+                    <form method="post" asp-action="Invoice" onsubmit="return jQueryAjaxPost(this);">
+                        <input type="hidden" id="invoiceRow" value="@currentInvoiceRowID" />
+                        <input type="hidden" value="@companyName" id="companyName" />
+                        <input type="hidden" value="@clientFN" id="fn" />
+                        <input type="hidden" value="@clientLN" id="ln" />
+                        <input type="hidden" value="@email" id="email" />
+                        <input type="hidden" value="@telephone" id="telephone" />
+                        <input type="hidden" value="@address1" id="ad1" />
+                        <input type="hidden" value="@address2" id="ad2" />
+                        <input type="hidden" value="@city" id="city" />
+                        <input type="hidden" value="@province" id="province" />
+                        <input type="hidden" value="@postalCode" id="postalCode" />
+                        <input type="hidden" value="@country" id="country" />
+                        <input type="hidden" value="@Model.ID" id="Add_JobID" />
+                        <input type="hidden" ID="currency_symbol" value="@country_currency_symbol">
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="col-md-12">
+                            <div class="form-group row">
+                                @if (modelBillingContact != null)
+                                {
+                                    <div class="col-md-6">
+                                        <div class="ui-block-a">
+                                            <b>@Localizer["Billing Contact"]</b>
+
+                                            <p>
+                                                @(modelBillingContact.FirstName + " " + modelBillingContact.LastName)
+                                                <br>@modelBillingContact.Address1
+                                                <br>@modelBillingContact.Address2
+                                                <br>@(modelBillingContact.City + ", " + modelBillingContact.Province + ", " + modelBillingContact.PostalCode + " " + modelBillingContact.Country)
+                                                <br>@modelBillingContact.Email
+                                                <br>@modelBillingContact.Telephone
+                                            </p>
+
+                                        </div>
+
+
+                                    </div>
+                                }
+                                @if (modelRegularContact != null)
+                                {
+                                    <div class="col-md-6">
+                                        <div class="ui-block-b">
+                                            <b>@Localizer["Regular Contact"]</b>
+                                            <p>
+                                                @(modelRegularContact.FirstName + " " + modelRegularContact.LastName)
+                                                <br>@modelRegularContact.Address1
+                                                <br>@modelRegularContact.Address2
+                                                <br>@(modelRegularContact.City + ", " + modelRegularContact.Province + ", " + modelRegularContact.PostalCode + " " + modelRegularContact.Country)
+                                                <br>@modelRegularContact.Email
+                                                <br>@modelRegularContact.Telephone
+                                            </p>
+                                        </div>
+
+
+                                    </div>
+                                }
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-sm-2"><label for="POTextPanel" class="col-form-label">@Localizer["PO"]</label></div>
+                                <div class="form-group col-sm-10">
+                                    <input type="text" name="POTextPanel" class="form-control" id="POTextPanel" value="@Model.POText" placeholder=@Localizer["PO"] readonly>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-sm-2"><label for="ContractNumber" class="col-form-label">@Localizer["Contract Number"]</label></div>
+                                <div class="form-group col-sm-10">
+                                    <input type="text" name="ContractNumber" class="form-control" id="ContractNumber" value="@Model.ID" placeholder=@Localizer["Contract Number"] readonly>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-sm-2"><label for="ContractDate" class="col-form-label">@Localizer["Contract Date"]</label></div>
+                                <div class="form-group col-sm-10">
+                                    <input type="text" name="ContractDate" id="ContractDate" value="@Model.ContractDate" class="form-control datepicker" placeholder=@Localizer["Contract Date"] autocomplete="off">
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div id="pageRefresh">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="card-collapse">
+
+                                                    <div class="card-header" role="tab" id="headingDetails">
+
+                                                        <h5 class="mb-0">
+                                                            <a class="collapsed" data-toggle="collapse" href="#collapseDetails" aria-expanded="true" aria-controls="collapseDetails">
+                                                                @(language == "FR" ? "Détails" : "Details") :
+
+                                                                <i class="material-icons">keyboard_arrow_down</i>
+                                                            </a>
+                                                        </h5>
+                                                    </div>
+                                                    <div id="collapseDetails" class="collapse show" role="tabpanel" aria-labelledby="headingDetails" data-parent="#accordion">
+                                                        <div class="card-body">
+                                                            <!-- form start -->
+
+                                                            <div class="row">
+                                                                <table border="1" cellspacing="0" cellpadding="0" class="table table-striped table-bordered">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <th>@Localizer["Description"]</th>
+                                                                            <th style="width: 10%;text-align:center">@Localizer["Quantity"]</th>
+                                                                            <th style="width: 15%;text-align:center">@Localizer["Unit"]</th>
+                                                                            <th style="width: 10%;text-align:right">@Localizer["Unit Price"] (@country_currency_symbol)</th>
+                                                                            <th style="text-align: right">@Localizer["Total"] (@country_currency_symbol)</th>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                    <tbody class="invoiceTable">
+                                                                        @if (ViewBag.invoiceTmpList != null)
+                                                                        {
+
+                                                                            foreach (InvoiceTmp item in ViewBag.invoiceTmpList)
+                                                                            {
+
+                                                                                taxSelectedString = item.Tax;
+                                                                                // Get the Hours from the file actually worked
+                                                                                ERPClass fileHours1 = new ERPClass();
+                                                                                fileHours1.databasename = Model.databasename;
+                                                                                var fileHours = fileHours1.FileHoursWorked(item.FileID);//0.70638888888889;
+
+                                                                                allFileId = allFileId + item.ID + " ";
+
+                                                                                taxDB = item.Tax;
+
+                                                                                <tr id="@item.ID">
+                                                                                    <td><textarea data-mini="true" value="@item.Description" id="descriptionText_@item.ID" class="form-control">@item.Description</textarea></td>
+                                                                                    @{
+                                                                                        double quantityVal = 0.00;
+
+                                                                                        if (jobQuotedAs == "Timed" && item.OverrideValues == 0)
+                                                                                        {
+                                                                                            quantityVal = abledoc.Utility.CommonHelper.GetDBDouble(fileHours);
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            quantityVal = item.Quantity;
+                                                                                        }
+
+
+                                                                                        quantityVal = abledoc.Utility.CommonHelper.RoundedOffHour(quantityVal);
+                                                                                    }
+                                                                                    <td>
+                                                                                        <input data-mini="true" type="number" style="text-align: center" step="0.25" min="0.25" class="form-control quantity" value="@quantityVal" id="quantityText_@item.ID">
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <div class="ui-select ui-mini">
+                                                                                            <div id="pricePerSelect_@item.ID-button">
+                                                                                                @Html.DropDownList("priceText_" + item.ID, abledoc.Utility.ComboHelper.GetCommonMasterList("Unit", item.PricePer), "Select", new { @id = "pricePerSelect_" + @item.ID, @class = "form-control", @name = "pricePerSelect_" + @item.ID })
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <div><input data-mini="true" type="number" style="text-align: right" class="form-control price" value="@item.Price.ToString("#,##0.00")" id="priceText_@item.ID"></div>
+                                                                                    </td>
+                                                                                    @{
+                                                                                        var fileTotalAmount = item.Price * quantityVal;
+                                                                                    }
+                                                                                    <td style="text-align: right" class="fileTotalAmount" data-val="@fileTotalAmount.ToString("#,##0.00")">@(country_currency_symbol + "" + fileTotalAmount.ToString("#,##0.00"))</td>
+                                                                                    <td style="width: 20px;"><button type="button" style="float: right; margin: 0px;" class="btn btn-danger btn-sm" onclick="DeleteFileFromInvoice(@item.ID,@Model.ID); return false;"><i class="fa fa-times-circle"></i>&nbsp;&nbsp; @Localizer["Remove"]</button></td>
+                                                                                </tr>
+                                                                                                subTotal = subTotal + fileTotalAmount;
+                                                                                            }
+                                                                                        }
+
+                                                                    </tbody>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td colspan="3"></td>
+                                                                            <td style="text-align: right;">
+                                                                                @Localizer["Sub-Total"]
+                                                                            </td>
+                                                                            <td style="text-align: right" class="subtotal" data-val="@subTotal.ToString("#,##0.00")">@(country_currency_symbol + "" + subTotal.ToString("#,##0.00"))</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td colspan="3" style="text-align:center"> @Localizer["All invoices are due within 30 days and subject to penalty of 2% per month"]</td>
+                                                                            <td style="text-align: right;">
+                                                                                <div class="ui-select">
+                                                                                    <div id="taxSelect-button">
+
+                                                                                        <select style="display: inline-block;" id="taxSelect" class="form-control taxDropdown">
+                                                                                            <option value="0"> @Localizer["Select Tax..."]</option>
+                                                                                            @{
+                                                                                                var modelJobPopulate = new JobQuoteAutopopulate().GetJobPopulateList(modelClient.Country, provinceid);
+                                                                                                if (modelJobPopulate != null)
+                                                                                                {
+                                                                                                    if (modelJobPopulate.Count > 0)
+                                                                                                    {
+
+                                                                                                        foreach (var row in new JobQuoteAutopopulate().GetJobPopulateList(modelClient.Country, provinceid))
+                                                                                                        {
+
+                                                                                                            if (taxSelectedString == row.Information)
+                                                                                                            {
+
+                                                                                                                <option value="@row.tax" selected>@row.Information</option>
+                                                                                                                taxSelected = row.tax;
+                                                                                                            }
+                                                                                                            else
+                                                                                                            {
+                                                                                                                <option value="@row.tax">@row.Information</option>
+                                                                                                            }
+
+                                                                                                        }
+                                                                                                    }
+                                                                                                }
+
+                                                                                            }
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td style="text-align: right" class="tax" data-val="@taxTotal.ToString("#,##0.00")">
+                                                                                @{
+                                                                                    taxTotal = (taxSelected * Convert.ToDecimal(subTotal)) / 100;
+                                                                                    @(country_currency_symbol + "" + taxTotal.ToString("#,##0.00"));
+                                                                                }
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td colspan="3" style="text-align:center;font-weight: bold;"> @Localizer["Note: Price are listed in"] @country_currency_code</td>
+                                                                            <td style="text-align: right;">
+                                                                                 @Localizer["Total"]
+                                                                            </td>
+                                                                            @{
+                                                                                var totalAmount = taxTotal + Convert.ToDecimal(subTotal);
+                                                                            }
+                                                                            <td style="text-align: right" class="totalAmount" data-val="@totalAmount.ToString("#,##0.00")">
+                                                                                @{
+
+                                                                                    @(country_currency_symbol + "" + totalAmount.ToString("#,##0.00"));
+                                                                                }
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td colspan="5">
+                                                                                <div style="float:right">
+                                                                                    <a href="javascript:;" class="btn btn-warning btn-sm"> @Localizer["ERP Altered Hrs"]: @Math.Round(erpAlteredTotalHoursJob, 2)</a>
+                                                                                    <a href="javascript:;" class="btn btn-primary-1 btn-sm"> @Localizer["ERP Recorded Hrs"]: @Math.Round(erpRecordedTotalHoursJob, 2)</a>
+
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                                @{
+                                                                    allFileId = allFileId + "'";
+                                                                    if (ViewBag.updateVal == 1)
+                                                                    {
+                                                                        InvoiceTracking modelTracking = new InvoiceTracking();
+                                                                        modelTracking.JobID = Model.ID;
+                                                                        modelTracking.InvoiceAmount = Convert.ToDecimal(totalAmount.ToString("#,##0.00"));
+                                                                        modelTracking.UID = ViewBag.UID; //$_SESSION['USER']['ID']
+                                                                        modelTracking.OperationType = "InvoiceUpdated";
+                                                                        modelTracking.databasename = Model.databasename;
+                                                                        modelTracking.InsertInvoiceTracking();
+                                                                    }
+                                                                }
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <button type="button" class="btn btn-primary-1 btn-sm" onclick="UpdateJobPanelDataInvoice(@allFileId); return false;"><i class="fa fa-save"></i>  @Localizer["Update Details"]</button>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                    <!-- /.card -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+                        @{
+                            var invoiceID = "";
+                            var invoiceIDQB = "";
+                        }
+                        <div class="card-footer">
+
+                            <a href="/pendinginvoices/GenerateInvoicePdf?ID=@Model.ID&flag=@ViewBag.dflag" target="_blank" id="invoiceGenerateButton" class="btn btn-success" onclick="GenerateInvoiceHandler(@Model.ID); return false;"> <i class="fa fa-save"></i>  @Localizer["Generate Invoice"]</a>
+                            @*<button type="button" id="generateDownloadInvoiceButton" disabled onclick="alert('Under development');" class="btn btn-success"><i class="fa fa-download"></i> Generate & Download Invoice</button>*@
+                            <a href="/pendinginvoices/GenerateInvoicePdf?Params=@invoiceID|@Model.ID|@invoiceIDQB&InsertFlag=1&State=DownloadInvoice,&flag=@ViewBag.dflag" target="_blank" id="generateDownloadInvoiceButton" onclick="GenerateDownloadInvoiceHandler(@Model.ID); return false;" class="btn btn-success"><i class="fa fa-download"></i>  @Localizer["Generate & Download Invoice"]</a>
+                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times-circle"></i>  @Localizer["Close"]</button>
+                            <a href="/pendinginvoices/GenerateInvoicePdf?ID=@Model.ID&flag=@ViewBag.dflag" target="_blank" class="btn btn-success" onclick="GenerateInvoiceHandler(@Model.ID); return false;"> <i class="fa fc-agenda-view"></i>  @Localizer["View Invoice"]</a>
+                        </div>
+
+                    </form>
+                }
+                else
+                {
+                    <p>@errormsg</p>;
+                }
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="~/assets/js/pages/Invoice.js?v=@abledoc.Utility.CommonHelper.Version"></script>

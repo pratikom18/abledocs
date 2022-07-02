@@ -1,0 +1,321 @@
+﻿@model abledoc.Models.ADSales;
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    //int counter = 0;
+    ViewData["Title"] = Localizer["Add Deal"];
+    ViewData["PageTitle"] = Localizer["Add Deal"];
+    //var removeStyle = (counter > 0) ? "" : "display:none;";
+    //var addStyle = (counter == 0) ? "" : "display:none;";
+    string userid = HttpContextAccessor.HttpContext.Session.GetString("ID");
+    string databasename = ViewBag.databasename;
+}
+@section Styles{
+    <style>
+
+        .cui4-stage-selector {
+            flex-flow: row nowrap;
+            border-radius: 2px;
+            table-layout: fixed;
+            height: 35px;
+            width: 100%;
+            min-width: 240px;
+            box-sizing: border-box;
+        }
+
+        .cui4-stage-selector__stage:first-of-type {
+            margin-left: 0;
+            border-radius: 2px 0 0 2px;
+            -webkit-clip-path: polygon(0 0,calc(100% - 6px) 0,100% 50%,calc(100% - 6px) 100%,0 100%);
+            clip-path: polygon(0 0,calc(100% - 6px) 0,100% 50%,calc(100% - 6px) 100%,0 100%);
+        }
+
+        .cui4-stage-selector__stage {
+            flex-basis: 0;
+            align-items: center;
+            justify-content: center;
+            margin-left: -6px;
+            /*background-color: #08a742;*/
+            background-color: #61C786;
+            cursor: pointer;
+            font-size: 13px;
+            text-align: center;
+            font-style: normal;
+            font-stretch: normal;
+            line-height: 1.5;
+            letter-spacing: normal;
+            color: #fff;
+            -webkit-clip-path: polygon(calc(100% - 6px) 0,100% 50%,calc(100% - 6px) 100%,2px 100%,8px 50%,2px 0);
+            clip-path: polygon(calc(100% - 6px) 0,100% 50%,calc(100% - 6px) 100%,2px 100%,8px 50%,2px 0);
+        }
+
+        .cui4-stage-selector, .cui4-stage-selector__stage {
+            position: relative;
+            display: flex;
+            flex-grow: 1;
+        }
+
+        .cui4-stage-selector, .cui4-stage-selector__stage {
+            position: relative;
+            display: flex;
+            flex-grow: 1;
+        }
+    </style>
+}
+<form method="post" class="form-horizontal" id="clientsForm" asp-controller="adsales" asp-action="upsert">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="adsalesid" />
+    <input type="hidden" asp-for="stage" />
+    <input type="hidden" asp-for="flag" />
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-icon card-header-rose">
+                            <div class="card-icon card-header-success-1 card-icon-1">
+                                <i class="material-icons">
+                                    <img src="~/Resources/Images/Icon/feather-user.svg" />
+                                </i>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="form-group col-sm-10">
+                                            <label class="bmd-label-floating">@Localizer["Organization"]</label>
+                                            @Html.DropDownList("clientid", abledoc.Utility.ComboHelper.GetCompanyList(), Localizer["Select Organization"].Value, new { @id = "clientid", @class = "form-control selectpicker1 select2 filter-option-1", @datastyle = "btn btn-link", @name = "clientid" })
+
+                                        </div>
+                                        <div class="form-group col-sm-2">
+                                            <a asp-controller="clients" class="btn btn-primary btn-sm float-sm-right btn-primary-1" style="margin-top:35px;" asp-action="create"><i class="fa fa-plus-circle"></i> @Localizer["Add"]</a>
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="form-group contact-list">
+                                        @await Html.PartialAsync("_ContactDropdown")
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="bmd-label-floating">@Localizer["Title"]</label>
+                                        <input type="text" asp-for="title" class="form-control" />
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="bmd-label-floating">@Localizer["Value"]</label>
+                                                <input type="text" asp-for="value" class="form-control" placeholder="Value" />
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group currency-list">
+                                                @await Html.PartialAsync("_CurrencyDropdown")
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="bmd-label-floating">@Localizer["Pipeline"]</label>
+                                        @Html.DropDownList("pipeline", abledoc.Utility.ComboHelper.GetCommonMasterList("Pipeline", ""), new { @id = "pipeline", @class = "form-control selectpicker1 select2 filter-option-1", @datastyle = "btn btn-link", @name = "pipeline" })
+                                    </div>
+                                    <div class="form-group Pipeline_stage">
+                                        @await Html.PartialAsync("_Pipelinestage")
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="bmd-label-floating">@Localizer["Expected close date"] (*)</label>
+                                        <input type="text" class="form-control datepicker" asp-for="expecteddate" id="expecteddate" placeholder="" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="bmd-label-floating">@Localizer["Owner"]</label>
+                                        @Html.DropDownList("ownerid", abledoc.Utility.ComboHelper.GetOwnerList(Model.ownerid.ToString()), new { @id = "ownerid", @class = "form-control selectpicker1 select2 filter-option-1", @datastyle = "btn btn-link", @name = "ownerid" })
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="bmd-label-floating">@Localizer["Visible to"]</label>
+                                        @Html.DropDownList("visibleto", abledoc.Utility.ComboHelper.GetCommonMasterList("Visibleto", ""), new { @id = "visibleto", @class = "form-control selectpicker1 select2 filter-option-1", @datastyle = "btn btn-link", @name = "visibleto" })
+                                        @*<select class="form-control selectpicker1 select2 filter-option-1" datastyle="btn btn-link" id="visibleto" name="visibleto">
+                                                <option value="0">Owner only</option>
+                                                <option value="1">Owner's visible group</option>
+                                                <option value="2">Owner's group, and sub-groups</option>
+                                                <option value="4">Entire company</option>
+                                            </select>*@
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer text-right">
+                                <div class="col-md-2"></div>
+                                <div class="col-md-10">
+                                    <button type="submit" class="btn btn-primary btn-sm btn-primary-1">
+                                        @Localizer["Save"]
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="row">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label class="bmd-label-floating">@Localizer["Person"]</label>
+                            @* <input type="text" id="Contactpersont" class="form-control" placeholder="Contact Person" />*@
+                        </div>
+                        @{
+                            int counter = 0;
+                            if (Model.adsalesphonelist != null)
+                            {
+                                foreach (var deliveryCon in Model.adsalesphonelist)
+                                {
+
+                                    var removeStyle = (counter > 0) ? "" : "display:none;";
+                                    var addStyle = (counter == 0) ? "" : "display:none;";
+
+                                    <div class="row clonephone">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="bmd-label-floating">@Localizer["Phone"]</label>
+                                                <input type="text" id="@("TypeFilter_" + counter + "_Phone1")" class="form-control phone1"  name="@("TypeFilter[" + counter + "][Phone1]")" value="@deliveryCon.phone" />
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                @Html.DropDownList("TypeFilter[" + counter + "][PhoneType]", abledoc.Utility.ComboHelper.GetPhoneEmailType(deliveryCon.type, "M"), new { @id = "TypeFilter_" + counter + "_PhoneType", @class = "form-control select2 select-dropdown1 phone-select2 PhoneType", @datastyle = "btn btn-link", @name = "TypeFilter[" + counter + "][PhoneType]" })
+                                            </div>
+
+                                        </div>
+                                        <div class="form-group col-sm-2">
+                                            <button type="button" class="btn btn-primary-1 btn-sm addBtn" onclick="clonephone(this)" style="@addStyle"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp; @Localizer["Add new"]</button>
+                                            <button type="button" class="btn btn-danger btn-sm removeBtn" onclick="removeContact(this)" style="@removeStyle"><i class="fa fa-minus-circle"></i>&nbsp;&nbsp; @Localizer["Remove"]</button>
+
+                                        </div>
+                                    </div>
+
+                                    counter++;
+                                }
+                            }
+                            else
+                            {
+                                var removeStyle = (counter > 0) ? "" : "display:none;";
+                                var addStyle = (counter == 0) ? "" : "display:none;";
+                                <div class="row clonephone">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="bmd-label-floating">@Localizer["Phone"]</label>
+                                            <input type="text" id="@("TypeFilter_" + counter + "_Phone1")" class="form-control phone1"  name="@("TypeFilter[" + counter + "][Phone1]")" />
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            @Html.DropDownList("TypeFilter[" + counter + "][PhoneType]", abledoc.Utility.ComboHelper.GetPhoneEmailType("", "M"), new { @id = "TypeFilter_" + counter + "_PhoneType", @class = "form-control select2 select-dropdown1 phone-select2 PhoneType", @datastyle = "btn btn-link", @name = "TypeFilter[" + counter + "][PhoneType]" })
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group col-sm-2">
+                                        <button type="button" class="btn btn-primary-1 btn-sm addBtn" onclick="clonephone(this)" style="@addStyle"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp; @Localizer["Add new"]</button>
+                                        <button type="button" class="btn btn-danger btn-sm removeBtn" onclick="removeContact(this)" style="@removeStyle"><i class="fa fa-minus-circle"></i>&nbsp;&nbsp; @Localizer["Remove"]</button>
+
+                                    </div>
+                                </div>
+
+                            }
+                            <input type="hidden" id="addition_phone_counter" value="@counter" />
+                        }
+
+                        @{
+                            int counter1 = 0;
+                            if (Model.adsalesemaillist != null)
+                            {
+                                foreach (var deliveryCon in Model.adsalesemaillist)
+                                {
+
+                                    var removeStyle = (counter1 > 0) ? "" : "display:none;";
+                                    var addStyle = (counter1 == 0) ? "" : "display:none;";
+
+                                    <div class="row cloneemail">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="bmd-label-floating">@Localizer["Email"]</label>
+                                                <input type="text" id="@("TypeEmail_" + counter1 + "_Email1")" class="form-control Email1"  name="@("TypeEmail[" + counter1 + "][Email1]")" value="@deliveryCon.email" />
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <div class="form-group">
+                                                    @Html.DropDownList("TypeEmail[" + counter1 + "][EmailType]", abledoc.Utility.ComboHelper.GetPhoneEmailType(deliveryCon.type, "E"), new { @id = "TypeEmail_" + counter1 + "_EmailType", @class = "form-control select2 select-dropdown1 email-select2 EmailType", @datastyle = "btn btn-link", @name = "TypeEmail[" + counter + "][EmailType]" })
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="form-group col-sm-2">
+                                            <button type="button" class="btn btn-primary-1 btn-sm addBtn" onclick="cloneemail(this)" style="@addStyle"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp; @Localizer["Add new"]</button>
+                                            <button type="button" class="btn btn-danger btn-sm removeBtn" onclick="removeemail(this)" style="@removeStyle"><i class="fa fa-minus-circle"></i>&nbsp;&nbsp; @Localizer["Remove"]</button>
+
+                                        </div>
+                                    </div>
+
+                                    counter1++;
+                                }
+                            }
+                            else
+                            {
+                                var removeStyle = (counter1 > 0) ? "" : "display:none;";
+                                var addStyle = (counter1 == 0) ? "" : "display:none;";
+                                <div class="row cloneemail">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="bmd-label-floating">@Localizer["Email"]</label>
+                                            <input type="text" id="@("TypeEmail_" + counter1 + "_Email1")" class="form-control Email1" name="@("TypeEmail[" + counter1 + "][Email1]")" />
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <div class="form-group">
+                                                @Html.DropDownList("TypeEmail[" + counter1 + "][EmailType]", abledoc.Utility.ComboHelper.GetPhoneEmailType("", "E"), new { @id = "TypeEmail_" + counter1 + "_EmailType", @class = "form-control select2 select-dropdown1 email-select2 EmailType", @datastyle = "btn btn-link", @name = "TypeEmail[" + counter + "][EmailType]" })
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group col-sm-2">
+                                        <button type="button" class="btn btn-primary-1 btn-sm addBtn" onclick="cloneemail(this)" style="@addStyle"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp; @Localizer["Add new"]</button>
+                                        <button type="button" class="btn btn-danger btn-sm removeBtn" onclick="removeemail(this)" style="@removeStyle"><i class="fa fa-minus-circle"></i>&nbsp;&nbsp; @Localizer["Remove"]</button>
+
+                                    </div>
+                                </div>
+
+                            }
+                            <input type="hidden" id="addition_email_counter" value="@counter1" />
+                        }
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section scripts{
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <script src="~/assets/js/pages/adsales.js?v=@abledoc.Utility.CommonHelper.Version"></script>
+    <!-- END PAGE LEVEL PLUGINS -->
+}
+
+

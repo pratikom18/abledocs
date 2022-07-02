@@ -1,0 +1,5 @@
+ALTER TABLE `abledocs_eu`.`clients` 
+ADD COLUMN `BillingMode` CHAR(20) NULL AFTER `ClientCreated`;
+
+ALTER TABLE `abledocs`.`clients` 
+ADD COLUMN `BillingMode` CHAR(20) NULL AFTER `ClientCreated`;

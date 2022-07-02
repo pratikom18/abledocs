@@ -1,0 +1,187 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<div class="modal fade" id="bootstrap-modal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">@Localizer["Reference File"]</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="col-ms-12">
+                    <div id="UploadFile" style="width: 100%">
+                        <input type="hidden" name="FileTypeReference" ID="FileTypeReference" value="REFERENCE">
+                        <div class="type">
+                            @Html.DropDownList("Type", abledoc.Utility.ComboHelper.GetFileType(ViewBag.Type), "Select", new { @id = "Type", @class = "form-control select2", @name = "Type" })
+                        </div>
+
+                        <div id="downloadBox" class="dropzone" style="position: relative;">
+                            <form name="upload" id="upload" data-ajax="false" method="POST" action="/Jobs/upload" enctype="multipart/form-data">
+                                <div id="drop" style="padding: 0px;">
+                                    <a id="uploadText" class="ui-link text-center" style="overflow: hidden; width: 90%; left: 5%;height:250px;">
+                                        <br />
+                                        <br />
+                                        <i class="material-icons" style="font-size:50px">cloud_upload</i>
+
+                                        <div id="uploadDragDrop" style="color: #000;">
+                                            <br>@Localizer["Drop"]
+                                            <br>@Localizer["Files Here"]
+                                        </div>
+                                    </a>
+                                    <div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset" style="border-color: transparent;display:none;">
+                                        <input type="file" name="upl" multiple="true">
+                                    </div>
+                                </div>
+                                <ul id="uploadedFiles" style="overflow-y: scroll; height: 250px; margin-left:-9%"></ul>
+                                @*<input id="uploads" type="button" value="upload selected files" style="margin-left: 147px;margin-top: 20px" />*@
+                            </form>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success btn-primary-1 left" id="uploads" data-toggle="modal">
+                                <i class="fa fa-plus"></i>@Localizer["Done"]
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<style type="text/css">
+    #uploadText {
+        width: 100%;
+        position: absolute;
+        left: 0px;
+    }
+
+    #upload ul li, #upload ul li {
+        top: 0px;
+        height: 75px;
+        /*  overflow-y: scroll;*/
+    }
+</style>
+<script type="text/javascript">
+
+        $("#uploadText").click(function () {
+            // creating input on-the-fly
+            var input = $(document.createElement("input"));
+            input.attr("type", "file");
+            input.attr("id", "fileToUpload");
+            input.attr("onchange", "fileToUpload(this)");
+            input.attr("multiple", "true");
+            input.trigger("click"); // opening dialog
+            return true; //  navigation
+        });
+
+    var selectedFiles = [];
+    function fileToUpload(input) {
+        // debugger;
+        var file = input.files;
+
+
+        if (file.length > 1) {
+            for (var i = 0; i < file.length; i++) {
+                var files = file[i];//[0];
+                // debugger;
+                selectedFiles.push(files);
+                $("#uploadText").css('background-color', '');
+                $("#uploadText i").css('background-color', '');
+                $("#uploadDragDrop").css('background-color', '');
+                $("#uploadedFiles").append("<li class='success' style='top:0px;height:50px;color:white;background-color:#1883C6B3;background-image: -webkit-linear-gradient(top, #1883C6B3, #1883C6);'>" + files.name + "<br/>" + files.size + "</li>");
+
+
+            }
+        } else {
+            var files = file[0];
+            selectedFiles.push(files);
+            $("#uploadText").css('background-color', '');
+            $("#uploadText i").css('background-color', '');
+            $("#uploadDragDrop").css('background-color', '');
+            $("#uploadedFiles").append("<li class='success' style='top:0px;height:50px;color:white;background-color:#1883C6B3;background-image: -webkit-linear-gradient(top, #1883C6B3, #1883C6);'>" + files.name + "<br/>" + files.size + "</li>");
+
+        }
+    }
+
+
+    var JobID = parseInt($("#JobID").val());
+        var FileID = parseInt($("#ID").val());
+    var FileType = $("#Type").val();
+    var status = $('#hdnStatus').val();
+    var flag = $('#flag').val();
+
+        var selectedFiles=[];
+        $(document).ready(function () {
+        $("#uploads").click(function () {
+            var data = new FormData();
+            data.append("jobID", JobID);
+            data.append("fileID", FileID);
+
+            if (FileType == "") {
+                data.append("state", "REFERENCE")
+                data.append("qcType", "")
+            } else {
+                data.append("state", FileType)
+                data.append("qcType", "")
+            }
+            data.append("flag", flag);
+        //for (var i=0; i < selectedFiles.length; i++) {
+        //    if (selectedFiles[i].length == 1) {
+        //        var files = selectedFiles[i][0]
+        //        data.append(files.name, files);
+        //    } else if (selectedFiles[i].length > 1) {
+        //        var files = selectedFiles[i]
+        //        for (var j = 0; j < files.length; j++) {
+        //            data.append(files[j].name, files[j]);
+        //        }
+        //    }
+
+        //    }
+
+
+            if (selectedFiles.length > 1) {
+                for (var i = 0; i < selectedFiles.length; i++) {
+                    var files = selectedFiles[i];
+                    data.append(files.name, files);
+                }
+            } else {
+                var files = selectedFiles[0];
+                data.append(files.name, files);
+            }
+
+
+
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("ProcessRequest", "File")',
+            contentType: false,
+            processData: false,
+            data: data,
+            success: function (result) {
+
+                if (FileType != "") {
+                    $(".close").click();
+                    $('.FileVersions').load('/file/FileVersions?id=' + FileID + '&status=' + status+'&flag='+flag, function () {
+                        $("#datatables7").dataTable();
+                    });
+                } else {
+                    window.location.href = "/file?ID=" + FileID+'&flag='+flag;
+                }
+
+            },
+            error: function () {
+            alert("There was error uploading files!");
+            }
+            });
+            });
+});
+</script>

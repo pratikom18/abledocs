@@ -1,0 +1,75 @@
+﻿@model abledoc.Models.Jobs;
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@*@{ Layout = null; }*@
+<div class="modal fade" id="bootstrap-modal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">@Localizer["Download All Files"]</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form asp-action="ZipPDFFiles" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="ID" />
+
+                    <div class="form-group">
+                        <label for="SOURCE" class="ui-label">
+                            @Localizer["Source"]
+                            <input type="checkbox" name="DownloadStates" id="SOURCE" checked class="checkbox-ui" value="SOURCE">
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="TAGGING" class="ui-label">
+                            @Localizer["Phase 1"]
+                            <input type="checkbox" name="DownloadStates" id="TAGGING" class="checkbox-ui" value="TAGGING">
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="REVIEW" class="ui-label">
+                            @Localizer["Phase 2"]
+                            <input type="checkbox" name="DownloadStates" id="REVIEW" class="checkbox-ui" value="REVIEW">
+                        </label>
+                    </div>
+                    @*<div class="form-group">
+                            <label for="FINAL" class="ui-label">
+                                Phase 4
+                                <input type="checkbox" name="DownloadStates" id="FINAL" class="checkbox-ui" value="FINAL">
+                            </label>
+                        </div>*@
+                    <div class="form-group">
+                        <label for="QC" class="ui-label">
+                            @Localizer["Phase 3"]
+                            <input type="checkbox" name="DownloadStates" id="QC" class="checkbox-ui" value="QC">
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        @*<label for="DownloadMode">Group By</label>*@
+
+                        <select class="form-control" name="DownloadMode">
+                            <option value="">@Localizer["Group By"]</option>
+                            <option selected value="State">@Localizer["State"]</option>
+                            <option value="File">@Localizer["File ID"]</option>
+                        </select>
+
+                    </div>
+                    <br />
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary-1" id="saveBtn1">@Localizer["Save"]</button>
+                        &nbsp;&nbsp;&nbsp;
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">@Localizer["Close"]</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,17 @@
+JobQuoteAutopopulate
+JobQuoteAutopopulateCountries
+Jobsstatus
+Jobstype
+ManageCompany
+MenuMaster
+RoleAssign
+RolePermission
+SettingPermission
+UserRole
+AssignedMenu	
+CommonMaster
+EmailTemplate
+
+
+
+abledocs

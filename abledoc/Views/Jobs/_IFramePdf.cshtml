@@ -1,0 +1,82 @@
+﻿@{
+    int File = (Convert.ToInt32(ViewBag.File) > 0) ? Convert.ToInt32(ViewBag.File) : 0;
+    int FileJFV = (Convert.ToInt32(ViewBag.FileJFV) > 0) ? Convert.ToInt32(ViewBag.FileJFV) : 0;
+    int LastFile = (Convert.ToInt32(ViewBag.LastFile) > 0) ? Convert.ToInt32(ViewBag.LastFile) : 0;
+    int QuoteFile = (Convert.ToInt32(ViewBag.QuoteFile) > 0) ? Convert.ToInt32(ViewBag.QuoteFile) : 0;
+    string Type = (!string.IsNullOrEmpty(Convert.ToString(ViewBag.QuoteType))) ? Convert.ToInt32(ViewBag.QuoteType) : "";
+    int ID = (Convert.ToInt32(ViewBag.QuoteID) > 0) ? Convert.ToInt32(ViewBag.QuoteID) : 0;
+
+    string Physical_Path = string.Empty;
+    ViewBag.databasename = abledoc.Utility.CommonHelper.Getabledocs(ViewBag.flag);
+    if (FileJFV > 0)
+    {
+        JobsFilesVersions modelFile = new JobsFilesVersions();
+        modelFile.databasename = ViewBag.databasename;
+        modelFile = modelFile.GetFileVersionByID(FileJFV);
+        if (modelFile != null)
+        {
+            Physical_Path = modelFile.Physical_Path;
+        }
+    }
+    else if (File > 0)
+    {
+        JobsFilesVersions modelFile = new JobsFilesVersions();
+        modelFile.databasename = ViewBag.databasename;
+        modelFile = modelFile.GetFileVersionStateByFileID(File, "SOURCE");
+        if (modelFile != null)
+        {
+            Physical_Path = modelFile.Physical_Path;
+        }
+
+    }
+    else if (LastFile > 0)
+    {
+        JobsFilesVersions modelFile = new JobsFilesVersions();
+        modelFile.databasename = ViewBag.databasename;
+        modelFile = modelFile.GetFileVersionByID(LastFile);
+        if (modelFile != null)
+        {
+            Physical_Path = modelFile.Physical_Path;
+        }
+    }
+    else if (QuoteFile > 0)
+    {
+        QuoteTracking modelFile = new QuoteTracking();
+        modelFile.databasename = ViewBag.databasename;
+        modelFile = modelFile.GetQuoteTrackingByID(QuoteFile);
+        if (modelFile != null)
+        {
+            Physical_Path = modelFile.PhysicalLocation;
+        }
+    }
+    else if (Type != "Quote")
+    {
+        QuoteTracking quoteTracking = new QuoteTracking();
+        quoteTracking.databasename = ViewBag.databasename;
+        quoteTracking = quoteTracking.GetQuoteTrackingByJobID(ID);
+        if (quoteTracking != null)
+        {
+            Physical_Path = quoteTracking.PhysicalLocation;
+        }
+
+    }
+    else if (Type != "Invoice")
+    {
+        InvoiceTracking invoiceTracking = new InvoiceTracking();
+        invoiceTracking.databasename = ViewBag.databasename;
+        invoiceTracking = invoiceTracking.GetInvoiceTrackingByJobID(ID);
+        if (invoiceTracking != null)
+        {
+            Physical_Path = invoiceTracking.PhysicalLocation;
+        }
+    }
+}
+@if (Physical_Path != string.Empty)
+{
+    <div class="card-body pdfView">
+
+
+        <embed src="@(Physical_Path)#navpanes=0&scrollbar=0" width="100%" height="400px">
+
+    </div>
+}

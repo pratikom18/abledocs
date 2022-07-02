@@ -1,0 +1,78 @@
+
+CREATE
+    /*[ALGORITHM = {UNDEFINED | MERGE | TEMPTABLE}]
+    [DEFINER = { user | CURRENT_USER }]
+    [SQL SECURITY { DEFINER | INVOKER }]*/
+    VIEW `abledocs`.`vwjobssummary` 
+    AS
+(
+SELECT
+  `jobs_files`.`JobID` AS `JobID`,
+  IFNULL(COUNT(0),0)   AS `Files`,
+  IFNULL(SUM(`jobs_files`.`Pages`),0) AS `Pages`,
+  SUM((`jobs_files`.`Price` * `jobs_files`.`Quantity`)) AS `QuotedValue`
+FROM `jobs_files`
+WHERE ((`jobs_files`.`Status` <> 'REFERENCE')
+       AND (`jobs_files`.`Deleted` = 0))
+GROUP BY `jobs_files`.`JobID`
+);
+
+
+===================================================================================
+
+
+CREATE
+    /*[ALGORITHM = {UNDEFINED | MERGE | TEMPTABLE}]
+    [DEFINER = { user | CURRENT_USER }]
+    [SQL SECURITY { DEFINER | INVOKER }]*/
+    VIEW `abledocs`.`vwprogressbar` 
+    AS
+(
+SELECT
+  `jobs_files`.`JobID` AS `JobID`,
+  SUM(`jobs_files`.`Pages`) AS `FinalPages`,
+  COUNT(0)                    AS `FinalFiles`
+FROM `jobs_files`
+WHERE ((`jobs_files`.`Status` <> 'REFERENCE')
+       AND (`jobs_files`.`Deleted` = 0)
+       AND (`jobs_files`.`Status` = 'TOBEDELIVERED'))
+GROUP BY `jobs_files`.`JobID`
+);
+
+=========================================================================================
+
+
+CREATE
+    /*[ALGORITHM = {UNDEFINED | MERGE | TEMPTABLE}]
+    [DEFINER = { user | CURRENT_USER }]
+    [SQL SECURITY { DEFINER | INVOKER }]*/
+    VIEW `abledocs`.`vwquotedhours` 
+    AS
+(
+SELECT
+  `jobs_files`.`JobID` AS `JobID`,
+  IFNULL(SUM(`jobs_files`.`Quantity`),0) AS `QuotedHours`
+FROM `jobs_files`
+WHERE ((`jobs_files`.`PricePer` = 'Hour')
+       AND (`jobs_files`.`Status` <> 'REFERENCE')
+       AND (`jobs_files`.`Deleted` = 0))
+GROUP BY `jobs_files`.`JobID`
+);
+
+
+===========================================================================================
+
+
+CREATE
+    /*[ALGORITHM = {UNDEFINED | MERGE | TEMPTABLE}]
+    [DEFINER = { user | CURRENT_USER }]
+    [SQL SECURITY { DEFINER | INVOKER }]*/
+    VIEW `abledocs`.`vwtimer` 
+    AS
+(
+SELECT
+  `all_timers`.`JobID` AS `JobID`,
+  ((SUM(`all_timers`.`TStop`) - SUM(`all_timers`.`TStart`)) / 3600) AS `hours`
+FROM `all_timers`
+GROUP BY `all_timers`.`JobID`
+);

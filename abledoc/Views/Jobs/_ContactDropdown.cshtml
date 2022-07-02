@@ -1,0 +1,27 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{ Layout = null; }
+
+@{
+    string id = ViewBag.id;
+    string databasename = Model.databasename;
+}
+
+
+<div class="row">
+    <div class="form-group col-sm-3"><label for="ContactID" class="col-form-label">@Localizer["Contact"]</label></div>
+    <div class="form-group col-sm-6">
+        @Html.DropDownList("ContactID", abledoc.Utility.ComboHelper.GetJobContactList(Model.ClientID.ToString(), "", "", Model.loginusercountry, databasename), Localizer["Select"].Value, new { @id = "ContactID", @class = "form-control select-dropdown", @name = "ContactID" })
+    </div>
+    <div class="form-group col-sm-3">
+        <button type="button" onclick="showInPopup('@Url.Action("AddContact", "Jobs", null, Context.Request.Scheme)','Add contact','big',@Model.ClientID)" class="btn btn-primary-1 btn-sm"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp; @Localizer["Add contact"]</button>
+    </div>
+</div>
+<div class="row">
+    <div class="form-group col-sm-3"><label for="BillingContactID" class="col-form-label">@Localizer["Billing Contact"]</label></div>
+    <div class="form-group col-sm-6">
+        @Html.DropDownList("BillingContactID", abledoc.Utility.ComboHelper.GetJobContactList(Model.ClientID.ToString(), "BillingContact", Model.loginusercountry, databasename), Localizer["Select"].Value, new { @id = "BillingContactID", @class = "form-control select-dropdown", @name = "BillingContactID" })
+    </div>
+
+</div>
+@await Html.PartialAsync("_deliverycontact")

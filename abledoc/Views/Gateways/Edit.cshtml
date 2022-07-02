@@ -1,0 +1,795 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model abledoc.Models.Gateways;
+@{
+    ViewData["Title"] = "ADGateways - " + Model.subdomain;
+    ViewData["PageTitle"] = Localizer["ADGateways"];
+
+    int index = 0;
+}
+<input type="hidden" id="success" value="@ViewBag.Save" />
+<div class="alert alert-success" id="message" style="display:none">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <i class="material-icons">@Localizer["close"]</i>
+    </button>
+    <span>
+        @Localizer["ADGateway details save successfully"]
+    </span>
+</div>
+<div @(ViewBag.Disebled == "True" ? "aria-current=page" : "")>
+    <form method="post" class="form-horizontal" asp-controller="gateways" id="GatewayForm" asp-action="@(ViewBag.Type=="Add"?"CreateGateway":"edit")" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" id="hdnType" value="@ViewBag.Type" />
+        <input type="hidden" asp-for="@Model.flag" />
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-header card-header-icon card-header-rose">
+                                <div class="card-icon card-header-success-1 card-icon-1">
+                                    <i class="material-icons">
+                                        insert_drive_file
+                                    </i>
+                                </div>
+                            </div>
+                            <div class="card-collapse">
+                                <div class="card-header" role="tab" id="headingOne">
+                                    <h5 class="mb-0">
+                                        <a data-toggle="collapse" href="#collapseGeneral" aria-expanded="true" aria-controls="collapseOne" class="collapsed accordion">
+                                            @Localizer["General"]
+                                            <i class="material-icons">keyboard_arrow_down</i>
+                                        </a>
+                                    </h5>
+                                </div>
+                                <div id="collapseGeneral" class="collapse show" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" style="">
+                                    <div class="card-body">
+                                        <!-- form start -->
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <label asp-for="ClientID" class="col-form-label col-sm-2 text-left">@Localizer["Client"]<span class="text-danger">*</span></label>
+                                                <div class="col-sm-10">
+                                                    <div class="form-group">
+                                                        @Html.DropDownList("ClientID", abledoc.Utility.ComboHelper.GetCompanyList(), new { @id = "ClientID", @class = "form-control selectpicker", @datastyle = "btn btn-link", @name = "ClientID" })
+                                                        <span asp-validation-for="ClientID" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <label asp-for="subdomain" class="col-form-label col-sm-2 text-left">@Localizer["Sub-domain"]<span class="text-danger">*</span></label>
+                                                <div class="col-sm-10">
+                                                    <div class="form-group">
+                                                        <input asp-for="subdomain" class="form-control" placeholder=@Localizer["Sub-domain"] aria-describedby="subdomain">
+                                                        <span asp-validation-for="subdomain" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        @foreach (KeyValuePair<string, string> kvp in ViewBag.ClientNameList)
+                                        {
+                                            <div class="col-sm-12">
+                                                <div class="row">
+                                                    <label asp-for="ClientNames[@kvp.Key]" class="col-form-label col-sm-2 text-left">@Localizer["Client Name"] &nbsp;&nbsp;<span class="lang @kvp.Key">@kvp.Key</span></label>
+                                                    <div class="col-sm-10">
+                                                        <div class="form-group">
+                                                            <input type="text" name="ClientNames[@kvp.Key]" class="form-control" placeholder=@Localizer["Client Name"] value="@kvp.Value.ToString()">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        }
+
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <label asp-for="PortalName" class="col-form-label col-sm-2 text-left">@Localizer["Portal Name"]<span class="text-danger">*</span></label>
+                                                <div class="col-sm-10">
+                                                    <div class="form-group">
+                                                        <input asp-for="PortalName" class="form-control" placeholder=@Localizer["Portal Name"] aria-describedby="PortalName">
+                                                        <span asp-validation-for="PortalName" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <label class="col-form-label col-sm-2 text-left">@Localizer["Languages"]</label>
+                                                <div class="col-sm-10">
+                                                    <div class="form-group">
+                                                        <table class="table table-striped table-bordered table-hover responsive" width="100%">
+                                                            <tbody>
+                                                                @{ int count = 0;
+                                                                    foreach (KeyValuePair<string, string> kvp in ViewBag.LanguageList)
+                                                                    {
+                                                                        <tr>
+                                                                            <td><input type="checkbox" @(Utility.isElementExist(ViewBag.LangList, kvp.Key) ? "checked" : "") name="Languages[]" id="@kvp.Key" value="@kvp.Key" /> <label>@kvp.Value.ToString()</label></td>
+                                                                        </tr>
+                                                                        count++;
+                                                                    }
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <label asp-for="DefaultLang" class="col-form-label col-sm-2 text-left">@Localizer["Default Language"]</label>
+                                                <div class="col-sm-10">
+                                                    <div class="form-group">
+                                                        <select asp-for="DefaultLang" class="form-control selectpicker" datastyle="btn btn-link">
+                                                            <option value=""></option>
+                                                            @foreach (KeyValuePair<string, string> kvp in ViewBag.ClientNameList)
+                                                            {
+                                                                <option value="@kvp.Key">@ViewBag.LanguageList[kvp.Key]</option>
+                                                            }
+
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-collapse">
+                                <div class="card-header" role="tab" id="headingTwo">
+                                    <h5 class="mb-0">
+                                        <a data-toggle="collapse" href="#collapseLogo" aria-expanded="true" aria-controls="collapseTwo" class="collapsed accordion">
+                                            @Localizer["Logo"]
+                                            <i class="material-icons">keyboard_arrow_down</i>
+                                        </a>
+                                    </h5>
+                                </div>
+                                <div id="collapseLogo" class="collapse show" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+                                    <div class="card-body">
+                                        <!-- form start -->
+                                        @if (!string.IsNullOrEmpty(ViewBag.ImageUrl))
+                                        {
+                                            <div class="row">
+                                                <div class="col-sm-2">
+                                                    <div class="form-group">
+
+                                                        <img style='display:block; width:100px;height:50px;' id='base64image' src='@ViewBag.ImageUrl' />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                        }
+
+
+                                        @foreach (KeyValuePair<string, string> kvp in ViewBag.LogoAltlist)
+                                        {
+                                            <div class="col-sm-12">
+                                                <div class="row">
+                                                    <label asp-for="logo_alts[@kvp.Key]" class="col-form-label col-sm-2 text-left">@Localizer["Logo ALT Text"] &nbsp;&nbsp;<span class="lang @kvp.Key">@kvp.Key</span></label>
+                                                    <div class="col-sm-10">
+                                                        <div class="form-group">
+                                                            <input type="text" name="logo_alts[@kvp.Key]" class="form-control" placeholder=@Localizer["Logo ALT Text"] value="@kvp.Value.ToString()">
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                        }
+
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <label for="fileToUpload" class="col-form-label col-sm-2 text-left">@Localizer["Upload Logo"]</label>
+                                                <div class="col-sm-10">
+                                                    @*<input type="file" name="fileToUpload" id="fileToUpload" class="form-control">*@
+                                                    <span class="btn btn-round btn-file btn-primary-1">
+                                                        <span class="fileinput-new">@Localizer["Select image"]</span>
+                                                        @*<span class="fileinput-exists">Change</span>*@
+                                                        <input type="file" name="fileToUpload" id="fileToUpload" />
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-collapse">
+                                <div class="card-header" role="tab" id="headingThree">
+                                    <h5 class="mb-0">
+                                        <a data-toggle="collapse" href="#collapseStandardFields" aria-expanded="true" aria-controls="collapseThree" class="collapsed accordion">
+                                            @Localizer["Standard Fields"]
+                                            <i class="material-icons">keyboard_arrow_down</i>
+                                        </a>
+                                    </h5>
+                                </div>
+                                <div id="collapseStandardFields" class="collapse show" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion" style="">
+                                    <div class="card-body">
+                                        <!-- form start -->
+                                        @foreach (KeyValuePair<string, string> kvp in ViewBag.StandardFieldList)
+                                        {
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <label asp-for="fields[@kvp.Key]" class="col-form-label col-md-2 text-left">@kvp.Value</label>
+                                                    <div class="col-sm-10">
+                                                        <div class="form-group">
+                                                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                                                @foreach (KeyValuePair<string, string> kvp1 in ViewBag.SatesList)
+                                                                {
+                                                                    <label class="btn btn-secondary @(ViewBag.FieldsList != null ? ViewBag.FieldsList.ContainsKey(kvp.Key) ? ViewBag.FieldsList[kvp.Key] == kvp1.Key ? "active" : "" : "" : "")">
+                                                                        <input type="radio" class="btn-focuse" name="fields[@kvp.Key]" id="fields[@kvp1.Key]" @(ViewBag.FieldsList != null ? ViewBag.FieldsList.ContainsKey(kvp.Key) ? ViewBag.FieldsList[kvp.Key] == kvp1.Key ? "checked" : "" : "" : "") value="@kvp1.Value"> @kvp1.Value
+                                                                    </label>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-collapse">
+                                <div class="card-header" role="tab" id="headingFour">
+                                    <h5 class="mb-0">
+                                        <a data-toggle="collapse" href="#collapseCustomFields" aria-expanded="true" aria-controls="collapseFour" class="collapsed accordion">
+                                            @Localizer["Custom Fields"]
+                                            <i class="material-icons">keyboard_arrow_down</i>
+                                        </a>
+                                    </h5>
+                                </div>
+                                <div id="collapseCustomFields" class="collapse show" role="tabpanel" aria-labelledby="headingFour" data-parent="#accordion" style="">
+                                    <div class="card-body customfields">
+                                        <!-- form start -->
+                                        @if (ViewBag.FieldsCustomlist != null)
+                                        {
+                                            if (Enumerable.Count(ViewBag.FieldsCustomlist) > 0)
+                                            {
+
+                                                <div class="form-group row">
+                                                    <div class="col-sm-1"></div>
+                                                    <div class="col-sm-2">
+                                                        <label class="col-form-label">@Localizer["Field Type"]</label>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="col-form-label">@Localizer["State"]</label>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="col-form-label">@Localizer["Labels"]</label>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="col-form-label">...</label>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        @*MKuznicki: The re-use of ui-block-c is intentional since the ui-block type only has through -e defined*@
+                                                        <label class="col-form-label">@Localizer["Input Pattern"]</label>
+                                                    </div>
+                                                </div>
+                                                foreach (CustomField item in ViewBag.FieldsCustomlist)
+                                                {
+                                                    <div class="form-group row @("CustomField-" + index)">
+                                                        <div class="col-sm-1">
+                                                            <button type="button" class="btn btn-success btn-primary-1" id="deleteBtn" atr-index="@index"><i class="material-icons">delete</i></button>
+                                                        </div>
+                                                        <div class="col-sm-2">
+                                                            <select name="fields_custom[@index][Type]" class="form-control fields_custom">
+                                                                @foreach (KeyValuePair<string, string> kvp in ViewBag.FieldTypelist)
+                                                                {
+                                                                    if (kvp.Key == item.Type)
+                                                                    {
+                                                                        <option value="@kvp.Key" selected>@kvp.Value</option>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <option value="@kvp.Key">@kvp.Value</option>
+                                                                    }
+                                                                }
+
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-sm-2">
+                                                            <select name="fields_custom[@index][State]" class="form-control fields_custom">
+                                                                @foreach (KeyValuePair<string, string> kvp in ViewBag.SatesList)
+                                                                {
+                                                                    if (kvp.Key == item.State)
+                                                                    {
+                                                                        <option value="@kvp.Key" selected>@kvp.Value</option>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <option value="@kvp.Key">@kvp.Value</option>
+                                                                    }
+
+                                                                }
+
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-sm-2">
+                                                            @if (item.Label != null)
+                                                            {
+                                                                foreach (KeyValuePair<string, string> kvp in item.Label)
+                                                                {
+                                                                    <div class="row">
+                                                                        <input class="form-control" name="fields_custom[@index][Label][@kvp.Key]" placeholder="@ViewBag.LanguageList[kvp.Key] Label" type="text" value="@kvp.Value">
+                                                                    </div>
+                                                                }
+                                                            }
+
+                                                        </div>
+                                                        <div class="col-sm-2">
+                                                            @if (item.Values != null)
+                                                            {
+                                                                foreach (KeyValuePair<string, string> kvp in item.Values)
+                                                                {
+                                                                    <div class="row">
+                                                                        <input class="form-control" name="fields_custom[@index][Values][@kvp.Key]" placeholder="@ViewBag.LanguageList[kvp.Key] Placeholder Text" type="text" value="@kvp.Value">
+                                                                    </div>
+                                                                }
+                                                            }
+
+                                                        </div>
+
+                                                        <div class="col-sm-2">
+                                                            @if (item.Pattern != null)
+                                                            {
+                                                                foreach (KeyValuePair<string, string> kvp in item.Pattern)
+                                                                {
+                                                                    <div class="row">
+                                                                        <input class="form-control" name="fields_custom[@index][Pattern][@kvp.Key]" placeholder="@ViewBag.LanguageList[kvp.Key] input pattern" type="text" value="@kvp.Value">
+                                                                    </div>
+                                                                }
+                                                            }
+
+                                                        </div>
+
+                                                    </div>
+                                                    { index++; }
+                                                }
+
+                                            }
+                                        }
+
+
+                                        <div class="modal-footer">
+                                            <input type="hidden" id="fields_custom" value="@index" name="fields_custom">
+                                            <input type="hidden" id="AddCustomField" value="@index" name="fieldscustom" disabled>
+                                            <button type="button" class="btn btn-success btn-primary-1" id="AddCustomField_Button">@Localizer["Add"]</button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-collapse">
+                                <div class="card-header" role="tab" id="headingFive">
+                                    <h5 class="mb-0">
+                                        <a data-toggle="collapse" href="#collapseAdvanced" aria-expanded="true" aria-controls="collapseFive" class="collapsed accordion">
+                                            @Localizer["Advanced"]
+                                            <i class="material-icons">keyboard_arrow_down</i>
+                                        </a>
+                                    </h5>
+                                </div>
+                                <div id="collapseAdvanced" class="collapse show" role="tabpanel" aria-labelledby="headingFive" data-parent="#accordion" style="">
+                                    <div class="card-body">
+                                        <!-- form start -->
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <label class="col-form-label col-sm-2 text-left" asp-for="email_FromName">@Localizer["Confirmation Email Name"]</label>
+                                                <div class="col-sm-10">
+                                                    <div class="form-group">
+                                                        <input class="form-control" asp-for="email_FromName" placeholder=@Localizer["Confirmation Email Name"] type="text">
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <label class="col-form-label col-sm-2 text-left" asp-for="email_FromAddress">@Localizer["Confirmation Email Address"]</label>
+                                                <div class="col-sm-10">
+                                                    <div class="form-group">
+                                                        <input class="form-control" asp-for="email_FromAddress" placeholder=@Localizer["Confirmation Email Address"] type="text">
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        @if (Enumerable.Count(ViewBag.LangList) > 0)
+                                        {
+                                            @if (Enumerable.Count(ViewBag.LangList) > 1 && Enumerable.Count(ViewBag.LangList) <= 3)
+                                            {
+
+                                                //Fiel
+                                                <div class="col-sm-12">
+                                                    <div class="row">
+
+                                                        <label class="col-form-label col-sm-2 text-left">@Localizer["Field"]</label>
+                                                        @foreach (string item in ViewBag.LangList)
+                                                        {
+
+                                                            <label asp-for="@item" class="col-form-label col-sm-3 text-left"><span class="lang @item">@item</span></label>
+
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12">
+                                                    <div class="row">
+
+                                                        <label class="col-form-label col-sm-2 text-left">@Localizer["Welcome Text"]</label>
+
+
+                                                        @foreach (string item in ViewBag.LangList)
+                                                        {
+                                                            @foreach (KeyValuePair<string, string> kvp in ViewBag.TextWelcomelist)
+                                                            {
+                                                                if (item == kvp.Key)
+                                                                {
+                                                                    <div class="col-sm-3">
+                                                                        <div class="form-group">
+                                                                            <textarea name="text_Welcome[@kvp.Key]" class="form-control" placeholder=@Localizer["Welcome Text"]>@kvp.Value.ToString()</textarea>
+                                                                        </div>
+                                                                    </div>
+
+                                                                }
+
+                                                            }
+                                                        }
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-12">
+                                                    <div class="row">
+
+                                                        <label class="col-form-label col-sm-2 text-left"> @Localizer["Thank You Text"]</label>
+
+
+                                                        @foreach (string item in ViewBag.LangList)
+                                                        {
+                                                            @foreach (KeyValuePair<string, string> kvp in ViewBag.TextThankyoulist)
+                                                            {
+                                                                if (item == kvp.Key)
+                                                                {
+                                                                    <div class="col-sm-3">
+                                                                        <div class="form-group">
+                                                                            <textarea name="text_Thankyou[@kvp.Key]" class="form-control" placeholder=@Localizer["Thank You Text"]>@kvp.Value.ToString()</textarea>
+                                                                        </div>
+                                                                    </div>
+
+                                                                }
+
+                                                            }
+                                                        }
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-12">
+                                                    <div class="row">
+
+                                                        <label class="col-form-label col-sm-2 text-left">@Localizer["E-mail Text"]</label>
+
+
+
+                                                        @foreach (string item in ViewBag.LangList)
+                                                        {
+                                                            @foreach (KeyValuePair<string, string> kvp in ViewBag.TextEmaillist)
+                                                            {
+                                                                if (item == kvp.Key)
+                                                                {
+                                                                    <div class="col-sm-3">
+                                                                        <div class="form-group ">
+                                                                            <textarea name="text_Email[@kvp.Key]" class="form-control" placeholder=@Localizer["E-mail Text"]>@kvp.Value.ToString()</textarea>
+                                                                        </div>
+                                                                    </div>
+
+                                                                }
+                                                            }
+                                                        }
+                                                    </div>
+                                                </div>
+
+
+                                            }
+                                            else
+                                            {
+                                                @foreach (KeyValuePair<string, string> kvp in ViewBag.TextWelcomelist)
+                                                {
+                                                    <div class="col-sm-12">
+                                                        <div class="row">
+                                                            <label asp-for="text_Welcome[@kvp.Key]" class="col-md-2 col-form-label text-left">@Localizer["Welcome Text"] &nbsp;&nbsp;<span class="lang @kvp.Key">@kvp.Key</span></label>
+                                                            <div class="form-group col-sm-10">
+                                                                <textarea name="text_Welcome[@kvp.Key]" class="form-control" placeholder=@Localizer["Welcome Text"]>@kvp.Value.ToString()</textarea>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                @foreach (KeyValuePair<string, string> kvp in ViewBag.TextThankyoulist)
+                                                {
+                                                    <div class="col-sm-12">
+                                                        <div class="row">
+                                                            <label asp-for="text_Thankyou[@kvp.Key]" class="col-md-2 col-form-label text-left">@Localizer["Thank You Text"] &nbsp;&nbsp;<span class="lang @kvp.Key">@kvp.Key</span></label>
+                                                            <div class="col-sm-10">
+                                                                <div class="form-group">
+                                                                    <textarea name="text_Thankyou[@kvp.Key]" class="form-control" placeholder=@Localizer["Thank You Text"]>@kvp.Value.ToString()</textarea>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                }
+                                                @foreach (KeyValuePair<string, string> kvp in ViewBag.TextEmaillist)
+                                                {
+                                                    <div class="col-sm-12">
+                                                        <div class="row">
+                                                            <label asp-for="text_Email[@kvp.Key]" class="col-form-label col-md-2 text-left">@Localizer["E-mail Text"] &nbsp;&nbsp;<span class="lang @kvp.Key">@kvp.Key</span></label>
+                                                            <div class="col-sm-10">
+                                                                <div class="form-group">
+                                                                    <textarea name="text_Email[@kvp.Key]" class="form-control" placeholder="E-mail Text">@kvp.Value.ToString()</textarea>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                }
+
+                                            }
+
+                                        }
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <label asp-for="Portal_Password" class="col-form-label col-sm-2 text-left">@Localizer["Portal access password"]</label>
+                                                <div class="col-sm-10">
+                                                    <div class="form-group ">
+                                                        <input class="form-control" asp-for="Portal_Password" placeholder=@Localizer["Portal access password"] type="text">
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <label asp-for="SAML_SSO_Provider" class="col-form-label col-sm-2 text-left">@Localizer["SAML IdP / SSO provider URL"]</label>
+                                                <div class="col-sm-10">
+                                                    <div class="form-group ">
+                                                        <input class="form-control" asp-for="SAML_SSO_Provider" placeholder=@Localizer["SAML IdP / SSO provider URL"] type="text">
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <label asp-for="Azure_AD_Client" class="col-form-label col-sm-2 text-left">@Localizer["Azure AD Client ID"]</label>
+                                                <div class="col-sm-10">
+                                                    <div class="form-group ">
+                                                        <input class="form-control" asp-for="Azure_AD_Client" placeholder=@Localizer["Azure AD Client ID"] type="text">
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <label asp-for="Azure_AD_Secret" class="col-form-label col-sm-2 text-left">@Localizer["Azure AD Secret"]</label>
+                                                <div class="col-sm-10">
+                                                    <div class="form-group ">
+                                                        <input class="form-control" asp-for="Azure_AD_Secret" placeholder=@Localizer["Azure AD Secret"] type="text">
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-10 checkbox-radios">
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox" name="Hide_Logo" @(Model.Hide_Logo == "1" ? "checked" : "") value="1"> @Localizer["Hide AbleDocs Logo"]
+                                                        <span class="form-check-sign">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox" name="Hide_Contact_Info" @(Model.Hide_Contact_Info == "1" ? "checked" : "") value="1"> @Localizer["Hide AbleDocs Contact Info"]
+                                                        <span class="form-check-sign">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox" name="Hide_Delivery_Time" @(Model.Hide_Delivery_Time == "1" ? "checked" : "") value="1"> @Localizer["Hide Delivery Time Pane"]
+                                                        <span class="form-check-sign">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <!-- /.card-body -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="card-footer">
+                <button type="button" class="btn btn-primary btn-primary-1" id="SaveButton"><i class="fa fa-save"></i> @Localizer["Save"]</button>
+</div>
+        </div>
+
+
+    </form>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            $('#ClientID').selectpicker('setStyle', 'btn btn-link');
+            $('#DefaultLang').selectpicker('setStyle', 'btn btn-link');
+            $('.fields_custom').selectpicker('setStyle', 'btn btn-link');
+            $('.filter-option').addClass('filter-option-1');
+
+            $(document).on('change', '#fileToUpload', function () {
+                var input = $(this);
+
+                var file = $('#fileToUpload').prop('files')[0];
+
+                var subdomain = $("#subdomain").val();
+
+                var data = new FormData();
+                data.append("subdomain", subdomain);
+                data.append("flag", $("#flag").val());
+                data.append(file.name, file);
+
+
+                $.ajax({
+                    type: "POST",
+                    url: '/gateways/upload',//Url.Action("", ""),
+                    contentType: false,
+                    processData: false,
+                    data: data,
+                    success: function (result) {
+
+                        $('#base64image').attr('src', result.data);
+                    },
+                    error: function () {
+                        alert("There was error uploading files!");
+                    }
+                });
+
+            })
+        });
+
+        $("td").click(function (e) {
+            var chk = $(this).closest("tr").find("input:checkbox").get(0);
+            if (e.target != chk) {
+                chk.checked = !chk.checked;
+            }
+        });
+
+        $("input[name^='Languages").change(function () {
+            $('#SaveButton').trigger('click');
+        });
+        $("#AddCustomField_Button").click(function () {
+            $("#AddCustomField").prop("disabled", false);
+            $('#SaveButton').trigger('click');
+        });
+        $("#deleteBtn").click(function () {
+
+            var deleteNo = $(this).attr("atr-index");
+            var no = $('#fields_custom').val();
+            var $row = $(this).closest('.CustomField-' + deleteNo);
+            $row.remove();
+            $('#fields_custom').val(parseInt(no) - 1);
+        });
+        var success = $("#success").val();
+        if (success == 1) {
+            $('#message').css('display', 'block').delay(4000).fadeOut();
+        }
+
+        $(document).ready(function () {
+            $(document).on('click', '#SaveButton', function () {
+
+                if ($("#hdnType").val() == "Add") {
+                    $.ajax({
+                        type: "POST",
+                        url: "/gateways/isExistsubdomain",
+                        data: { subdomain: $("#subdomain").val(), flag: $("#flag").val() },
+                        dataType: "JSON",
+                        success: function (data) {
+                            if (data.result) {
+                                $.notify({
+                                    icon: 'add_alert',
+                                    title: '<strong>Error!</strong>',
+                                    message: "Sub-domain already exists"
+                                }, {
+                                    type: 'danger'
+                                });
+                            }
+                            else {
+                                $('#GatewayForm').submit();
+                            }
+
+
+                        },
+                        error: function () {
+                            alert("error");
+                        }
+                    });
+                } else {
+                    $('#GatewayForm').submit();
+                }
+
+            });
+        });
+
+
+    </script>
+}

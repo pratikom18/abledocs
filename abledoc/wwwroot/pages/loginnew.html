@@ -1,0 +1,136 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<!-- /examples/pages/login.html , Tue, 14 May 2019 06:09:51 GMT -->
+<!-- Added by Material Design -->
+<meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by Material Design -->
+<head>
+    <meta charset="utf-8" />
+    <link rel="apple-touch-icon" sizes="76x76" href="/Resources/Images/Logo/logo-positive-sm.svg">
+    <link rel="icon" type="image/png" href="/Resources/Images/Logo/logo-positive-sm.svg">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>
+        Login - AbleDocs
+    </title>
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+    <!--  Social tags      -->
+    <meta name="keywords" content="Material Design, html dashboard, html css dashboard, web dashboard, bootstrap 4 dashboard, bootstrap 4, css3 dashboard, bootstrap 4 admin, material dashboard bootstrap 4 dashboard, frontend, responsive bootstrap 4 dashboard, material design, material dashboard bootstrap 4 dashboard">
+    <meta name="description" content="Material Dashboard PRO is a Premium Material Bootstrap 4 Admin with a fresh, new design inspired by Google's Material Design.">
+
+
+    <!--     Fonts and icons     -->
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+    <link rel="stylesheet" href="/assets/fontawesome/css/all.min.css">
+    <!-- CSS Files -->
+    <link href="/assets/css/material-dashboard.minf066.css" rel="stylesheet" />
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <link href="/assets/demo/demo.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/assets/css/common.css">
+    <link rel="stylesheet" href="/assets/css/login.css">
+</head>
+
+<body class="off-canvas-sidebar mainimg">
+
+
+
+    <div class="wrapper wrapper-full-page mainimg1">
+        <div class="" filter-color="black" style="">
+            <!--   you can change the color of the filter page using: data-color="blue | purple | green | orange | red | rose #1883C6" -->
+
+            <div class="container">
+
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 col-sm-8 ml-auto mr-auto new-col-lg-4">
+
+                        <form id="login-form" method="post">
+                            <div class="mainimg2">
+                                <div class="frmdiv">
+                                    <div class="login-error" id="message" style="display:none">
+
+                                    </div>
+
+                                    <span class="bmd-form-group">
+
+                                        <div class="input-group">
+                                            <div class="form-group-1">
+                                                <label style="color:black;">User Name1</label>
+                                            </div>
+                                            <div class="form-group-1">
+                                                <input id="txtUserName" name="txtUserName" class="form-control form-control-1 txtbox" value="vishal.dodiya" required />
+                                            </div>
+
+                                        </div>
+
+                                    </span>
+
+                                    <span class="bmd-form-group">
+
+                                        <div class="input-group">
+                                            <div class="form-group-1">
+                                                <label style="color:black;">Password</label>
+                                            </div>
+                                            <div class="form-group-1">
+                                                <input type="password" id="txtPassword" name="txtPassword" class="form-control form-control-1 txtbox" value="tR5wltlB" required />
+                                            </div>
+
+                                        </div>
+
+                                    </span>
+                                </div>
+                                <div style="padding-left:8%;padding-top:5%">
+                                    <div class="form-check mr-auto">
+                                        <label class="form-check-label">
+                                            <input id="remember" name="remember" class="form-check-input" type="checkbox" value="" aria-required="true" Checked> Remember me
+                                            <span class="form-check-sign">
+                                                <span class="check"></span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <button type="button" id="btnlogin" class="btn btn-rose">
+                                        <i class="fa fa-circle-o-notch fa-spin loding-1" style="display:none"></i>
+                                        <span class="loding-2"></span>
+                                        Login
+                                    </button>
+                                </div>
+                            </div>
+                            <input name="__RequestVerificationToken" type="hidden" value="CfDJ8GKmUHOt1wRIr66hPgH_nmr3Q8nImOHMydT6bJj8eD2X7f-SGwlUu_9BESrogZTRG0x1NXkfQdGeIOqsVAzNQKvyILwGcBga2jGPJqh20Qi92CWNCcwDkmG4mn4-OBoIh1AQMZD8LviQ2ot3nifDfbw" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <footer class="">
+                <div class="container">
+
+                    <div class="copyright float-right" style="color:white">
+                        &copy;
+                        <script>
+                            document.write(new Date().getFullYear())
+                        </script> AbleDocs   <a style="color:white" href="/Login?page=%2FPrivacy">Privacy</a>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+    <!--   Core JS Files   -->
+    <script src="/assets/js/core/jquery.min.js"></script>
+    <script src="/assets/js/core/popper.min.js"></script>
+    <script src="/assets/js/core/bootstrap-material-design.min.js"></script>
+    <script src="/assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
+    <script src="/assets/js/plugins/jquery.validate.min.js"></script>
+    <script src="/assets/js/plugins/bootstrap-selectpicker.js"></script>
+    <script src="/assets/js/pages/Login.js?v=1.15"></script>
+    <script>
+        $(document).ready(function () {
+            $('.select-dropdown').selectpicker('setStyle', 'btn btn-link');
+            $('.filter-option').addClass('filter-option-1');
+
+            $('.culture').selectpicker('setStyle', 'btn btn-link');
+            $('.filter-option').addClass('filter-option-1');
+
+        });
+    </script>
+</body>
+
+
+<!-- /examples/pages/login.html , Tue, 14 May 2019 06:09:52 GMT -->
+</html>

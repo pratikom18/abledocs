@@ -1,0 +1,2 @@
+ALTER TABLE `abledocs_eu`.`countries` 
+ADD COLUMN `EUcountry` TINYINT(1) NULL DEFAULT '0' AFTER `isdefault`;

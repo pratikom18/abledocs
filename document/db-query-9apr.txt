@@ -1,0 +1,5 @@
+ALTER TABLE `jobs` ADD `JobFromADapi` CHAR(1) NOT NULL DEFAULT '0' AFTER `PurchaseOrder`;
+INSERT INTO `flags` (`id`, `name`, `detail`) VALUES (NULL, 'JobFromADapi', 'Job From ADapi');
+
+--*** gateways ** --- database
+ALTER TABLE `gateways` ADD `Hide_Delivery_Time` CHAR(1) NOT NULL AFTER `Azure_AD_Secret`;

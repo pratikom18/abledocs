@@ -1,0 +1,6 @@
+INSERT INTO `abledocs`.`common_master` (`commonid`, `type`, `typename`, `typecode`, `country_required`, `display_order`) VALUES ('30', 'Rate', 'Very Simple', 'Very_Simple', '0', '1');
+INSERT INTO `abledocs`.`common_master` (`commonid`, `type`, `typename`, `typecode`, `country_required`, `display_order`) VALUES ('31', 'Rate', 'Simple', 'Simple', '0', '2');
+INSERT INTO `abledocs`.`common_master` (`commonid`, `type`, `typename`, `typecode`, `country_required`, `display_order`) VALUES ('32', 'Rate', 'Medium', 'Medium', '0', '3');
+INSERT INTO `abledocs`.`common_master` (`commonid`, `type`, `typename`, `typecode`, `country_required`, `display_order`) VALUES ('33', 'Rate', 'Complex', 'Complex', '0', '4');
+INSERT INTO `abledocs`.`common_master` (`commonid`, `type`, `typename`, `typecode`, `country_required`, `display_order`) VALUES ('34', 'Rate', 'Fillable', 'Fillable', '0', '5');
+INSERT INTO `abledocs`.`common_master` (`commonid`, `type`, `typename`, `typecode`, `country_required`, `display_order`) VALUES ('35', 'Rate', 'OCR', 'OCR', '0', '6');

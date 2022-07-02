@@ -1,0 +1,30 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model abledoc.Models.Jobs;
+@*@{ Layout = null; }*@
+
+<form method="post">
+    <input type="hidden" asp-for="ID" />
+    <input type="hidden" asp-for="ClientID" />
+    <input type="hidden" id="field_CancelOptions" value="1" />
+    <div class="modal-body">
+        <span style="text-align:center"><h4><b>@Localizer["Are you sure you want to cancel whole job?"]</b></h4></span>
+        <!--<div class="row">
+            <div class="form-group col-md-2"><label for="CancelOptions">Cancel Options</label></div>
+            <div class="form-group col-md-10">
+                <select name="CancelOptions" class="form-control select-dropdown" id="field_CancelOptions" data-mini="true">
+                    <option value=""></option>-->
+        @*<option value="0" selected="">Cancel &amp; Copy Job Parts</option>*@
+        <!--<option value="1" selected="">Cancel Whole Job</option>
+                </select>
+            </div>
+        </div>-->
+
+    </div>
+    <!-- Modal footer -->
+    <div class="modal-footer1" align="center">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">@Localizer["Close"]</button>
+        &nbsp;&nbsp;
+        <button type="button" class="btn btn-primary-1" onclick="ApproveCancelOption(@Model.ID,@Model.ClientID);">@Localizer["Confirm"]</button>
+    </div>
+</form>

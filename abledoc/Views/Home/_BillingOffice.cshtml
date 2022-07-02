@@ -1,0 +1,29 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <td>@Localizer["Office Name"]</td>
+                <td class="text-right">@Localizer["Invoice Amount"]</td>
+
+            </tr>
+        </thead>
+        <tbody>
+            @if (ViewBag.TotalOffice != null)
+            {
+                @foreach (InvoiceInstance item in ViewBag.TotalOffice)
+                {
+                    <tr>
+                        <td>@item.fullname</td>
+
+                        <td class="text-right">$@item.InvoiceAmount</td>
+
+                    </tr>
+
+                }
+            }
+
+        </tbody>
+    </table>
+</div>

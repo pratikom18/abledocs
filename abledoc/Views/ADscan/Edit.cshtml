@@ -1,0 +1,258 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model abledoc.Models.ADscanCrawls;
+@{
+    ViewData["Title"] = "ADscan-" + Model.starturl;
+    ViewData["PageTitle"] = Localizer["ADscan-Update"];
+
+}
+
+
+<input type="hidden" name="adscanid" id="hdnadscanid" value="@Model.ID">
+<input type="hidden" name="adscanaccesskey" id="hdnadscanaccesskey" value="@Model.accesskey">
+<input type="hidden" name="adojobid" id="hdnadscanjobid" value="@Model.ADO_jobID">
+<input type="hidden" name="adscanclientid" id="hdnadscanclientid" value="@Model.clientID">
+<div class="row">
+    <div class="col-md-12">
+        <form method="post" class="form-horizontal" asp-controller="adscan" asp-action="edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID" />
+            <input type="hidden" asp-for="flag" />
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-header card-header-icon card-header-rose">
+                                <div class="card-icon card-header-success-1 card-icon-1">
+                                    <i class="material-icons">
+                                        insert_drive_file
+                                    </i>
+                                </div>
+                            </div>
+                            <div class="card-collapse">
+                                <div class="card-header" role="tab" id="headingOne">
+                                    <h5 class="mb-0">
+                                        <a data-toggle="collapse" href="#collapseGeneral" aria-expanded="true" aria-controls="collapseOne" class="collapsed accordion">
+                                            @Localizer["General"]
+                                            <i class="material-icons">keyboard_arrow_down</i>
+                                        </a>
+                                    </h5>
+                                </div>
+                                <div id="collapseGeneral" class="collapse show" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" style="">
+                                    <div class="card-body">
+                                        <!-- form start -->
+
+                                        <div class="form-group row">
+                                            <div class="col-sm-2">
+                                                <label asp-for="clientID" class="col-form-label">@Localizer["Client"]</label>
+                                            </div>
+                                            <div class="col-sm-10">
+                                                @Html.DropDownList("clientID", abledoc.Utility.ComboHelper.GetCompanyList(), "Select", new { @id = "clientID", @class = "form-control selectpicker", @datastyle = "btn btn-link", @name = "clientID" })
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-sm-2">
+                                                <label asp-for="starturl" class="col-form-label">@Localizer["Start URL"]</label>
+                                            </div>
+                                            <div class="col-sm-10">
+                                                <input asp-for="starturl" class="form-control" placeholder=@Localizer["Start URL"]>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-sm-2">
+                                                <label asp-for="status" class="col-form-label">@Localizer["Crawl Status"]</label>
+                                            </div>
+                                            <div class="col-sm-10">
+                                                @Html.DropDownList("status", abledoc.Utility.ComboHelper.GetCrawlStatusList(), Localizer["Select"].Value, new { @id = "status", @class = "form-control select2", @name = "status" })
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-sm-2">
+                                                <label asp-for="ScanType" class="col-form-label">@Localizer["ScanType"]</label>
+                                            </div>
+                                            <div class="col-sm-10">
+                                                <select asp-for="ScanType" class="form-control" data-mini="true">
+                                                    <option value=""></option>
+                                                    <option value="Lite">@Localizer["Lite"]</option>
+                                                    <option value="Pro">@Localizer["Pro"]</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-sm-2">
+                                                <label asp-for="accesskey" class="col-form-label">@Localizer["Access Code"]</label>
+                                            </div>
+                                            <div class="col-sm-10">
+                                                <input asp-for="accesskey" class="form-control" placeholder=@Localizer["Access Code"]>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-sm-2">
+                                                <label asp-for="Files_Found" class="col-form-label">@Localizer["Files Found"]</label>
+                                            </div>
+                                            <div class="col-sm-10">
+                                                <input asp-for="Files_Found" class="form-control" placeholder=@Localizer["Files Found"] >
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-sm-2">
+                                                <label asp-for="Files_Scanned" class="col-form-label">@Localizer["Files Scanned"]</label>
+                                            </div>
+                                            <div class="col-sm-10">
+                                                <input asp-for="Files_Scanned" class="form-control" placeholder=@Localizer["Files Scanned"] >
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-sm-2">
+                                                <label asp-for="Files_Error" class="col-form-label">@Localizer["Files Error"]</label>
+                                            </div>
+                                            <div class="col-sm-10">
+                                                <input asp-for="Files_Error" class="form-control" placeholder=@Localizer["Files Error"]>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-collapse">
+                                <div class="card-header" role="tab" id="headingTwo">
+                                    <h5 class="mb-0">
+                                        <a data-toggle="collapse" href="#collapseAdvance" aria-expanded="true" aria-controls="collapseTwo" class="collapsed accordion">
+                                            @Localizer["Advance"]
+                                            <i class="material-icons">keyboard_arrow_down</i>
+                                        </a>
+                                    </h5>
+                                </div>
+                                <div id="collapseAdvance" class="collapse show" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+                                    <div class="card-body">
+                                        <!-- form start -->
+
+                                        <div class="form-group row">
+                                            <div class="col-sm-2">
+                                                <label asp-for="AllowedDomains" class="col-form-label">@Localizer["Allowed Domains"]</label>
+                                            </div>
+                                            <div class="col-sm-10">
+                                                <textarea asp-for="AllowedDomains" class="form-control"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-sm-2">
+                                                <label asp-for="Additional_starturls" class="col-form-label">@Localizer["Additional Start URLs"]</label>
+                                            </div>
+                                            <div class="col-sm-10">
+                                                <textarea asp-for="Additional_starturls" class="form-control"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-sm-2">
+                                                <label asp-for="OffLimits" class="col-form-label">@Localizer["Off Limits"]</label>
+                                            </div>
+                                            <div class="col-sm-10">
+                                                <textarea asp-for="OffLimits" class="form-control"></textarea>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-collapse">
+                                <div class="card-header" role="tab" id="headingThree">
+                                    <h5 class="mb-0">
+                                        <a data-toggle="collapse" href="#collapseFiles" aria-expanded="true" aria-controls="collapseThree" class="collapsed accordion">
+                                            @Localizer["Files"]
+                                            <i class="material-icons">keyboard_arrow_down</i>
+                                        </a>
+                                    </h5>
+                                </div>
+                                <div id="collapseFiles" class="collapse show" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion" style="">
+                                    <div class="card-body">
+
+
+                                        <table id="datatables" class="table table-striped table-no-bordered table-hover" width="100%">
+                                            <thead class="thin-border-bottom">
+                                                <tr>
+                                                    <th>@Localizer["Files"]</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (ViewBag.ADscanfiles != null)
+                                                        {
+                                                            foreach (var item in ViewBag.ADscanfiles)
+                                                            {
+                                                        <tr>
+                                                            <td><a href="@item.url" class="a-1">@item.url</a></td>
+                                                        </tr>
+                                                            }
+                                                        }
+
+                                            </tbody>
+                                        </table>
+
+                                        <button type="button" class="btn btn-success btnAddurl" data-toggle="modal" data-target="#myModal">
+                                            <i class="fa fa-plus"></i> @Localizer["Add URLs Manually"]
+                                        </button>
+
+
+                                        <a href="/adscan/ZipPDFFiles2?ID=@Model.ID&flag=@Model.flag" target="_blank" class="btn btn-success"><i class="fa fa-download"></i> @Localizer["Download All Files"]</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary btn-primary-1"><i class="fa fa-save"></i> @Localizer["Save"]</button>
+
+                <button type="button" class="btn btn-primary btn-primary-1" id="btnstartcrawl"><i class="fa fa-play"></i> @Localizer["Start Crawl"]</button>
+
+                <button type="button" class="btn btn-primary btn-primary-1" id="btnreport"><i class="fa fa-bars"></i> @Localizer["Report"]</button>
+                @if (Model.ADO_jobID > 0)
+                                                        {
+                    <button type="button" class="btn btn-primary btn-primary-1" id="btngotojob"><i class="fa fa-cog"></i> @Localizer["Go to Job"] #@Model.ADO_jobID</button>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-primary btn-primary-1" id="btnCreateJob"><i class="fa fa-cog"></i> @Localizer["Createjob"]</button>
+                                                }
+
+                <button type="button" class="btn btn-primary btn-primary-1" id="btndelete"><i class="fa fa-trash-o"></i> @Localizer["Delete"]</button>
+
+
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="popupAdScanDetail">
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @* <script src="~/assets/js/pages/adscanfile.js"></script>*@
+    <script src="~/assets/js/pages/adscanfile.js?v=@abledoc.Utility.CommonHelper.Version"></script>
+
+}

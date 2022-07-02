@@ -1,0 +1,43 @@
+﻿.mainimg {
+    height: 100% !important;
+    background-image: url(/ADOnlineUI/ADOnlineloginbackground1.svg) !important;
+    background-size: 100% 100% !important;
+    -o-background-size: 100% 100% !important;
+    -webkit-background-size: 100% 100% !important;
+    background-size: cover !important;
+    background-position: top center !important;
+    padding-left: 0%;
+    padding-top: 4%;
+}
+.mainimg1 {
+    height: 100% !important;
+    background-image: url(/ADOnlineUI/ADOnlineloginillustration1.svg) !important;
+    background-repeat: no-repeat;
+    /*margin-top:5%;
+
+    width: 100%;
+    margin-left:15%;*/
+    padding-top: 20%;
+    padding-left: 17%;
+    /*padding-top: 20%;*/
+}
+
+.mainimg2 {
+    height: 475px;
+    width:608px;
+    background-image: url(/ADOnlineUI/ADOnlineloginUI1.svg) !important;
+    background-size: 100% 100% !important;
+    -o-background-size: 100% 100% !important;
+    -webkit-background-size: 100% 100% !important;
+    background-size: cover !important;
+    background-position: top center !important;
+}
+
+.txtbox{
+    width:50%;
+}
+
+.frmdiv {
+    padding-top: 28%;
+    padding-left:8%
+}

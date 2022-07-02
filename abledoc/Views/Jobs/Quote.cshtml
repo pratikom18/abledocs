@@ -1,0 +1,632 @@
+﻿@model abledoc.Models.Jobs;
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@*@{ Layout = null; }*@
+
+@{
+    var errormsg = "";
+    var modelClient = ViewBag.modelClient;
+    var modelClientContact = ViewBag.modelClientContact;
+    var language = (modelClient.Language == "") ? "EN" : modelClient.Language;
+
+    var clientName = modelClient.Company;
+    var billingCompany = modelClient.Billing_Company;
+    var displayBillingContact = "";
+    if (modelClientContact != null)
+    {
+        displayBillingContact = modelClientContact.FirstName + " " + modelClientContact.LastName + " - ";
+    }
+
+    billingCompany = (billingCompany == "") ? clientName : billingCompany;
+
+    clientName = displayBillingContact + billingCompany;
+
+    var clientID = modelClient.ID;
+
+    var hourlyRate = modelClient.HourlyRate;
+    var pageRate = modelClient.PageRate;
+
+
+
+    Countries objCounntry = new Countries();
+    objCounntry.code = modelClient.Country;
+    var modelCountry = objCounntry.GetCountryByCode();
+    var country_currency_symbol = "$";
+    var country_currency_code = "USD";
+    var country_code = modelClient.Country;
+    if (modelCountry != null)
+    {
+        country_currency_symbol = modelCountry.currency;
+        country_currency_code = modelCountry.currency_code;
+    }
+    else
+    {
+        errormsg = Localizer["Country not selected for this client. Please set country first."].Value;
+
+
+    }
+    string provinceid = null;
+    if (modelClient.stateid.ToString() != "" || modelClient.stateid.ToString() != null)
+    {
+        provinceid = modelClient.stateid.ToString();
+    }
+
+    ViewBag.flag = Model.flag;
+
+}
+<style>
+    select {
+        text-align-last: center;
+    }
+</style>
+<div class="modal fade" id="bootstrap-modal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">@(language == "FR" ? "À" : "To"): @clientName</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" style="max-height: calc(100vh - 200px); overflow-y: auto;">
+                @if (errormsg == "")
+                {
+                    <div class="quotelist">
+                        <form method="post" asp-action="Quote" onsubmit="return jQueryAjaxPost(this);">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <input type="hidden" name="Add_JobID" ID="Add_JobID" value="@Model.ID">
+                            <input type="hidden" ID="dflag" value="@ViewBag.dflag">
+                            <input type="hidden" ID="currency_symbol" value="@country_currency_symbol">
+
+
+
+                            <div id="pageRefresh">
+                                @if (ViewBag.SubTitle != null)
+                                {
+                                    foreach (var row in ViewBag.SubTitle)
+                                    {
+
+                                        <div class="col-md-12">
+                                            <div class="card-body">
+                                                <!-- form start -->
+
+                                                <div class="row">
+                                                    <div class="form-group col-md-10">
+                                                        <textarea class="form-control" rows="3" placeholder="@Localizer["Add Offering Here"].Value .." id="qData_@row.ID" value="@row.Information">@row.Information</textarea>
+                                                    </div>
+                                                    <div class="form-group col-md-2">
+                                                        <button type="button" onclick="SaveQuoteText(@row.ID); return false;" class="btn btn-primary-1 btn-sm addBtn"><i class="fa fa-save"></i></button>
+                                                        <button type="button" onclick="DeleteQuoteText(@row.ID,@Model.ID);return false;" class="btn btn-danger btn-sm addBtn"><i class="fa fa-times-circle"></i></button>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    }
+                                }
+
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <button type="button" class="btn btn-danger btn-sm pull-right" onclick="DeleteAllOffering(@Model.ID); return false;">
+                                                        <i class="fa fa-trash"> @Localizer["Delete All"]</i>
+                                                    </button>
+                                                    <div class="card-collapse">
+
+                                                        <div class="card-header" role="tab" id="headingOffer">
+
+                                                            <h5 class="mb-0">
+                                                                <a class="collapsed" data-toggle="collapse" href="#collapseOffer" aria-expanded="true" aria-controls="collapseOffer">
+                                                                    @(language == "FR" ? Localizer["Services Offerts"].Value : Localizer["Offering"].Value) :
+
+                                                                    <i class="material-icons">keyboard_arrow_down</i>
+                                                                </a>
+                                                            </h5>
+                                                        </div>
+                                                        <div id="collapseOffer" class="collapse show" role="tabpanel" aria-labelledby="headingOffer" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                <!-- form start -->
+                                                                @if (ViewBag.Offering != null)
+                                                                {
+                                                                    foreach (var row in ViewBag.Offering)
+                                                                    {
+                                                                        <div class="form-group row">
+                                                                            <div class="col-md-10">
+                                                                                <textarea class="form-control" placeholder="@Localizer["Add Offering Here"].Value .." id="qData_@row.ID">@row.Information</textarea>
+                                                                            </div>
+                                                                            <div class="col-md-2">
+                                                                                <button type="button" onclick="SaveQuoteText(@row.ID); return false;" class="btn btn-primary-1 btn-sm addBtn"><i class="fa fa-save"></i></button>
+                                                                                <button type="button" onclick="DeleteQuoteText(@row.ID,@Model.ID);return false;" class="btn btn-danger btn-sm addBtn"><i class="fa fa-times-circle"></i></button>
+
+                                                                            </div>
+                                                                        </div>
+                                                                    }
+                                                                }
+                                                                <div class="form-group row">
+                                                                    <div class="col-md-10">
+                                                                        <textarea placeholder="@Localizer["Add Offering Here"].Value ..." id="addOfferingText" class="form-control" data-theme="a"></textarea>
+                                                                    </div>
+                                                                    <div class="col-md-2">
+                                                                        <a id="addOffering" href="javascript:;" onclick="AddOffering(@Model.ID); return false;" class="btn btn-primary-1 btn-sm"><i class="fa fa-plus-circle"></i> @Localizer["Add"]</a>
+                                                                    </div>
+                                                                </div>
+
+
+
+                                                            </div>
+                                                            <!-- /.card-body -->
+                                                        </div>
+                                                        <!-- /.card -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <button type="button" class="btn btn-danger btn-sm pull-right" onclick="DeleteAllNotes(@Model.ID); return false;">
+                                                        <i class="fa fa-trash"> @Localizer["Delete All"]</i>
+                                                    </button>
+                                                    <div class="card-collapse">
+
+                                                        <div class="card-header" role="tab" id="headingNotes">
+
+                                                            <h5 class="mb-0">
+                                                                <a class="collapsed" data-toggle="collapse" href="#collapseNotes" aria-expanded="true" aria-controls="collapseNotes">
+                                                                    @Localizer["Notes"] :
+
+                                                                    <i class="material-icons">keyboard_arrow_down</i>
+                                                                </a>
+                                                            </h5>
+                                                        </div>
+                                                        <div id="collapseNotes" class="collapse show" role="tabpanel" aria-labelledby="headingNotes" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                <!-- form start -->
+                                                                @if (ViewBag.Notes != null)
+                                                                {
+                                                                    foreach (var row in ViewBag.Notes)
+                                                                    {
+                                                                        <div class="form-group row">
+                                                                            <div class="col-md-10">
+                                                                                <textarea class="form-control" placeholder="@Localizer["Add Notes Here"].Value .." id="qData_@row.ID">@row.Information</textarea>
+                                                                            </div>
+                                                                            <div class="col-md-2">
+                                                                                <button type="button" onclick="SaveQuoteText(@row.ID); return false;" class="btn btn-primary-1 btn-sm addBtn"><i class="fa fa-save"></i></button>
+                                                                                <button type="button" onclick="DeleteQuoteText(@row.ID,@Model.ID);return false;" class="btn btn-danger btn-sm addBtn"><i class="fa fa-times-circle"></i></button>
+
+                                                                            </div>
+
+                                                                        </div>
+                                                                    }
+                                                                }
+                                                                <div class="form-group row">
+                                                                    <div class="col-md-10">
+                                                                        <textarea placeholder="@Localizer["Add Notes Here"].Value ..." id="addNotesText" class="form-control" data-theme="a"></textarea>
+                                                                    </div>
+                                                                    <div class="col-md-2">
+                                                                        <a id="addNotes" href="#" onclick="AddNotes(@Model.ID); return false;" class="btn btn-primary-1 btn-sm"><i class="fa fa-plus-circle"></i> @Localizer["Add"]</a>
+                                                                    </div>
+                                                                </div>
+
+
+
+                                                            </div>
+                                                            <!-- /.card-body -->
+                                                        </div>
+                                                        <!-- /.card -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="card-collapse">
+
+                                                        <div class="card-header" role="tab" id="headingDetails">
+
+                                                            <h5 class="mb-0">
+                                                                <a class="collapsed" data-toggle="collapse" href="#collapseDetails" aria-expanded="true" aria-controls="collapseDetails">
+                                                                    @(language == "FR" ? "Détails" : Localizer["Details"].Value) :
+
+                                                                    <i class="material-icons">keyboard_arrow_down</i>
+                                                                </a>
+                                                            </h5>
+                                                        </div>
+                                                        <div id="collapseDetails" class="collapse show" role="tabpanel" aria-labelledby="headingDetails" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                <div class="row">
+                                                                    <div class="form-group col-md-3">
+                                                                        <input type="number" id="defaultAddPrice" class="form-control" placeholder="@(Localizer["Default"].Value +" "+ Localizer["Price"].Value)" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-3">
+                                                                        <input type="number" id="defaultAddQuantity" class="form-control" placeholder="@(Localizer["Default"].Value + " "+ Localizer["Quantity"].Value)" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-3">
+                                                                        @Html.DropDownList("defaultAddPricePerUnit", abledoc.Utility.ComboHelper.GetCommonMasterList("Unit"), Localizer["Select"].Value, new { @id = "defaultAddPricePerUnit", @class = "form-control", @name = "defaultAddPricePerUnit" })
+                                                                    </div>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                                                    <div class="form-group col-md-2">
+                                                                        <button type="button" class="btn btn-primary-1 btn-sm addBtn" onclick="SetDefaultButton(@Model.ID); return false;">@Localizer["Set Default"]</button>
+
+                                                                    </div>
+
+                                                                </div>
+                                                                <div class="row">
+                                                                    <table border="1" class="table table-striped table-bordered table-hover">
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <th>@Localizer["Description"]</th>
+                                                                                <th style="width: 10%;text-align: center;">@(language == "FR" ? "Quantité" : Localizer["Quantity"].Value)</th>
+                                                                                <th style="width: 15%;text-align: center;">@(language == "FR" ? "Unité" : Localizer["Unit"].Value)</th>
+                                                                                <th style="width: 10%;text-align:right;">@(language == "FR" ? "Prix Unitaire" : Localizer["Unit Price"].Value) (@country_currency_symbol)</th>
+                                                                                <th style="text-align: right;">@Localizer["Total"] (@country_currency_symbol)</th>
+                                                                                <th style="text-align: right;">@Localizer["Action"]</th>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>
+                                                                                    @*<textarea value="" id="descriptionTextAdd" data-theme="a" placeholder="Add New File Description Here..." class="form-control"></textarea>*@
+                                                                                    @Html.DropDownList("descriptionTextAdd", abledoc.Utility.ComboHelper.GetDescriptionList("", language, ""), Localizer["Select Description"].Value, new { @id = "descriptionTextAdd", @class = "form-control select2 description", @datastyle = "btn btn-link", @name = "descriptionTextAdd", @tabindex = "3", @placeholder = "Description", @style = "text-align-last: left;" })
+                                                                                </td>
+                                                                                <td>
+                                                                                    <div class="">
+                                                                                        <input type="number" style="text-align: center;" step="0.25" min="0.25" id="quantityTextAdd" data-theme="a" class="form-control quantity">
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <div class="ui-select ui-mini">
+                                                                                        <div id="addPricePerUnit-button">
+
+                                                                                            @*@Html.DropDownList("addPricePerUnit", abledoc.Utility.ComboHelper.GetCommonMasterList("Unit"), "Select", new { @id = "addPricePerUnit", @class = "form-control pricePerSelect", @name = "addPricePerUnit" })*@
+                                                                                            <select id="addPricePerUnit" name="addPricePerUnit" class="form-control pricePerSelect">
+                                                                                                <option value="">@Localizer["Select"]</option>
+                                                                                            </select>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <div>
+                                                                                        <input type="number" value="" id="priceTextAdd" data-theme="a" class="form-control price">
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <button type="button" style="" id="AddEmptyFile" data-role="button" class="btn btn-primary-1 btn-sm" onclick="AddEmptyFileFunc(); return false;"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp; @Localizer["Add"]</button>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <button type="button" style="float: right; margin: 0px;" class="btn btn-danger btn-sm" onclick="DeleteAllFileFromQuote(@Model.ID); return false;"><i class="fa fa-times-circle"></i>&nbsp;&nbsp; @Localizer["Remove All"]</button>
+                                                                                </td>
+                                                                            </tr>
+
+
+                                                                            @{
+                                                                                var allFileId = "";
+                                                                                allFileId = allFileId + "'" + Model.ID + " ";
+                                                                                decimal subTotal = 0;
+                                                                                var taxDB = "-1";
+                                                                                decimal taxTotal = 0;
+                                                                                Int64 taxSelected = 0;
+                                                                                var unitType = "";
+                                                                                var taxSelectedString = "";
+                                                                                var fileCount = 0;
+                                                                                if (ViewBag.modelJobFiles != null)
+                                                                                {
+
+                                                                                    foreach (var row in ViewBag.modelJobFiles)
+                                                                                    {
+                                                                                        fileCount++;
+                                                                                        var descriptionText = (row.Description == "" || row.Description == null) ? row.Filename : row.Description;
+                                                                                        allFileId = allFileId + row.ID + " ";
+                                                                                        taxDB = row.Tax;
+                                                                                        taxSelectedString = row.Tax;
+                                                                                        <tr id="@row.ID">
+                                                                                            <td>
+                                                                                                @*<textarea value="test" id="descriptionText_@row.ID" class="form-control">@descriptionText</textarea>*@
+                                                                                                @Html.DropDownList("descriptionText_" + @row.ID, abledoc.Utility.ComboHelper.GetDescriptionList("", language, descriptionText), Localizer["Select Description"].Value, new { @id = "descriptionText_" + @row.ID, @class = "form-control select2 description", @datastyle = "btn btn-link", @name = "descriptionText_" + @row.ID, @tabindex = "3", @placeholder = "Description", @style = "text-align-last: left;" })
+                                                                                                <input type="hidden" name="description_id_@row.ID" id="description_id_@row.ID" class="description_id" value="@row.description_id" />
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <div class="">
+                                                                                                    <input type="number" style="text-align: center;" step="0.25" min="0.25" class="form-control quantity" value="@row.Quantity" id="quantityText_@row.ID">
+                                                                                                </div>
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <div class="">
+                                                                                                    <div id="pricePerSelect_@row.ID-button" class="">
+
+                                                                                                        @*@Html.DropDownList("priceText_" + @row.ID, abledoc.Utility.ComboHelper.GetCommonMasterList("Unit", @row.PricePer), "Select", new { @id = "pricePerSelect_" + @row.ID, @class = "form-control pricePerSelect", @name = "pricePerSelect_" + @row.ID, @onclick = "PriceAutoFill(\'pricePerSelect_" + @row.ID + "\',\'" + @hourlyRate + "\',\'" + @pageRate + "\',\'priceText_" + @row.ID + "\',\'" + @row.Price + "\',\'" + @row.Pages + "\');" })*@
+                                                                                                        @Html.DropDownList("priceText_" + @row.ID, abledoc.Utility.ComboHelper.GetUnitByDescription(descriptionText, @row.PricePer), Localizer["Select"].Value, new { @id = "pricePerSelect_" + @row.ID, @class = "form-control pricePerSelect", @name = "pricePerSelect_" + @row.ID, @onclick = "PriceAutoFill(\'pricePerSelect_" + @row.ID + "\',\'" + @hourlyRate + "\',\'" + @pageRate + "\',\'priceText_" + @row.ID + "\',\'" + @row.Price + "\',\'" + @row.Pages + "\');" })
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </td>
+
+                                                                                            @{
+                                                                                                var val = row.Price;
+                                                                                                if ((unitType == "Hour") && (row.Price == 0))
+                                                                                                {
+                                                                                                    val = hourlyRate;
+                                                                                                }
+                                                                                                else if ((unitType == "Page") && (row.Price == 0))
+                                                                                                {
+                                                                                                    val = pageRate;
+                                                                                                }
+                                                                                                else
+                                                                                                {
+                                                                                                    val = row.Price;
+                                                                                                }
+
+                                                                                                var total = (row.Price * row.Quantity);
+
+                                                                                            }
+                                                                                            <td>
+                                                                                                <div class="">
+                                                                                                    <input type="number" style="text-align: right;" value="@val" class="form-control price" id="priceText_@row.ID">
+                                                                                                </div>
+                                                                                            </td>
+                                                                                            <td style="text-align: right;" class="fileTotalAmount" data-val="@total.ToString("#,##0.00")">@(country_currency_symbol + "" + total.ToString("#,##0.00"))</td>
+                                                                                            <td style="width: 20px;">
+                                                                                                <button type="button" style="float: right; margin: 0px;" class="btn btn-danger btn-sm" onclick="DeleteFileFromQuote(@row.ID,@Model.ID); return false;"><i class="fa fa-times-circle"></i>&nbsp;&nbsp; @Localizer["Remove"]</button>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        subTotal = subTotal + (row.Price * row.Quantity);
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                            <tr>
+                                                                                <td colspan="3"></td>
+                                                                                <td style="text-align: right;">
+                                                                                    @(language == "FR" ? "Sous-total" : "SubTotal")
+                                                                                </td>
+                                                                                <td style="text-align: right;" class="subtotal" data-val="@subTotal.ToString("#,##0.00")">@(country_currency_symbol + "" + subTotal.ToString("#,##0.00"))</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td colspan="3" style="text-align:center">@Localizer["All invoices are due within 30 days and subject to penalty of 2% per month"]</td>
+                                                                                <td style="text-align: right;">
+                                                                                    <div class="ui-select">
+                                                                                        <div id="taxSelect-button">
+
+                                                                                            <select style="display: inline-block;" id="taxSelect" class="form-control taxDropdown">
+                                                                                                <option value="0">@Localizer["Select"] @Localizer["Tax"]...</option>
+
+                                                                                                @{
+                                                                                                    var modelJobPopulate = new JobQuoteAutopopulate().GetJobPopulateList(modelClient.Country, provinceid);
+                                                                                                    if (modelJobPopulate != null)
+                                                                                                    {
+                                                                                                        if (modelJobPopulate.Count > 0)
+                                                                                                        {
+
+                                                                                                            foreach (var row in new JobQuoteAutopopulate().GetJobPopulateList(modelClient.Country, provinceid))
+                                                                                                            {
+
+                                                                                                                if (taxSelectedString == row.Information)
+                                                                                                                {
+
+                                                                                                                    <option value="@row.tax" selected>@row.Information</option>
+                                                                                                                    taxSelected = row.tax;
+                                                                                                                }
+                                                                                                                else
+                                                                                                                {
+                                                                                                                    <option value="@row.tax">@row.Information</option>
+                                                                                                                }
+
+                                                                                                            }
+                                                                                                        }
+                                                                                                    }
+
+                                                                                                }
+
+
+
+                                                                                            </select>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td style="text-align: right;" class="tax" data-val="@taxTotal.ToString("#,##0.00")">
+                                                                                    @{
+
+                                                                                        taxTotal = (taxSelected * subTotal) / 100;
+                                                                                        @(country_currency_symbol + "" + taxTotal.ToString("#,##0.00"));
+                                                                                    }
+
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td colspan="3" style="text-align:center;font-weight: bold;">@Localizer["Note: Price are listed in"] @country_currency_code</td>
+                                                                                <td style="text-align: right;">
+                                                                                    @Localizer["Total"]
+                                                                                </td>
+                                                                                @{
+
+                                                                                    var totalAmount = taxTotal + subTotal;
+
+                                                                                }
+                                                                                <td style="text-align: right;" class="totalAmount" data-val="@totalAmount.ToString("#,##0.00")">
+                                                                                    @{
+
+
+                                                                                        @(country_currency_symbol + "" + totalAmount.ToString("#,##0.00"));
+
+                                                                                    }
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                    <input type="hidden" id="quoteFileCount" value="@fileCount">
+                                                                    @{
+                                                                        allFileId = allFileId + "'";
+                                                                        if (ViewBag.updateVal == 1)
+                                                                        {
+                                                                            QuoteTracking modelTracking = new QuoteTracking();
+                                                                            modelTracking.JobID = Model.ID;
+                                                                            modelTracking.QuoteAmount = Convert.ToDecimal(totalAmount.ToString("#,##0.00"));
+                                                                            modelTracking.UID = ViewBag.UID; //$_SESSION['USER']['ID']
+                                                                            modelTracking.OperationType = "QuoteUpdated";
+                                                                            modelTracking.databasename = Model.databasename;
+                                                                            modelTracking.InsertQuoteTracking();
+                                                                        }
+                                                                    }
+                                                                </div>
+
+
+
+
+                                                            </div>
+                                                            <!-- /.card-body -->
+                                                        </div>
+                                                        <!-- /.card -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <button type="button" class="btn btn-primary-1 btn-sm" onclick="UpdateJobPanelData(@allFileId); return false;"><i class="fa fa-save"></i> @Localizer["Update Details"]</button>
+                                            </td>
+                                            <td>
+                                                &nbsp;&nbsp;
+                                                <label for="ocr" class="ui-label">
+                                                    @Localizer["OCR"]
+                                                    <input type="checkbox" name="ocr" id="ocr" class="checkbox-ui" value="1">
+                                                </label>
+
+                                                <label for="Fillable" class="ui-label">
+                                                    @Localizer["Fillable"]
+                                                    <input type="checkbox" name="Fillable" id="Fillable" class="checkbox-ui" value="1">
+                                                </label>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                @*<button type="button" class="btn btn-success" onclick="GenerateQuoteHandler(@Model.ID, 3); return false;"><i class="fa fa-save"></i> Generate Quote</button>*@
+                                @*<button type="button" class="btn btn-success"><i class="fa fa-download"></i> Generate & Download Quote</button>*@
+                                <a href="/jobs/GenerateQuotePdf?JobID=@Model.ID&Flag=1&InsertFlag=0&dflag=@ViewBag.dflag" class="btn btn-success" target="_blank"><i class="fa fa-download"></i> @Localizer["Generate & Download Quote"]</a>
+                                <a href="/jobs/GenerateQuoteExcel?JobID=@Model.ID&Flag=1&InsertFlag=0&dflag=@ViewBag.dflag" class="btn btn-success" target="_blank"><i class="fa fa-download"></i> @Localizer["Download as Excel"]</a>
+                                <span class="btn btn-file btn-success">
+                                    <span class="fileinput-new"><i class="fa fa-upload"></i> @Localizer["Upload as Excel/csv"]</span>
+                                    <input type="file" name="importexcelfile" id="importexcelfile" onchange="UploadFile();" />
+                                </span>
+                                @*<a href="/jobs/GenerateQuotePdf?JobID=@Model.ID&Flag=2&InsertFlag=0" class="btn btn-success">
+                                        <i class="fa fa-envelope"></i>
+                                        Send to Client
+                                    </a>*@
+                                <a href="javascript:;" onclick="SendEmail()" class="btn btn-success">
+                                    <i class="fa fa-envelope"></i>
+                                    @Localizer["Send to Client"]
+                                </a>
+
+                                <a href="@Url.Action("DownloadSampleFile","Jobs",new { JobID = Model.ID,flag = ViewBag.dflag})" class="btn btn-success">
+                                    <i class="fa fa-file-excel-o"></i>
+                                    @Localizer["Download Sample File"]
+                                </a>
+
+                                @*<button type="button" class="btn btn-success"><i class="fa fa-upload"></i> Upload as Excel/csv</button>*@
+                                <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times-circle"></i> @Localizer["Close"]</button>
+                            </div>
+                        </form>
+                    </div>
+                    @if (Convert.ToInt32(ViewBag.QuoteFile) > 0)
+                    {
+                        <div class="quotelist">
+                            @await Html.PartialAsync("_IFramePdf")
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p>@errormsg</p>;
+
+                }
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="~/assets/js/pages/Quote.js?v=@abledoc.Utility.CommonHelper.Version"></script>
+<script>
+    function UploadFile() {
+        var files = $("#importexcelfile").get(0).files;
+        if (files.length > 0) {
+            var data = new FormData();
+            data.append("JobID", $('#Add_JobID').val())
+            data.append("file", files[0]);
+            data.append("flag", $('#dflag').val());
+            $.ajax({
+                type: "POST",
+                url: '/jobs/uploadexcel',
+                contentType: false,
+                processData: false,
+                data: data,
+                success: function (result) {
+                    $("#pageRefresh").load("/Jobs/Quote?JobID=" + $('#Add_JobID').val() + "&flag=" + $('#dflag').val() + " #pageRefresh");
+                    //alert(result);
+                },
+                error: function () {
+                    alert("There was error uploading files!");
+                }
+            });
+        }
+    }
+
+    function SendEmail() {
+
+        var data = new FormData();
+        data.append("JobID", $('#Add_JobID').val())
+        data.append("Flag", 2);
+        data.append("InsertFlag", 0);
+        data.append("dflag", $('#dflag').val());
+        $.ajax({
+            type: "POST",
+            url: '/jobs/GenerateQuotePdf',
+            contentType: false,
+            processData: false,
+            data: data,
+            success: function (result) {
+                $.notify({
+                    icon: 'add_alert',
+                    title: '<strong>Success!</strong>',
+                    message: '<strong>Sent email successfully!</strong>',
+                }, {
+                    type: 'success'
+                });
+            },
+            error: function () {
+                alert("There was error uploading files!");
+            }
+        });
+
+    }
+</script>

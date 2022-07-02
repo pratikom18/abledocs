@@ -1,0 +1,45 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<div class="card">
+    <div class="card-header card-header-icon card-header-rose">
+        <div class="row">
+            <div class="col-md-6">
+                <h4 class="card-title">@Localizer["CSR"]</h4>
+            </div>
+            <div class="col-md-6">
+                @*<button type="button" class="btn btn-primary-1 btn-sm float-sm-right" onclick="upsertCSR(0)"  @(ViewBag.SameCountryUser?"":"disabled")>*@
+                <button type="button" class="btn btn-primary-1 btn-sm float-sm-right" onclick="upsertCSR(0)">
+                    <i class="fa fa-plus-circle"></i> @Localizer["Add CSR"]
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body">
+
+        <table class="client-datatables table table-striped table-no-bordered table-hover" width="100%">
+            <thead>
+                <tr>
+                    <th>@Localizer["Notes"]</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ViewBag.CSRList != null)
+                {
+                    @foreach (var csr in ViewBag.CSRList)
+                    {
+                        <tr>
+                            <td>@csr.notes</td>
+                            <td style="width:50%;">
+                                <a href="javascripts:;" onclick="upsertCSR(@csr.id)" class="btn  btn-sm"><i class="fa fa-edit"></i> @Localizer["Edit"]</a>
+                                <a href="javascript:;" onclick="deleteCSR(@csr.id,this)" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> @Localizer["Delete"]</a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>

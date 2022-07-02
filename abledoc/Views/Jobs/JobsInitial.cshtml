@@ -1,0 +1,677 @@
+﻿@model abledoc.Models.Jobs;
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+
+    string jobcode = "";
+    if (Model.Year != null)
+    {
+        jobcode = Model.Year.ToString() + "-" + Model.CountryCode.ToString() + "-" + Model.Code.ToString() + "-" + Model.ID;
+    }
+    else
+    {
+        jobcode = Model.ID.ToString();
+    }
+
+    var POText = (String.IsNullOrEmpty(Model.POText)) ? Model.POClient : Model.POText;
+
+    string userid = HttpContextAccessor.HttpContext.Session.GetString("ID");
+
+    ViewData["Title"] = "Job #" + @jobcode;
+    ViewData["PageTitle"] = "Job #" + @jobcode;
+
+    //List<UserRoles> UserList = ViewBag.UserRolesList;
+    //bool delete = false;
+    //if (UserList.Where(x => x.RoleName == "FilesAdmin").Count() > 0)
+    //{
+    //    delete = true;
+    //}
+    //delete = true;
+
+    ViewBag.JobID = Model.ID;
+
+
+}
+@*<input type="hidden" id="hdnCountry" value="@(ViewBag.SameCountryUser?"True":"False")" />*@
+<input type="hidden" id="hdnCountry" value="True" />
+<input type="hidden" id="success" value="@ViewBag.Save" />
+<div class="alert alert-success" id="message" style="display:none">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <i class="material-icons">@Localizer["close"]</i>
+    </button>
+    <span>
+        @Localizer["Job details saved successfully"]
+    </span>
+</div>
+<div class="row mb-2">
+    <div class="col-sm-12">
+        @if (Model.Status == "CANCELLED")
+        {
+            if (Model.CopiedToID == "0" || Model.CopiedToID == null || Model.CopiedToID == "")
+            {
+                <h4><b style="color:red">@Localizer["Following job was cancelled and for this one no mirrored job was made!"]</b></h4>
+            }
+            else
+            {
+                <h4>@Localizer["Following job was cancelled. Please follow its mirrored image here"] - <a asp-controller="jobs" asp-action="jobsinitial" asp-route-id="@Model.CopiedToID" data-ajax="false" target="_blank">Job # @Model.CopiedToID</a></h4>
+            }
+        }
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <form method="post" id="JobForm" class="form-horizontal" asp-controller="Jobs" asp-action="JobsInitial">
+            <input type="hidden" asp-for="ID" id="JobID" />
+            <input type="hidden" name="flag" id="flag" value="@ViewBag.flag" />
+            <input type="hidden" id="justEmail" value="@ViewBag.justContactEmail" />
+            <input type="hidden" id="justName" value="@ViewBag.justContactName" />
+            <input type="hidden" id="billingEmail" value="@ViewBag.billingContactEmail" />
+            <input type="hidden" id="billingName" value="@ViewBag.billingContactName" />
+            <input type="hidden" id="deliveryEmail" value="@ViewBag.deliveryEmail" />
+            <input type="hidden" id="deliveryName" value="@ViewBag.deliveryName" />
+            <input type="hidden" id="oldDeadline" value="@Model.Deadline" />
+            <input type="hidden" name="currenttab" id="currenttab" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-header card-header-icon card-header-rose">
+                                <div class="card-icon card-header-success-1 card-icon-1">
+                                    <i class="material-icons">
+                                        work
+                                    </i>
+                                </div>
+                            </div>
+                            <div class="card-collapse">
+                                <div class="card-header" role="tab" id="headingOne">
+                                    <h5 class="mb-0">
+                                        <a data-toggle="collapse" href="#collapseGeneral" aria-expanded="true" aria-controls="collapseOne" class="collapsed accordion">
+                                            @Localizer["General"]
+                                            <i class="material-icons">keyboard_arrow_down</i>
+                                        </a>
+                                    </h5>
+                                </div>
+                                <div id="collapseGeneral" class="collapse show" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" style="">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="form-group col-sm-2"><label for="ClientID" class="col-form-label">@Localizer["Client"]</label></div>
+                                            <div class="form-group col-sm-6" id="client-list">
+                                                @Html.DropDownList("ClientID", abledoc.Utility.ComboHelper.GetCompanyList("", Model.databasename), "Select Client", new { @id = "ClientID", @class = "form-control select-dropdown1 select2", @name = "ClientID" })
+
+                                            </div>
+                                            <div class="form-group col-sm-1 clientDetailshover" style="font-size:18px">
+                                                <a href="javascript:;" class="" title="" style="color:#1986E6 !important"><i class="fa fa-info-circle"></i></a>
+                                            </div>
+                                            <div class="form-group col-sm-3">
+                                                @*<button type="button" onclick="showInPopup('@Url.Action("AddClient", "Jobs", null, Context.Request.Scheme)','Add Client','small',@Model.ID)" class="btn btn-primary-1 btn-sm" @(ViewBag.SameCountryUser?"":"disabled")><i class="fa fa-plus-circle"></i>&nbsp;&nbsp; Add Client</button>*@
+                                                <button type="button" onclick="showInPopup('@Url.Action("AddClient", "Jobs", null, Context.Request.Scheme)', 'Add Client', 'small',@Model.ID,@ViewBag.flag)" class="btn btn-primary-1 btn-sm"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp; @Localizer["Add Client"]</button>
+                                            </div>
+                                        </div>
+                                        <div id="contact-list">
+                                            <div class="row">
+                                                <div class="form-group col-sm-2"><label for="ContactID" class="col-form-label">@Localizer["Contact"]</label></div>
+                                                <div class="form-group col-sm-6">
+
+                                                    @Html.DropDownList("ContactID", abledoc.Utility.ComboHelper.GetJobContactList(Model.ClientID.ToString(), "", "", ViewBag.loginusercountry, Model.databasename), Localizer["Select Contact"].Value, new { @id = "ContactID", @class = "form-control select-dropdown select2", @name = "ContactID" })
+
+                                                </div>
+                                                <div class="form-group col-sm-1" style="font-size:18px">
+                                                    @if (Model.ContactID != null)
+                                                    {
+                                                        @if (Model.ContactID != 0)
+                                                        {
+                                                            <a href="javascript:;" class="contactDetailshover" title="" style="color:#1986E6 !important"><i class="fa fa-info-circle"></i></a>
+
+                                                            if (ViewBag.justContactEmail != null || ViewBag.justContactEmail != "")
+                                                            {
+                                                                <a href="mailto:@ViewBag.justContactEmail?subject=Job#@Model.ID" style="color:#1986E6 !important"><i class="fa fa-envelope"></i></a>
+                                                            }
+                                                        }
+                                                    }
+
+                                                </div>
+                                                <div class="form-group col-sm-3">
+                                                    @*<button type="button" onclick="showInPopup('@Url.Action("AddContact", "Jobs", null, Context.Request.Scheme)','Add contact','big',@Model.ClientID)" class="btn btn-primary-1 btn-sm" @(ViewBag.SameCountryUser?"":"disabled")><i class="fa fa-plus-circle"></i>&nbsp;&nbsp; Add contact</button>*@
+                                                    <button type="button" onclick="showInPopup('@Url.Action("AddContact", "Jobs", null, Context.Request.Scheme)','Add contact','big',@Model.ClientID,@ViewBag.flag)" class="btn btn-primary-1 btn-sm"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp; @Localizer["Add contact"]</button>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="form-group col-sm-3"><label for="BillingContactID" class="col-form-label">@Localizer["Billing Contact"]</label></div>
+                                                <div class="form-group col-sm-6">
+
+                                                    @Html.DropDownList("BillingContactID", abledoc.Utility.ComboHelper.GetJobContactList(Model.ClientID.ToString(), "BillingContact", "", ViewBag.loginusercountry, Model.databasename), Localizer["Select"].Value, new { @id = "BillingContactID", @class = "form-control select-dropdown select2", @name = "BillingContactID" })
+
+                                                </div>
+
+                                            </div>
+                                            @await Html.PartialAsync("_deliverycontact")
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col-sm-3"><label for="Status" class="col-form-label">@Localizer["Status"]</label></div>
+                                            <div class="form-group col-sm-6">
+                                                @Html.DropDownList("Status", abledoc.Utility.ComboHelper.GetJobStatusList(), Localizer["Select"].Value, new { @id = "Status", @class = "form-control select-dropdown select2", @name = "Status" })
+                                            </div>
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col-sm-3"><label for="JobType" class="col-form-label">@Localizer["Job Type"]</label></div>
+                                            <div class="form-group col-sm-6">
+                                                @Html.DropDownList("JobType", abledoc.Utility.ComboHelper.GetJobTypeList(), Localizer["Select"].Value, new { @id = "JobType", @class = "form-control select-dropdown select2", @name = "JobType" })
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col-sm-3"><label for="field_Deadline" class="col-form-label">@Localizer["DeadLine Date"]</label></div>
+                                            <div class="form-group col-sm-6">
+                                                <input type="text" asp-for="Deadline" id="field_Deadline" class="form-control datepicker" autocomplete="off" />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col-sm-3"><label for="Contact" class="col-form-label text-left">@Localizer["DeadLine Time"]</label></div>
+                                            <div class="form-group col-sm-6">
+                                                <input type="text" asp-for="DeadlineTime" class="form-control timepicker" />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col-sm-3"><label for="Contact" class="col-form-label">@Localizer["PO"]</label></div>
+                                            <div class="form-group col-sm-6">
+                                                <input type="text" name="POText" id="POTextJob" value="@POText" class="form-control" />
+                                            </div>
+                                            <div class="form-group col-sm-3">
+                                                <a href="javascript:;" class="btn btn-primary-1 btn-sm" @(ViewBag.SameCountryUser ? "" : "aria-current=page") onclick="POUpload(@Model.ID,'otherFile',1);"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp; @Localizer["PO Upload"]</a>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col-sm-3"><label for="Contact" class="col-form-label">@Localizer["Assigned To"]</label></div>
+                                            <div class="form-group col-sm-6">
+                                                @Html.DropDownList("AssignedTo", abledoc.Utility.ComboHelper.GetAssigUserList(), Localizer["Select"].Value, new { @id = "AssignedTo", @class = "form-control select-dropdown select2", @name = "AssignedTo" })
+                                            </div>
+                                        </div>
+                                        <div class="row" style="display:none">
+                                            <div class="form-group col-sm-3"><label for="PurchaseOrder" class="col-form-label text-left">@Localizer["Purchase Order"]</label></div>
+                                            <div class="form-group col-sm-6">
+                                                <input type="text" asp-for="PurchaseOrder" class="form-control" id="PurchaseOrder" placeholder=@Localizer["Purchase Order"] autocomplete="off">
+                                            </div>
+                                        </div>
+
+                                        @if (ViewBag.JobsCustomFields != null)
+                                        {
+                                            var counter = 0;
+                                            foreach (var customfield in ViewBag.JobsCustomFields)
+                                            {
+                                                <div class="row" style="padding: 5px;">
+                                                    <div class="form-group col-sm-3"><label for="Custom_@counter" class="col-form-label">@customfield.FieldName</label></div>
+                                                    <div class="form-group col-sm-6">
+                                                        @*<text name="Custom_@counter" id="Custom_@counter" class="form-control" value="@customfield.FieldValue" />*@
+                                                        <textarea name="Custom_@counter" id="Custom_@counter" class="form-control">@customfield.FieldValue</textarea>
+                                                    </div>
+
+                                                </div>
+                                                counter++;
+                                            }
+                                        }
+
+                                        <div class="row">
+                                            <table class="table table-striped table-bordered table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>@Localizer["Production"]</th>
+                                                        <th>@Localizer["Billing"]</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <label for="AltProvided" class="ui-label">
+                                                                @Localizer["ALT Provided"]
+                                                                <input type="checkbox" name="AltProvided" id="AltProvided" @((Model.AltProvided == "1") ? "checked" : "") class="checkbox-ui" value="1">
+                                                            </label>
+                                                            <label for="SourceFileTagging" class="ui-label">
+                                                                
+                                                                @Localizer["Non-PDF Files"]
+                                                                <input type="checkbox" name="SourceFileTagging" id="SourceFileTagging" @((Model.SourceFileTagging == "1") ? "checked" : "") class="checkbox-ui" value="1">
+                                                            </label>
+
+                                                            <label for="MultiLanguage" class="ui-label">
+                                                                
+                                                                @Localizer["Multi Language"]
+                                                                <input type="checkbox" name="MultiLanguage" id="MultiLanguage" @((Model.MultiLanguage == "1") ? "checked" : "") class="checkbox-ui" value="1">
+                                                            </label>
+                                                            <label for="Priority" class="ui-label">
+                                                                
+                                                                @Localizer["Priority"]
+                                                                <input type="checkbox" name="Priority" id="Priority" @((Model.Priority.ToString() == "1") ? "checked" : "") class="checkbox-ui" value="1">
+                                                            </label>
+                                                            <label for="MultiDeadline" class="ui-label">
+                                                                
+                                                                @Localizer["Multi-DeadLine"]
+                                                                <input type="checkbox" name="MultiDeadline" id="MultiDeadline" @((Model.MultiDeadline == "1") ? "checked" : "") class="checkbox-ui" value="1">
+                                                            </label>
+                                                        </td>
+                                                        <td>
+                                                            <label for="QuoteOnly" class="ui-label">
+                                                                
+                                                                @Localizer["Quote"]
+                                                                <input type="checkbox" name="QuoteOnly" id="QuoteOnly" @((Model.QuoteOnly == "1") ? "checked" : "") class="checkbox-ui" value="1">
+                                                            </label>
+                                                            <label for="DaxsFlag" class="ui-label">
+                                                                @Localizer["ADLegacy"]
+                                                                
+                                                                <input type="checkbox" name="DaxsFlag" id="DaxsFlag" @((Model.DaxsFlag == "1") ? "checked" : "") class="checkbox-ui" value="1">
+                                                            </label>
+
+                                                            <label for="Sample" class="ui-label">
+                                                                
+                                                                @Localizer["Sample"]
+                                                                <input type="checkbox" name="Sample" id="Sample" @((Model.Sample == "1") ? "checked" : "") class="checkbox-ui" value="1">
+                                                            </label>
+                                                            <label for="FixUpdate" class="ui-label">
+                                                                
+                                                                @Localizer["Update"]
+                                                                <input type="checkbox" name="FixUpdate" id="FixUpdate" @((Model.FixUpdate == "1") ? "checked" : "") class="checkbox-ui" value="1">
+                                                            </label>
+
+
+                                                            <label for="ADScan" class="ui-label">
+                                                                
+                                                                @Localizer["ADScan"]
+                                                                <input type="checkbox" name="ADScan" id="ADScan" @((Model.ADScan == "1") ? "checked" : "") class="checkbox-ui" value="1">
+                                                            </label>
+                                                            <label for="ADStream" class="ui-label">
+                                                                
+                                                                @Localizer["ADStream"]
+                                                                <input type="checkbox" name="ADStream" id="ADStream" @((Model.ADStream == "1") ? "checked" : "") class="checkbox-ui" value="1">
+                                                            </label>
+                                                            <label for="NonProductionRelated" class="ui-label">
+                                                                
+                                                                @Localizer["Non-Production Related"]
+                                                                <input type="checkbox" name="NonProductionRelated" id="NonProductionRelated" @((Model.NonProductionRelated == "1") ? "checked" : "") class="checkbox-ui" value="1">
+                                                            </label>
+                                                            <label for="JobFromADapi" class="ui-label">
+                                                                
+                                                                @Localizer["Job From ADapi"]
+                                                                <input type="checkbox" name="JobFromADapi" id="JobFromADapi" @((Model.JobFromADapi == "1") ? "checked" : "") class="checkbox-ui" value="1">
+                                                            </label>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-collapse">
+                                <div class="card-header" role="tab" id="headingJobSet">
+                                    <h5 class="mb-0">
+                                        <a class="collapsed accordion" data-toggle="collapse" href="#collapseJobSet" aria-expanded="false" aria-controls="collapseTwo">
+                                            
+                                            @Localizer["Job Settings"]
+                                            <i class="material-icons">keyboard_arrow_down</i>
+                                        </a>
+                                    </h5>
+                                </div>
+                                <div id="collapseJobSet" class="collapse" role="tabpanel" aria-labelledby="headingJobSet" data-parent="#accordion">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="form-group col-sm-3"><label for="Security" class="col-form-label">@Localizer["Security"]</label></div>
+                                            <div class="form-group col-sm-6">
+                                                <input type="text" asp-for="Security" class="form-control" id="Security" placeholder=@Localizer["Security"]>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col-sm-3"><label for="CustomPassword" class="col-form-label">@Localizer["Custom Password"]</label></div>
+                                            <div class="form-group col-sm-6">
+                                                <input type="text" asp-for="CustomPassword" class="form-control" id="CustomPassword" placeholder=@Localizer["Custom Password"]>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="display:none;">
+                                            <div class="form-group col-sm-3"><label for="Acrobat_Security_Settings" class="col-form-label">@Localizer["Acrobat Security"]</label></div>
+                                            <div class="form-group col-sm-6">
+                                                <textarea class="form-control" asp-for="Acrobat_Security_Settings" id="Acrobat_Security_Settings" placeholder=@Localizer["Acrobat Security"]></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col-sm-3"><label for="Tagging_Instructions" class="col-form-label">@Localizer["Tagging Instructions"]</label></div>
+                                            <div class="form-group col-sm-6">
+                                                <textarea class="form-control" asp-for="Tagging_Instructions" id="Tagging_Instructions" placeholder=@Localizer["Tagging Instructions"]></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="display:none;">
+                                            <div class="form-group col-sm-3"><label for="Logo_altText" class="col-form-label">@Localizer["Logo ALT-Text"]</label></div>
+                                            <div class="form-group col-sm-6">
+                                                <textarea class="form-control" asp-for="Logo_altText" id="Logo_altText" placeholder=@Localizer["Logo ALT-Text"]></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-collapse">
+                                <div class="card-header" role="tab" id="headingFileTree">
+                                    <h5 class="mb-0">
+                                        <a class="collapsed accordion" data-toggle="collapse" onclick="fileTreeDataTable(@Model.ID)" href="#collapseFileTree" aria-expanded="false" aria-controls="collapseThree">
+                                            
+                                            @Localizer["File Tree"]
+                                            <i class="material-icons">keyboard_arrow_down</i>
+                                        </a>
+                                    </h5>
+                                </div>
+                                <div id="collapseFileTree" class="collapse" role="tabpanel" aria-labelledby="headingFileTree" data-parent="#accordion">
+                                    <div class="card-body FileTree" data-name="FileTree">
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                @*<button type="button" class="btn btn-success btn-sm" id="download_all_files" @(ViewBag.SameCountryUser?"":"disabled")>*@
+                                                <button type="button" class="btn btn-success btn-sm" id="download_all_files">
+                                                    <i class="fa fa-download"></i> @Localizer["Download All Files"]
+                                                </button>
+                                            </div>
+                                            <div class="col-md-6">
+                                                @*<button type="button" class="btn btn-success btn-sm" id="download_single" onclick="download();" @(ViewBag.SameCountryUser?"":"disabled")>*@
+                                                <button type="button" class="btn btn-success btn-sm" id="download_single" onclick="download();">
+                                                    <i class="fa fa-download"></i> @Localizer["Download"]
+                                                </button>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer">
+
+                @*<button type="submit" id="jobsave" class="btn btn-primary-1 btn-sm" @(ViewBag.SameCountryUser?"":"disabled")>*@
+                <button type="submit" id="jobsave" class="btn btn-primary-1 btn-sm">
+                    <i class="fa fa-save"></i>&nbsp; @Localizer["Save"]
+                </button>
+                @*<button type="button" id="save_and_close" class="btn btn-primary-1 btn-sm" @(ViewBag.SameCountryUser ? "" : "disabled")>*@
+            <button type="button" id="save_and_close" class="btn btn-primary-1 btn-sm">
+                <i class="fa fa-save"></i>&nbsp; @Localizer["Save & Close"]
+            </button>
+
+
+                @if ((Model.DaxsFlag == "1") && (Model.Status != "TOBEDELIVERED"))
+                {
+                    @*<button type="button" class="btn btn-success btn-sm" @(ViewBag.SameCountryUser ? "" : "disabled")>*@
+            <button type="button" class="btn btn-success btn-sm">
+                <i class="fa fa-arrow-right "></i>&nbsp; @Localizer["Stamp ADLegacy"]
+            </button>
+                }
+                @*if($_SESSION['USER']['Admin'] || $_SESSION['USER']['Quote'])
+                    {*@
+                @*<button type="button" onclick="showInPopup('@Url.Action("Quote", "Jobs", null, Context.Request.Scheme)','Quote','big',@Model.ID)" class="btn btn-primary btn-sm">
+                        <i class="fa fa-arrow-right "></i>&nbsp; Quote
+                    </button>*@
+                @*<button type="button" onclick="QuotePopup(@Model.ID)" class="btn btn-primary-1 btn-sm" @(ViewBag.SameCountryUser ? "" : "disabled")>*@
+            <button type="button" onclick="QuotePopup(@Model.ID)" class="btn btn-primary-1 btn-sm">
+                <i class="fa fa-arrow-right "></i>&nbsp; @Localizer["Quote"]
+            </button>
+                @*}*@
+
+                @{
+                    var invoiceGenerated = false;
+
+                    var invoiceQuery = Model.GetInvoiceTracking(Model.ID);
+                    if (invoiceQuery != null)
+                    {
+                        foreach (var invoiceRow in invoiceQuery)
+                        {
+                            invoiceGenerated = true;
+                        }
+                    }
+
+                    Int64 isInvoiceApproved = 0;
+                    var queryInvoiceState = Model.GetInvoiceInstance(Model.ID);
+                    if (queryInvoiceState != null)
+                    {
+                        foreach (var rowInvoiceState in queryInvoiceState)
+                        {
+                            isInvoiceApproved = rowInvoiceState.Approved;
+                        }
+                    }
+                }
+
+                @if (Model.Status != "TOBEDELIVERED")
+                {
+                    @*if($_SESSION['USER']['Admin'] || $_SESSION['USER']['ToBeInvoiced']){*@
+                    if (invoiceGenerated)
+                    {
+                        @*<button type="button" class="btn btn-primary-1 btn-sm" @(ViewBag.SameCountryUser ? "" : "disabled")>*@
+            <button type="button" class="btn btn-primary-1 btn-sm">
+                <i class="fa fa-arrow-right "></i>&nbsp; @Localizer["Credit Note"]
+            </button>
+                    }
+                    var invoiceDisable = true;
+                    var invoiceTitle = "Button disabled - as Invoice has been approved or denied at higher level.";
+                    if (isInvoiceApproved == 0)
+                    {
+                        invoiceDisable = false;
+                        invoiceTitle = "";
+                    }
+                    @*<button type="button" class="btn btn-primary btn-sm" onclick="showInPopup('@Url.Action("Invoice", "Jobs", null, Context.Request.Scheme)','axes4 GmbH','big',@Model.ID)">
+                            <i class="fa fa-arrow-right " title="@invoiceTitle" disabled="@invoiceDisable"></i>&nbsp; Invoice
+                        </button>*@
+                    @*<button type="button" onclick="InvoicePopup(@Model.ID)" class="btn btn-primary-1 btn-sm" title="@invoiceTitle" disabled="@invoiceDisable" @(ViewBag.SameCountryUser ? "" : "disabled")>*@
+            <button type="button" onclick="InvoicePopup(@Model.ID)" class="btn btn-primary-1 btn-sm" title="@invoiceTitle" disabled="@invoiceDisable">
+                <i class="fa fa-arrow-right "></i>&nbsp; @Localizer["Invoice"]
+            </button>
+                    @*}*@
+                }
+
+
+                @*<button type="button" onclick="showInPopup('@Url.Action("CancelJob", "Jobs", null, Context.Request.Scheme)','Confirm?','small',@Model.ID)" class="btn btn-danger btn-sm" style="float:right" @(ViewBag.SameCountryUser ? "" : "disabled")>*@
+            <button type="button" onclick="showInPopup('@Url.Action("CancelJob", "Jobs", null, Context.Request.Scheme)','Confirm?','small',@Model.ID)" class="btn btn-danger btn-sm" style="float:right">
+                <i class="fa fa-times-circle"></i>&nbsp; @Localizer["Cancel Job"]
+            </button>
+                <input type="hidden" name="ATHidden" ID="ATHidden" value="@Model.AssignedTo">
+
+
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-6">
+        @if (Model.Status == "TOBEDELIVERED")
+        {
+            <div>
+                @await Html.PartialAsync("_filestodelivered")
+            </div>
+
+        }
+        else
+        {
+            <div id="filesRefresh">
+                @await Html.PartialAsync("_files")
+            </div>
+        }
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-collapse">
+                            <div class="card-header" role="tab" id="headingUserRes">
+                                <h5 class="mb-0">
+                                    <a class="collapsed accordion" data-toggle="collapse" href="#collapseUserRes" aria-expanded="false" aria-controls="collapseThree">
+                                        @Localizer["User Restrictions"]
+                                        <i class="material-icons">keyboard_arrow_down</i>
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="collapseUserRes" class="collapse" role="tabpanel" aria-labelledby="headingUserRes" data-parent="#accordion">
+                                <div class="card-body">
+                                    <fieldset>
+                                        @{
+
+                                            if (Model.Mode == "Restricted")
+                                            {
+
+                                                <div style="display: inline-block">
+                                                <label for="allowedToggle" class="ui-label modeClass">@Localizer["Allowed"]</label>
+                                                    <input onclick="AllowedColor();" type="radio" name="radio-choice-h-2" class="checkbox-ui-woi modeClass" id="allowedToggle" data-theme="a" value="off">
+                                                </div>
+                                                <div style="display: inline-block">
+                                                    <label for="restrictedToggle" class="ui-label modeClass">@Localizer["Restricted"]</label>
+                                                    <input onclick="RestrictedColor();" type="radio" name="radio-choice-h-2" class="checkbox-ui-woi modeClass" id="restrictedToggle" data-theme="a" value="on" checked>
+                                                </div>
+
+                                            }
+                                            else
+                                            {
+                                                <div style="display: inline-block">
+                                                    <label for="allowedToggle" class="ui-label modeClass">@Localizer["Allowed"]</label>
+                                                    <input onclick="AllowedColor();" type="radio" name="radio-choice-h-2" class="checkbox-ui-woi modeClass" id="allowedToggle" data-theme="a" value="on" checked>
+                                                </div>
+                                                <div style="display: inline-block">
+                                                    <label for="restrictedToggle" class="ui-label modeClass">@Localizer["Restricted"]</label>
+                                                    <input onclick="RestrictedColor();" type="radio" name="radio-choice-h-2" class="checkbox-ui-woi modeClass" id="restrictedToggle" data-theme="a" value="off">
+                                                </div>
+
+                                            }
+                                        }
+
+
+                                    </fieldset>
+
+                                    <fieldset>
+                                        @{
+                                            int totalUsersRestriction = 0;
+                                            //List<object> allowedUsersArray = new List<object>();
+                                            //var allowedUsers = Model.RestrictedUID;
+
+
+                                            //allowedUsersArray.Add(allowedUsers.Split('|').ToArray());
+
+
+                                            Users users1 = new Users();
+                                            foreach (var users in users1.GetActiveUsersList())
+                                            {
+                                                totalUsersRestriction++;
+                                                var restrictedChecked = "";
+                                                if (Model.Mode == "Restricted")
+                                                {
+                                                    restrictedChecked = "checked";
+                                                }
+                                                else if (Model.Mode == "Allowed")
+                                                {
+                                                    restrictedChecked = "checked";
+                                                }
+                                                <div style="display: inline-block">
+                                                    <label for="checkbox-h-2a_@users.ID" class="ui-label allowedUserClass">@users.FullName</label>
+                                                    <input onclick="RestrictionCheck();" @restrictedChecked type="checkbox" name="checkbox-h-2a_@users.ID" class="allowedUserClass checkbox-ui-woi" id="checkbox-h-2a_@users.ID">
+                                                </div>
+                                            }
+                                        }
+
+                                    </fieldset>
+                                    <input type="hidden" id="RestrictedUID" asp-for="RestrictedUID" />
+                                    <input type="hidden" id="TotalUsersRestriction" name="TotalUsersRestriction" value="@totalUsersRestriction" />
+
+
+                                    <input type="hidden" id="Mode" asp-for="Mode" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (Model.VarianceComment != null)
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-collapse">
+                                <div class="card-header" role="tab" id="headingComm">
+                                    <h5 class="mb-0">
+                                        <a class="collapsed accordion" data-toggle="collapse" href="#collapseComm" aria-expanded="true" aria-controls="collapseComm">
+                                            @Localizer["Comment - Invoice"]
+                                            <i class="material-icons">keyboard_arrow_down</i>
+                                        </a>
+                                    </h5>
+                                </div>
+                                <div id="collapseComm" class="collapse show" role="tabpanel" aria-labelledby="headingComm" data-parent="#accordion">
+
+                                    <div class="card-body">
+                                        <div class="form-group row">
+
+                                            <div class="col-sm-12">
+                                                <textarea class="form-control" id="varianceComment" placeholder=@Localizer["Comments..."]>@Model.VarianceComment</textarea>
+                                            </div>
+                                        </div>
+
+
+
+                                    </div>
+
+                                    <div class="card-footer">
+                                        @*<button type="button" onclick="SaveVarianceComment(@Model.ID);" class="btn btn-warning btn-sm" @(ViewBag.SameCountryUser ? "" : "disabled")>*@
+                                        <button type="button" onclick="SaveVarianceComment(@Model.ID);" class="btn btn-warning btn-sm">
+                                            <i class="fa fa-save"></i> @Localizer["Update Comment"]
+                                        </button>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        }
+
+    </div>
+</div>
+<div id="popupQuoteDetail">
+</div>
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.select-dropdown').selectpicker('setStyle', 'btn btn-link');
+            $('.filter-option').addClass('filter-option-1');
+        });
+
+        var success = $("#success").val();
+        if (success == 1) {
+            $('#message').css('display', 'block').delay(4000).fadeOut();
+        }
+
+    </script>
+    <script src="~/assets/js/pages/Jobsinitial.js?v=@abledoc.Utility.CommonHelper.Version"></script>
+    <script src="~/assets/js/pages/FileTreeTable.js?v=@abledoc.Utility.CommonHelper.Version"></script>
+    <script src="~/assets/js/pages/FileTreeTableToBeDeliverd.js?v=@abledoc.Utility.CommonHelper.Version"></script>
+    <script src="~/assets/js/pages/FileTreeCompliance.js?v=@abledoc.Utility.CommonHelper.Version"></script>
+
+}

@@ -1,0 +1,64 @@
+﻿@*<div class="modal fade" id="bootstrap-AddTime" role="dialog">*@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<div class="modal-dialog">
+    <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <h4 class="modal-title">@Localizer["Add Time"]</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <form method="post" id="frmAddTime">
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="form-group">
+                    @Html.DropDownList("queryTypeSelect", abledoc.Utility.ComboHelper.GetTimeTypeNew(), Localizer["Select"].Value, new { @id = "queryTypeSelect", @class = "col-md-12 form-control selectpicker", @datastyle = "btn btn-link", @name = "queryTypeSelect" })
+                </div>
+                <div class="form-group">
+                    <input type="number" name="addTimeNumber" id="addTimeNumber" class="form-control" placeholder=@Localizer["Hours..."] />
+                </div>
+                <div class="form-group">
+                    <textarea type="url" name="messageAddTimer" id="messageAddTimer" class="form-control" placeholder=@Localizer["Comment..."]></textarea>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="addTimerDateExtra" id="addTimerDateExtra" class="form-control addTimerDateExtra" placeholder=@Localizer["Date..."] />
+                </div>
+
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary-1" id="saveBtn" onclick="AddTimeToTimesheet();">@Localizer["Save"]</button>
+                &nbsp;&nbsp;
+                <button type="button" class="btn btn-danger" data-dismiss="modal">@Localizer["Close"]</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+@*</div>*@
+@section Scripts {
+    <script>
+
+                //$(document).ready(function () {
+
+                //    $('.datepicker').datetimepicker({
+                //        multidate: true,
+                //        format: "YYYY-MM-DD",
+                //        icons: {
+                //            time: "fa fa-clock-o",
+                //            date: "fa fa-calendar",
+                //            up: "fa fa-chevron-up",
+                //            down: "fa fa-chevron-down",
+                //            previous: "fa fa-chevron-left",
+                //            next: "fa fa-chevron-right",
+                //            today: "fa fa-screenshot",
+                //            clear: "fa fa-trash",
+                //            close: "fa fa-remove",
+                //        },
+                //    });
+                //});
+
+    </script>
+}

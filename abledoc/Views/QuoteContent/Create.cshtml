@@ -1,0 +1,235 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model JobQuoteAutopopulate
+<div class="modal fade" id="bootstrap-modal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title">
+                    @if (ViewBag.PageMode == "Update")
+                    {
+                        @Localizer["Update"]
+                    }
+                    else
+                    {
+                        @Localizer["Create"]
+                    }
+
+                </h4>
+            </div>
+            <div id="demo-modal">
+                <form method="post" id="quotecontentform">
+                    <div class="card">
+                        <div class="card-body">
+                            <input type="hidden" asp-for="ID" />
+
+                            <div class="row">
+                                <label for="Type" class="col-form-label col-sm-3">@Localizer["Type"] <span class="text-danger">*</span></label>
+                                <div class="col-md-9">
+                                    <div class="form-group">
+
+                                        @Html.DropDownList("Type", abledoc.Utility.ComboHelper.GetCommonMasterList("Quotetype", Model.Type), Localizer["Select"].Value, new { @id = "Type", @class = "form-control select2", @datastyle = "btn btn-link", @name = "Type", @placeholder = "Type" })
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row country-dropdown" style="display:none">
+                                <label class="col-md-3 col-form-label">@Localizer["Country"] <span class="text-danger">*</span></label>
+                                <div class="col-md-9">
+                                    <div class="form-group">
+                                        @*@Html.DropDownList("country_code", abledoc.Utility.ComboHelper.GetCountryList(Convert.ToString(Model.country_code)), "Select", new { @id = "country_code", @class = "form-control input-inline input-medium select2", @datastyle = "btn btn-link", @name = "country_code", @placeholder = "Country", @multiple = "multiple" })*@
+                                        <select id="country_code" name="country_code" multiple="multiple" class="form-control input-inline input-medium select2">
+                                            @foreach (Countries item in new Countries().GetCountryList())
+                                            {
+                                                if (string.IsNullOrEmpty(Model.country_code))
+                                                {
+                                                    <option value="@item.code">@item.country</option>
+                                                }
+                                                else
+                                                {
+                                                    if (Model.country_code.Contains(item.code.ToString()))
+                                                    {
+                                                        <option value="@item.code" selected>@item.country</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item.code">@item.country</option>
+                                                    }
+                                                }
+
+                                            }
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row tax-div" style="display:none">
+                                <label class="col-md-3 col-form-label">@Localizer["Province"] </label>
+                                <div class="col-md-9">
+                                    <div class="form-group">
+                                        @*@Html.DropDownList("country_code", abledoc.Utility.ComboHelper.GetCountryList(Convert.ToString(Model.country_code)), "Select", new { @id = "country_code", @class = "form-control input-inline input-medium select2", @datastyle = "btn btn-link", @name = "country_code", @placeholder = "Country", @multiple = "multiple" })*@
+                                        <select id="province" name="province" multiple="multiple" class="form-control input-inline input-medium select2">
+                                            @if (!string.IsNullOrEmpty(Model.country_code))
+                                            {
+
+                                                if (string.IsNullOrEmpty(Model.province))
+                                                {
+                                                    States states = new States();
+                                                    List<States> statesList = new List<States>();
+                                                    statesList = states.GetStateListByCountry(Model.country_code.ToString().Split(",").ToArray());
+                                                    if (statesList != null)
+                                                    {
+                                                        foreach (States item in statesList)
+                                                        {
+                                                            <option value="@item.id">@item.state</option>
+
+                                                        }
+                                                    }
+
+                                                }
+                                                else
+                                                {
+                                                    var provinceexplode = Model.province.ToString().Split(",").ToArray();
+                                                    Dictionary<int, int> provinceArray = new Dictionary<int, int>();
+                                                    int count = 0;
+                                                    States states = new States();
+                                                    List<States> statesList = new List<States>();
+                                                    statesList = states.GetStateListByCountry(Model.country_code.ToString().Split(",").ToArray());
+                                                    if (statesList != null)
+                                                    {
+                                                        foreach (States item in statesList)
+                                                        {
+                                                            if (count < provinceexplode.Length)
+                                                            {
+                                                                if (!provinceArray.ContainsValue(Convert.ToInt32(provinceexplode[count])))
+                                                                {
+                                                                    provinceArray.Add(count, Convert.ToInt32(provinceexplode[count]));
+                                                                }
+
+                                                            }
+
+                                                            if (provinceArray.ContainsValue(item.id))
+                                                            {
+                                                                <option value="@item.id" selected>@item.state</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@item.id">@item.state</option>
+                                                            }
+
+
+                                                            count++;
+                                                        }
+                                                    }
+
+
+                                                }
+                                                @*foreach (States item in new States().GetStateListByCountry(Model.country_code.ToString().Split(",").ToArray()))
+            {
+                if (string.IsNullOrEmpty(Model.province))
+                {
+                    <option value="@item.state">@item.state</option>
+                }
+                else
+                {
+                    if (Model.province.Contains(item.id.ToString()))
+                    {
+                        <option value="@item.id" selected>@item.state</option>
+                    }
+                    else
+                    {
+                        <option value="@item.id">@item.state</option>
+                    }
+                }
+
+            }*@
+                                            }
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row language-div">
+                                <label for="Language" class="col-form-label col-sm-3">@Localizer["Language"] <span class="text-danger">*</span></label>
+                                <div class="col-md-9">
+                                    <div class="form-group">
+
+                                        @Html.DropDownList("Language", abledoc.Utility.ComboHelper.GetCommonMasterList("Language", Model.Language), Localizer["Select"].Value, new { @id = "Language", @class = "form-control select2", @datastyle = "btn btn-link", @name = "Language", @placeholder = "Language" })
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row tax-div" style="display:none">
+                                <label asp-for="tax" class="col-form-label col-sm-3">@Localizer["Tax"] </label>
+                                <div class="col-md-9">
+                                    <div class="form-group">
+                                        <input type="number" asp-for="tax" class="form-control" />
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label for="Information" class="col-form-label col-sm-3">@Localizer["Information"] <span class="text-danger">*</span></label>
+                                <div class="col-md-9">
+                                    <div class="form-group">
+
+                                        <textarea class="form-control" asp-for="Information"></textarea>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <label for="display_order" class="col-form-label col-sm-3">@Localizer["Display Order"]</label>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <input type="number" asp-for="display_order" class="form-control" id="display_order" placeholder="Display Order">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <div class="col-sm-2"><button type="button" class="btn btn-primary-1" id="saveContent">@Localizer["Save"]</button></div>
+                        <div class="col-sm-2"><button type="button" class="btn btn-danger" data-dismiss="modal">@Localizer["Close"]</button></div>
+
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@{
+    <script>
+        $("#quotecontentform").validate({
+            rules: {
+                Type: "required",
+                country_code: "required",
+                Language: "required",
+                Information: "required",
+            },
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                if (element.hasClass('select2') && element.next('.select2-container').length) {
+                    error.insertAfter(element.next('.select2-container'));
+                } else {
+                    error.insertAfter(element.closest('.form-control'));
+                }
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            }
+        });
+    </script>
+
+}

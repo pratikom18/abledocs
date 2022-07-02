@@ -1,0 +1,147 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    int fixVal = (Convert.ToInt32(ViewBag.fixVal) > 0) ? Convert.ToInt32(ViewBag.fixVal) : 0;
+    string status = string.IsNullOrEmpty(ViewBag.status) ? "" : ViewBag.status;
+    int p1ToP4 = (Convert.ToInt32(ViewBag.p1ToP4) > 0) ? Convert.ToInt32(ViewBag.p1ToP4) : 0;
+    int altTextVal = (Convert.ToInt32(ViewBag.altTextVal) > 0) ? Convert.ToInt32(ViewBag.altTextVal) : 0;
+    int p4ToDelivery = (Convert.ToInt32(ViewBag.p4ToDelivery) > 0) ? Convert.ToInt32(ViewBag.p4ToDelivery) : 0;
+    List<UserRoles> UserList = ViewBag.UserRolesList;
+    bool Reviewer = false;
+    if (UserList.Where(x => x.RoleName == "Reviewer").Count() > 0)
+    {
+        Reviewer = true;
+    }
+    bool QC = false;
+    if (UserList.Where(x => x.RoleName == "QC").Count() > 0)
+    {
+        QC = true;
+    }
+
+}
+<input type="hidden" id="hdnstatus" value="@status" />
+<input type="hidden" id="hdnQC" value="@QC" />
+<input type="hidden" id="hdnaltTextVal" value="@altTextVal" />
+@if (fixVal == 1)
+{
+    <div class="form-group row">
+        <button type="button" class="btn btn-success btn-primary-1" id="Assign" name="Assign" onclick="CheckIn(1);">
+            <i class="fa fa-save"></i> @Localizer["Phase 1"]
+        </button>
+        <button type="button" class="btn btn-success btn-primary-1" id="ToBeReviewed" name="ToBeReviewed" onclick="CheckIn(2);">
+            <i class="fa fa-save"></i> @Localizer["Phase 2"]
+        </button>
+        @*<button type="button" class="btn btn-success btn-primary-1" id="ToBeFinalized" name="ToBeFinalized" onclick="CheckIn(4);">
+                <i class="fa fa-save"></i> Phase 4
+            </button>*@
+    </div>
+}
+else if (status == "TAGGING")
+{
+    <div class="form-group row">
+        <a class="btn btn-success btn-primary-1" id="messagePopUpLinkID" href="#messagePopUpLinkID" style="display:none;"></a>
+        <button type="button" class="btn btn-success btn-primary-1" id="Assign" name="Assign" onclick="CheckIn(1);">
+            <i class="fa fa-save"></i> @Localizer["Phase 1"]
+        </button>
+        <button type="button" class="btn btn-success btn-primary-1" id="ToBeReviewed" name="ToBeReviewed" onclick="CheckIn(2);">
+            <i class="fa fa-save"></i> @Localizer["Phase 2"]
+        </button>
+        @if (Reviewer || p1ToP4 == 1)
+        {
+            @*<button type="button" class="btn btn-success btn-primary-1" id="ToBeFinalized" name="ToBeFinalized" onclick="CheckIn(4);">
+                    <i class="fa fa-save"></i> Phase 4
+                </button>*@
+        }
+        @if (QC)
+        {
+            <button type="button" class="btn btn-success btn-primary-1" id="phase5Activated" name="ToBeQualityControlled" onclick="CheckIn(5);">
+                <i class="fa fa-save"></i> @Localizer["Phase 3"]
+            </button>
+            <button type="button" class="btn btn-success btn-primary-1" id="phase5Locked" name="ToBeQualityControlled" onclick="ShowPopUpMessage();">
+                <i class="fa fa-lock"></i> @Localizer["Phase 3"]
+            </button>
+            <div class="row">
+                <label class="col-md-12 col-form-label">@Localizer["Need Appropriate ALT Status to Activate Phase 3"]!</label>
+            </div>
+        }
+    </div>
+}
+else if (status == "REVIEW")
+{
+    <div class="form-group row">
+        <button type="button" class="btn btn-success btn-primary-1" id="Assign" name="Assign" onclick="CheckIn(1);">
+            <i class="fa fa-save"></i> @Localizer["Phase 1"]
+        </button>
+        <button type="button" class="btn btn-success btn-primary-1" id="ToBeReviewed" name="ToBeReviewed" onclick="CheckIn(2);">
+            <i class="fa fa-save"></i> @Localizer["Phase 2"]
+        </button>
+        @*<button type="button" class="btn btn-success btn-primary-1" id="ToBeFinalized" name="ToBeFinalized" onclick="CheckIn(4);">
+                <i class="fa fa-save"></i> Phase 4
+            </button>*@
+        <button type="button" class="btn btn-success btn-primary-1" id="phase5Activated" name="ToBeQualityControlled" onclick="CheckIn(5);">
+            <i class="fa fa-save"></i> @Localizer["Phase 3"]
+        </button>
+    </div>
+}
+else if (status == "FINAL")
+{
+    <div class="form-group row">
+        <a class="btn btn-success btn-primary-1" id="messagePopUpLinkID" href="#messagePopUpLinkID" style="display:none;"></a>
+        <button type="button" class="btn btn-success btn-primary-1" id="Assign" name="Assign" onclick="CheckIn(1);">
+            <i class="fa fa-save"></i> @Localizer["Phase 1"]
+        </button>
+        @*<button type="button" class="btn btn-success btn-primary-1" id="ToBeFinalized" name="ToBeFinalized" onclick="CheckIn(4);">
+                <i class="fa fa-save"></i> Phase 4
+            </button>*@
+        <button type="button" class="btn btn-success btn-primary-1" id="phase5Activated" name="ToBeQualityControlled" onclick="CheckIn(5);">
+            <i class="fa fa-save"></i> @Localizer["Phase 3"]
+        </button>
+        <button type="button" class="btn btn-success btn-primary-1" id="phase5Locked" name="ToBeQualityControlled" onclick="ShowPopUpMessage();">
+            <i class="fa fa-lock"></i> @Localizer["Phase 3"]
+        </button>
+        <div class="row">
+            <label class="col-md-12 col-form-label">@Localizer["Need Appropriate ALT Status to Activate Phase 3"]!</label>
+        </div>
+        @if (p4ToDelivery == 1)
+        {
+            <button type="button" class="btn btn-success btn-primary-1" id="Complete" name="Complete" onclick="CheckIn(6);">
+                <i class="fa fa-save"></i> @Localizer["To Be Delivered"]
+            </button>
+        }
+    </div>
+}
+else if (status == "QC")
+{
+    @*<button type="button" class="btn btn-success btn-primary-1" id="ToBeFinalized" name="ToBeFinalized" onclick="CheckIn(4);">
+            <i class="fa fa-save"></i> Phase 4
+        </button>*@
+    <button type="button" class="btn btn-success btn-primary-1" id="ToBeReviewed" name="ToBeReviewed" onclick="CheckIn(2);">
+        <i class="fa fa-save"></i> @Localizer["Phase 2"]
+    </button>
+    <button type="button" class="btn btn-success btn-primary-1" id="phase5Activated" name="ToBeQualityControlled" onclick="CheckIn(5);">
+        <i class="fa fa-save"></i> @Localizer["Phase 3"]
+    </button>
+    <button type="button" class="btn btn-success btn-primary-1" id="Complete" name="Complete" onclick="CheckIn(6);">
+        <i class="fa fa-save"></i> @Localizer["To Be Delivered"]
+    </button>
+}
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            if ($("#hdnstatus").val() == "TAGGING") {
+                if ($("#hdnQC").val() == "true") {
+                    var altTextVal = parseInt($("#hdnaltTextVal").val());
+                    if (altTextVal == 1 || altTextVal == 3 || altTextVal == 4 || altTextVal == 5 || altTextVal == 7) {
+                        $("#phase5Locked").parent().hide();
+                        $("#phase5LockedMessage").hide();
+                        $("#phase5Activated").parent().show();
+                    } else {
+                        $("#phase5Activated").parent().hide();
+                        $("#phase5Locked").parent().show();
+                        $("#phase5LockedMessage").show();
+                    }
+                }
+            }
+        });
+    </script>
+}

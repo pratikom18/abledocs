@@ -1,0 +1,50 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Supervisor"];
+    ViewData["PageTitle"] = Localizer["Supervisor"];
+}
+
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="toolbar">
+                            <!--        Here you can write extra buttons/actions for the toolbar              -->
+                        </div>
+                        <div class="material-datatables">
+                            <table id="SupervisorTable" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>@Localizer["TimeSheet ID"]</th>
+                                        <th>@Localizer["User"]</th>
+                                        <th>@Localizer["Date"]</th>
+                                        <th>@Localizer["Total Equivalent Hours"]</th>
+                                        <th class="disabled-sorting">@Localizer["Actions"]</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                    <!-- end content-->
+                </div>
+                <!--  end card  -->
+            </div>
+            <!-- end col-md-12 -->
+        </div>
+        <!-- end row -->
+    </div>
+</div>
+<div id="approvedtimesheet"></div>
+@section scripts{
+
+
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <script src="~/assets/js/pages/Supervisor.js?v=@abledoc.Utility.CommonHelper.Version"></script>
+    <!-- END PAGE LEVEL PLUGINS -->
+}

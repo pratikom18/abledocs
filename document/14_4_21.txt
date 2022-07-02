@@ -1,0 +1,32 @@
+ALTER TABLE `abledocs`.`menumaster` 
+DROP INDEX `menumasterid_UNIQUE` ;
+;
+
+
+ALTER TABLE `abledocs`.`countries` 
+ADD COLUMN `smtphost` VARCHAR(45) NULL AFTER `currency_code`,
+ADD COLUMN `emailaddress` VARCHAR(100) NULL AFTER `smtphost`,
+ADD COLUMN `password` VARCHAR(100) NULL AFTER `emailaddress`;
+
+ALTER TABLE `abledocs`.`countries` 
+ADD COLUMN `smtpport` VARCHAR(45) NULL AFTER `password`;
+
+ALTER TABLE `abledocs`.`countries` 
+ADD COLUMN `isdefault` TINYINT(1) NULL DEFAULT NULL AFTER `smtpport`;
+
+
+UPDATE `abledocs`.`setting` SET `SectionName` = 'ALT Text' WHERE (`ID` = '13');
+
+UPDATE `abledocs`.`setting` SET `SectionName` = 'Phase 3' WHERE (`ID` = '15');
+
+update jobs_files set Status='REVIEW' where Status='FINAL';
+
+update jobs_files_versions set State='REVIEW' where State='FINAL';
+
+
+
+insert into jobs_files_reviews (VersionID,ReviewerID,FileID,JobID,Comments,LastUpdated,Deleted)
+select VersionID,FinalizerID,FileID,JobID,Comments,LastUpdated,Deleted from jobs_files_final 
+
+UPDATE jobs_files_checkouts SET State='REVIEW' WHERE State='FINAL';
+UPDATE jobs_files_checkouts SET NextState='REVIEW' WHERE NextState='FINAL';

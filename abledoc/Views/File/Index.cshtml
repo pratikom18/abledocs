@@ -1,0 +1,828 @@
+﻿@model abledoc.Models.File;
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+
+
+    string statusvalue = Model.jobsFiles.Status;
+
+    string jobcode = "";
+    if (Model.jobs.Year != null)
+    {
+        jobcode = Model.jobs.Year.ToString() + "-" + Model.jobs.CountryCode.ToString() + "-" + Model.jobs.Code.ToString() + "-" + Model.jobs.ID;
+    }
+    else
+    {
+        jobcode = Model.jobs.ID.ToString();
+    }
+    var file = Localizer["File"].Value;
+    var Engagement = Localizer["Engagement"].Value;
+    ViewData["Title"] = file + " #" + Model.jobsFiles.ID + " | " + Engagement + " #" + jobcode;
+    ViewData["PageTitle"] = file + " #" + Model.jobsFiles.ID;
+
+    string userid = HttpContextAccessor.HttpContext.Session.GetString("ID");
+
+
+    List<UserRoles> UserList = ViewBag.UserRolesList;
+    bool delete = false;
+    if (UserList.Where(x => x.RoleName == "FilesAdmin").Count() > 0)
+    {
+        delete = true;
+    }
+    ViewBag.Open = "true";
+    ViewBag.Status = Model.jobsFiles.Status;
+}
+@section Styles{
+    <style>
+        /* div.sticky {
+            position: -webkit-sticky !important;
+            position: sticky !important;
+            bottom: 0 !important;
+        }*/
+        div.sticky {
+            position: fixed;
+            bottom: 0;
+        }
+    </style>
+}
+@if (Model != null)
+{
+    if (Model.jobs.Mode == "Restricted")
+    {
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <h2>@Localizer["You do not have sufficient permission to view this file details!"]</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <input type="hidden" value="@Model.jobsFiles.Status" id="hdnStatus" />
+        <input type="hidden" value="@Model.jobsFiles.Status" id="hdnoldStatus" />
+        <input type="hidden" value="" id="hdnStatusName" />
+        <input type="hidden" name="mystatus" id="mystatus" value="@statusvalue" />
+
+
+
+        @if ((UserList.Where(x => x.RoleName == "Tagger").Count() > 0 && Model.jobsFiles.Status == "TAGGING") || (UserList.Where(x => x.RoleName == "Reviewer").Count() > 0 && Model.jobsFiles.Status == "REVIEW") || (UserList.Where(x => x.RoleName == "Finalizer").Count() > 0 && Model.jobsFiles.Status == "FINAL") || (UserList.Where(x => x.RoleName == "QC").Count() > 0 && Model.jobsFiles.Status == "QC") || UserList.Where(x => x.RoleName == "Admin").Count() > 0 || UserList.Where(x => x.RoleName == "FilesDashboard").Count() > 0)
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <form method="post" id="JobForm" class="form-horizontal" asp-controller="file" asp-action="EDIT">
+
+                        <input type="hidden" asp-for="jobsFiles.JobID" id="JobID" />
+                        <input type="hidden" asp-for="jobsFiles.ID" id="ID" />
+                        <input type="hidden" asp-for="jobsFiles.CurrentVersionFileID" id="CurrentVersionFileID" />
+                        <input type="hidden" asp-for="flag" />
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="card-header card-header-icon card-header-rose">
+                                        <div class="card-icon card-header-success-1 card-icon-1">
+                                            <i class="material-icons">
+                                                insert_drive_file
+                                                @* <img src="~/Resources/Images/Icon/feather-user.svg" />*@
+                                            </i>
+                                        </div>
+                                    </div>
+                                    <div class="card-collapse">
+                                        <div class="card-header" role="tab" id="headingOne">
+                                            <h5 class="mb-0">
+                                                <a data-toggle="collapse" href="#collapseGeneral" aria-expanded="true" aria-controls="collapseOne" class="collapsed accordion">
+                                                    @Localizer["File Details"]
+                                                    <i class="material-icons">keyboard_arrow_down</i>
+                                                </a>
+                                            </h5>
+                                        </div>
+                                        <div id="collapseGeneral" class="collapse show" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" style="">
+                                            <div class="card-body">
+                                                <div class="form-group row">
+                                                    <div class="col-sm-2">
+                                                        <label asp-for="jobsFiles.Filename" class="col-form-label">@Localizer["File Name"]</label>
+                                                    </div>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" asp-for="jobsFiles.Filename" class="form-control" placeholder="@Localizer["File Name"]" />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="col-sm-2">
+                                                        <label asp-for="jobsFiles.Language" class="col-form-label">@Localizer["Language"]</label>
+                                                    </div>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" maxlength="5" asp-for="jobsFiles.Language" class="form-control" placeholder="@Localizer["Language"]" />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="col-sm-2">
+                                                        <label asp-for="jobsFiles.Pages" class="col-form-label">@Localizer["Page Count"]</label>
+                                                    </div>
+                                                    <div class="col-sm-10">
+                                                        <input type="number" asp-for="jobsFiles.Pages" class="form-control" placeholder="@Localizer["Page Count"]" />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="col-sm-2">
+                                                        <label asp-for="jobsFiles.CurrentPage" class="col-form-label">@Localizer["Current Page"]</label>
+                                                    </div>
+                                                    <div class="col-sm-10">
+                                                        <input type="number" asp-for="jobsFiles.CurrentPage" class="form-control" placeholder="@Localizer["Current Page"]" />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="col-sm-2">
+                                                        <label asp-for="jobsFiles.AssemblyPage" class="col-form-label">@Localizer["Assembly Page"]</label>
+                                                    </div>
+                                                    <div class="col-sm-10">
+                                                        <input type="number" asp-for="jobsFiles.AssemblyPage" class="form-control" placeholder="@Localizer["Assembly Page"]" />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="col-sm-2">
+                                                        <label asp-for="jobsFiles.Status" class="col-form-label">@Localizer["Status"]</label>
+                                                    </div>
+                                                    <div class="col-sm-10">
+
+                                                        @if (UserList.Where(x => x.RoleName == "Admin").Count() > 0 || UserList.Where(x => x.RoleName == "FilesDashboard").Count() > 0)
+                                                        {
+                                                            @Html.DropDownList("Status", abledoc.Utility.ComboHelper.GetStatusAdmin(string.IsNullOrEmpty(Model.jobsFiles.Status) ? "" : Model.jobsFiles.Status), "Select", new { @id = "Status", @class = "form-control selectpicker", @datastyle = "btn btn-link", @name = "Status" })
+                                                        }
+                                                        else if (Model.jobsFiles.Status == "TAGGING")
+                                                        {
+                                                            @Html.DropDownList("Status", abledoc.Utility.ComboHelper.GetStatusTagger(string.IsNullOrEmpty(Model.jobsFiles.Status) ? "" : Model.jobsFiles.Status), "Select", new { @id = "Status", @class = "form-control selectpicker", @datastyle = "btn btn-link", @name = "Status" })
+                                                        }
+                                                        else if (Model.jobsFiles.Status == "REVIEW")
+                                                        {
+                                                            @Html.DropDownList("Status", abledoc.Utility.ComboHelper.GetStatusReviewer(string.IsNullOrEmpty(Model.jobsFiles.Status) ? "" : Model.jobsFiles.Status), "Select", new { @id = "Status", @class = "form-control selectpicker", @datastyle = "btn btn-link", @name = "Status" })
+                                                        }
+                                                        else if (Model.jobsFiles.Status == "FINAL")
+                                                        {
+                                                            @Html.DropDownList("Status", abledoc.Utility.ComboHelper.GetStatusFinalizer(string.IsNullOrEmpty(Model.jobsFiles.Status) ? "" : Model.jobsFiles.Status), "Select", new { @id = "Status", @class = "form-control selectpicker", @datastyle = "btn btn-link", @name = "Status" })
+                                                        }
+                                                        else if (Model.jobsFiles.Status == "QC")
+                                                        {
+                                                            @Html.DropDownList("Status", abledoc.Utility.ComboHelper.GetStatusQC(string.IsNullOrEmpty(Model.jobsFiles.Status) ? "" : Model.jobsFiles.Status), "Select", new { @id = "Status", @class = "form-control selectpicker", @datastyle = "btn btn-link", @name = "Status" })
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.DropDownList("Status", abledoc.Utility.ComboHelper.GetFileStatus(string.IsNullOrEmpty(Model.jobsFiles.Status) ? "" : Model.jobsFiles.Status), "Select", new { @id = "Status", @class = "form-control selectpicker", @datastyle = "btn btn-link", @name = "Status" })
+                                                        }
+
+                                                        <span asp-validation-for="jobsFiles.Status" class="text-danger"></span>
+
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="col-sm-2">
+                                                        <label asp-for="jobsFiles.Deadline" class="col-form-label">@Localizer["DeadLine Date"]</label>
+                                                    </div>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" asp-for="jobsFiles.Deadline" class="form-control datepicker" />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="col-sm-2">
+                                                        <label asp-for="jobsFiles.DeadlineTime" class="col-form-label">@Localizer["DeadLine Time"]</label>
+                                                    </div>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" asp-for="jobsFiles.DeadlineTime" class="form-control timepicker" />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="col-sm-2">
+                                                        <label for="AssignedTo" class="col-form-label">@Localizer["Assigned To"]</label>
+                                                    </div>
+                                                    <div class="col-sm-10">
+                                                        @Html.DropDownList("AssignedTo", abledoc.Utility.ComboHelper.GetAssigUserList(string.IsNullOrEmpty(Model.jobsFiles.AssignedTo) ? "" : Model.jobsFiles.AssignedTo), "Select", new { @id = "AssignedTo", @class = "form-control selectpicker", @datastyle = "btn btn-link", @name = "AssignedTo" })
+                                                    </div>
+                                                </div>
+                                                @if (UserList.Where(x => x.RoleName == "Admin").Count() > 0 || UserList.Where(x => x.RoleName == "AltText").Count() > 0)
+                                                {
+                                                    <div class="form-group row">
+                                                        <div class="col-sm-2">
+                                                            <label for="AltTxt" class="col-form-label">@Localizer["ALT-Text"]</label>
+                                                        </div>
+
+                                                        <div class="col-sm-10">
+                                                            @Html.DropDownList("AltTxt", abledoc.Utility.ComboHelper.GetAltTextStatusList(string.IsNullOrEmpty(Model.jobsFiles.AltTxt.ToString()) ? "" : Model.jobsFiles.AltTxt.ToString()), "Select", new { @id = "AltTxt", @class = "form-control selectpicker", @datastyle = "btn btn-link", @name = "AltTxt" })
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="card-collapse">
+                                        <div class="card-header" role="tab" id="headingTwo">
+                                            <h5 class="mb-0">
+                                                <a data-toggle="collapse" href="#collapseEngagementUsers" aria-expanded="true" aria-controls="collapseTwo" class="collapsed accordion">
+                                                    @Localizer["Engagement Users"]
+                                                    <i class="material-icons">keyboard_arrow_down</i>
+                                                </a>
+                                            </h5>
+                                        </div>
+                                        <div id="collapseEngagementUsers" class="collapse show" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+                                            <div class="card-body">
+                                                <fieldset>
+                                                    @foreach (KeyValuePair<int, string> item in ViewBag.UserList)
+                                                    {
+                                                        <div style="display: inline-block">
+                                                            <a href="#" class="btn btn-primary-1">@item.Value</a>
+                                                        </div>
+                                                    }
+                                                </fieldset>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="card-collapse">
+                                        <div class="card-header" role="tab" id="headingThree">
+                                            <h5 class="mb-0">
+                                                <a data-toggle="collapse" href="#collapseReferenceFiles" aria-expanded="false" aria-controls="collapseThree" class="collapsed accordion">
+                                                    @Localizer["Reference Files"]
+                                                    <i class="material-icons">keyboard_arrow_down</i>
+                                                </a>
+                                            </h5>
+                                        </div>
+                                        <div id="collapseReferenceFiles" class="collapse show" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion" style="">
+                                            <div class="card-body">
+                                                @*<div id="drop">*@
+                                                <div class="material-datatables">
+                                                    <table id="datatables1" class="table table-striped table-no-bordered table-hover ReferenceFilesTable" cellspacing="0" width="100%" style="width:100%">
+                                                        <thead class="thin-border-bottom">
+                                                            <tr>
+                                                                <th style="width:85%">@Localizer["File Name"]</th>
+                                                                <th style="width:5%">@Localizer["State"]</th>
+                                                                <th style="width:5%">@Localizer["Date"]</th>
+                                                                <th style="width:5%">@Localizer["Time"]</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @if (Model.ReferenceFile != null)
+                                                            {
+                                                                foreach (JobsFilesVersions item in Model.ReferenceFile)
+                                                                {
+                                                                    <tr>
+                                                                        <td>
+                                                                            <a href="/fileget?ID=@item.ID&flag=@Model.flag">@item.Filename</a>
+                                                                        </td>
+                                                                        <td>
+                                                                            @item.State
+                                                                        </td>
+                                                                        <td>
+                                                                            @item.LastUpdated.ToString("MM/dd/yyyy")
+                                                                        </td>
+                                                                        <td>
+                                                                            @item.LastUpdated.ToString("hh:mm tt")
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                @*</div>*@
+                                                @*<input type="button" id="btnUpload" value="Upload" />*@
+                                                <div class="row">
+                                                    <div class="col-md-2">
+                                                        <button type="button" class="btn btn-success btn-primary-1" onclick='AddFiles("REFERENCE")' data-toggle="modal" data-target="#myModal">
+                                                            <i class="fa fa-plus"></i> @Localizer["Add Reference Files"]
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-md-10">
+                                                        <button type="button" class="btn btn-success btn-primary-1 LinkPopupFile" data-toggle="modal" data-target="#myModal">
+                                                            <i class="fa fa-plus"></i> @Localizer["Link Reference Files"]
+                                                        </button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="card-collapse">
+                                        <div class="card-header" role="tab" id="headingFour">
+                                            <h5 class="mb-0">
+                                                <a data-toggle="collapse" href="#collapseErrorReports" aria-expanded="false" aria-controls="collapseFour" class="collapsed accordion">
+                                                    @Localizer["Error Reports"]
+                                                    <i class="material-icons">keyboard_arrow_down</i>
+                                                </a>
+                                            </h5>
+                                        </div>
+                                        <div id="collapseErrorReports" class="collapse show" role="tabpanel" aria-labelledby="headingFour" data-parent="#accordion" style="">
+                                            <div class="card-body">
+                                                <div class="material-datatables">
+                                                    <table id="datatables01" class="table table-striped table-no-bordered table-hover ErrorReportsTable" cellspacing="0" width="100%" style="width:100%">
+                                                        <thead class="thin-border-bottom">
+                                                            <tr>
+                                                                <th>@Localizer["File Name"]</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @if (Model.ErrorReportList != null)
+                                                            {
+                                                                foreach (ErrorReport item in Model.ErrorReportList)
+                                                                {
+                                                                    <tr>
+                                                                        <td>
+                                                                            <a href="/fileget?ID=@item.ID&flag=@Model.flag">@item.ErrorReportName</a>
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (Model.jobsFiles.Status == "FINAL")
+                        {
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="card-collapse">
+                                            <div class="card-header" role="tab" id="headingFive">
+                                                <h5 class="mb-0">
+                                                    <a data-toggle="collapse" href="#collapseALTText" aria-expanded="false" aria-controls="collapseFive" class="collapsed accordion">
+                                                        @Localizer["ALT-Text"]
+                                                        <i class="material-icons">keyboard_arrow_down</i>
+                                                    </a>
+                                                </h5>
+                                            </div>
+                                            <div id="collapseALTText" class="collapse show" role="tabpanel" aria-labelledby="headingFive" data-parent="#accordion" style="">
+                                                <div class="card-body">
+                                                    <div class="material-datatables">
+                                                        <table id="datatables2" class="table table-striped table-no-bordered table-hover ALTTextTable" cellspacing="0" width="100%" style="width:100%">
+                                                            <thead class="thin-border-bottom">
+                                                                <tr>
+                                                                    <th>@Localizer["Alt-Text"]</th>
+
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @if (ViewBag.AltTextList != null)
+                                                                {
+                                                                    foreach (var item in ViewBag.AltTextList)
+                                                                    {
+                                                                        <tr>
+                                                                            <td>
+                                                                                <textarea readonly style="width:100%">@item.AltText</textarea>
+                                                                            </td>
+                                                                        </tr>
+                                                                    }
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <div class="Conversation">
+                            @await Html.PartialAsync("_Conversation.cshtml")
+                        </div>
+
+                        <div class="ClientInstruction">
+                            @await Html.PartialAsync("_ClientInstuction.cshtml")
+                        </div>
+
+
+                        @if (Model.jobsFiles.Status == "TAGGING" || Model.jobsFiles.Status == "REVIEW" || Model.jobsFiles.Status == "FINAL" || Model.jobsFiles.Status == "QC")
+                        {
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="card-collapse">
+                                            <div class="card-header" role="tab" id="headingSeven">
+                                                <h5 class="mb-0">
+                                                    <a data-toggle="collapse" href="#collapsePhase2LastComments" aria-expanded="false" aria-controls="collapseSeven" class="collapsed accordion">
+                                                        @Localizer["Comments"]
+                                                        <i class="material-icons">keyboard_arrow_down</i>
+                                                    </a>
+                                                </h5>
+                                            </div>
+                                            <div id="collapsePhase2LastComments" class="collapse show" role="tabpanel" aria-labelledby="headingSeven" data-parent="#accordion" style="">
+                                                <div class="card-body">
+                                                    <div class="material-datatables">
+                                                        <table id="datatables3" class="table table-striped table-no-bordered table-hover Phase2LastCommentsTable" cellspacing="0" width="100%" style="width:100%">
+                                                            <thead class="thin-border-bottom">
+                                                                <tr>
+
+                                                                    @*  <th @(Model.jobsFiles.Status == "TAGGING" || Model.jobsFiles.Status == "REVIEW" ? "style=width:30%" : "style=display:none;")>Errors</th>*@
+                                                                    <th @(Model.jobsFiles.Status == "TAGGING" || Model.jobsFiles.Status == "REVIEW" ? "style=width:30%" : "style=width:60%")>Comments</th>
+                                                                    <th style="width:10%">@Localizer["User"]</th>
+                                                                    <th style="width:10%">@Localizer["Status"]</th>
+                                                                    <th style="width:10%">@Localizer["Date"]</th>
+                                                                    <th style="width:10%">@Localizer["Time"]</th>
+                                                                </tr>
+
+                                                            </thead>
+                                                            <tbody>
+                                                                @if (Model.JobsFilesCommentsList != null)
+                                                                {
+                                                                    foreach (JobsFilesReviews item1 in Model.JobsFilesCommentsList)
+                                                                    {
+                                                                        <tr>
+                                                                            @*<td @(Model.jobsFiles.Status == "TAGGING" || Model.jobsFiles.Status == "REVIEW" ? "" : "style=display:none;")>
+                                                                                    @if (item1.Status == "Phase 2")
+                                                                                    {
+                                                                                        @if (!string.IsNullOrEmpty(item1.TagOrderE.ToString()))
+                                                                                        {
+                                                                                            @("Tag Order ("+ item1.TagOrderE+") | ")
+                                                                                        }
+                                                                                        @if (!string.IsNullOrEmpty(item1.ContentOrderE.ToString()))
+                                                                                        {
+                                                                                            @("Content Order ("+ item1.ContentOrderE+") | ")
+                                                                                        }
+                                                                                        @if (!string.IsNullOrEmpty(item1.TabbingOrderE.ToString()))
+                                                                                        {
+                                                                                            @(" Tabbing Order (" + item1.TabbingOrderE +") | ")
+                                                                                        }
+                                                                                        @if (!string.IsNullOrEmpty(item1.IncorrectTagsE.ToString()))
+                                                                                        {
+                                                                                            @(" Incorrect Tags ("+item1.IncorrectTagsE+") | ")
+                                                                                        }
+                                                                                        @if (!string.IsNullOrEmpty(item1.AssemblyE.ToString()))
+                                                                                        {
+                                                                                            @(" Assembly ("+ item1.AssemblyE +") | ")
+                                                                                        }
+                                                                                        @if (!string.IsNullOrEmpty(item1.FiguresTextE.ToString()))
+                                                                                        {
+                                                                                            @(" Figures Text ("+item1.FiguresTextE+") | ")
+                                                                                        }
+                                                                                        @if (!string.IsNullOrEmpty(item1.FiguresMissedE.ToString()))
+                                                                                        {
+                                                                                            @(" Figures Missed ("+item1.FiguresMissedE+") | ")
+                                                                                        }
+                                                                                        @if (!string.IsNullOrEmpty(item1.HeadingsE.ToString()))
+                                                                                        {
+                                                                                            @(" Headings ("+item1.HeadingsE+") | ")
+                                                                                        }
+                                                                                        @if (!string.IsNullOrEmpty(item1.ReferencesMissedE.ToString()))
+                                                                                        {
+                                                                                            @(" References Missed ("+item1.ReferencesMissedE+") | ")
+                                                                                        }
+                                                                                        @if (!string.IsNullOrEmpty(item1.ReferencesTypeE.ToString()))
+                                                                                        {
+                                                                                            @(" References Type ("+item1.ReferencesTypeE+") | ")
+                                                                                        }
+                                                                                        @if (!string.IsNullOrEmpty(item1.SpaceIssuesE.ToString()))
+                                                                                        {
+                                                                                            @(" Space Issues ("+item1.SpaceIssuesE + ") | ")
+                                                                                        }
+                                                                                        @if (!string.IsNullOrEmpty(item1.FormFieldPropertiesE.ToString()))
+                                                                                        {
+                                                                                            @(" Form Field Properties ("+item1.FormFieldPropertiesE+") | ")
+                                                                                        }
+                                                                                        @if (!string.IsNullOrEmpty(item1.FormFieldTooltipsE.ToString()))
+                                                                                        {
+                                                                                            @(" Form Field Tooltips ("+item1.FormFieldTooltipsE + ") | ")
+                                                                                        }
+                                                                                        @if (!string.IsNullOrEmpty(item1.FormFieldTypeE.ToString()))
+                                                                                        {
+                                                                                            @(" Form Field Type ("+item1.FormFieldTypeE +") | ")
+                                                                                        }
+                                                                                        @if (!string.IsNullOrEmpty(item1.ArtifactE.ToString()))
+                                                                                        {
+                                                                                            @(" Artifact ("+item1.ArtifactE+") | ")
+                                                                                        }
+                                                                                        @if (!string.IsNullOrEmpty(item1.TableStructureE.ToString()))
+                                                                                        {
+                                                                                            @("Table Structure ("+item1.TableStructureE+") | ")
+                                                                                        }
+                                                                                        @if (!string.IsNullOrEmpty(item1.ListStructureE.ToString()))
+                                                                                        {
+                                                                                            @("List Structure ("+item1.ListStructureE+") | ")
+                                                                                        }
+                                                                                        @if (!string.IsNullOrEmpty(item1.LinksE.ToString()))
+                                                                                        {
+                                                                                            @("Links ("+item1.LinksE+") | ")
+                                                                                        }
+                                                                                        @if (!string.IsNullOrEmpty(item1.LanguageAttributesE.ToString()))
+                                                                                        {
+                                                                                            @("Language Attributes ("+item1.LanguageAttributesE+") | ")
+                                                                                        }
+                                                                                        @if (!string.IsNullOrEmpty(item1.SideBySideE.ToString()))
+                                                                                        {
+                                                                                            @("Side By Side ("+item1.SideBySideE+") | ")
+                                                                                        }
+                                                                                        @if (!string.IsNullOrEmpty(item1.CSRE.ToString()))
+                                                                                        {
+                                                                                            @("CSR (" + item1.CSRE + ") | ")
+                                                                                        }
+                                                                                        @if (!string.IsNullOrEmpty(item1.DocumentNamingE.ToString()))
+                                                                                        {
+                                                                                            @("Document Naming ("+item1.DocumentNamingE+")")
+                                                                                        }
+                                                                                    }
+
+
+                                                                                </td>*@
+                                                                            <td>
+                                                                                @item1.Comments
+                                                                            </td>
+                                                                            <td>
+                                                                                @item1.FullName
+                                                                            </td>
+                                                                            <td>
+                                                                                @item1.Status
+                                                                            </td>
+                                                                            <td>
+                                                                                @item1.LastUpdated.ToString("MM/dd/yyyy")
+                                                                            </td>
+                                                                            <td>
+                                                                                @item1.LastUpdated.ToString("hh:mm tt")
+                                                                            </td>
+
+                                                                        </tr>
+                                                                    }
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        }
+
+
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="card-collapse">
+                                        <div class="card-header" role="tab" id="headingTen">
+                                            <h5 class="mb-0">
+                                                <a data-toggle="collapse" href="#collapseJobSetting" aria-expanded="false" aria-controls="collapseTen" class="collapsed">
+                                                    @Localizer["Job"] #@Model.jobs.ID @Localizer["Settings"]
+                                                    <i class="material-icons">keyboard_arrow_down</i>
+                                                </a>
+                                            </h5>
+                                        </div>
+                                        <div id="collapseJobSetting" class="collapse show" role="tabpanel" aria-labelledby="headingTen" data-parent="#accordion" style="">
+                                            <div class="card-body">
+                                                <div class="form-group row">
+                                                    <div class="col-sm-2">
+                                                        <label asp-for="jobs.Security" class="col-form-label">@Localizer["Security"]</label>
+                                                    </div>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" asp-for="jobs.Security" class="form-control" placeholder="@Localizer["Security"]">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="col-sm-2">
+                                                        <label asp-for="jobs.CustomPassword" class="col-form-label">@Localizer["Custom Password"]</label>
+                                                    </div>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" asp-for="jobs.CustomPassword" class="form-control" placeholder="@Localizer["Custom Password"]">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="col-sm-2">
+                                                        <label asp-for="jobs.Acrobat_Security_Settings" class="col-form-label">@Localizer["Acrobat Security"]</label>
+                                                    </div>
+                                                    <div class="col-sm-10">
+                                                        <textarea id="Acrobat_Security_Settings" name="Acrobat_Security_Settings" class="form-control" placeholder="@Localizer["Acrobat Security"]">@Model.jobs.Acrobat_Security_Settings</textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="col-sm-2">
+                                                        <label asp-for="jobs.Tagging_Instructions" class="col-form-label">@Localizer["Tagging Instructions"]</label>
+                                                    </div>
+                                                    <div class="col-sm-10">
+                                                        <textarea id="Tagging_Instructions" name="Tagging_Instructions" class="form-control" placeholder="@Localizer["Tagging Instructions"]">@Model.jobs.Tagging_Instructions</textarea>
+                                                    </div>
+                                                </div>
+                                                <button type="button" class="btn btn-success btn-primary-1 btnAddurl" onclick="UpdateTagging(@Model.jobsFiles.JobID)" data-toggle="modal" data-target="#myModal">
+                                                    <i class="fa fa-plus"></i> @Localizer["Update"]
+                                                </button>
+                                                <div class="form-group row">
+                                                    <div class="col-sm-2">
+                                                        <label asp-for="jobs.Logo_altText" class="col-form-label">@Localizer["Logo ALT-Text"]</label>
+                                                    </div>
+                                                    <div class="col-sm-10">
+                                                        <textarea id="Logo_altText" name="Logo_altText" class="form-control" placeholder="@Localizer["Logo ALT-Text"]">@Model.jobs.Logo_altText</textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="FileVersions">
+                            @{ ViewBag.flag = Model.flag;}
+                            @await Html.PartialAsync("_FileVersions.cshtml")
+                        </div>
+
+
+
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="card-collapse">
+                                        <div class="card-header" role="tab" id="headingFileTree">
+                                            <h5 class="mb-0">
+                                                <a class="accordion1" data-toggle="collapse" onclick="fileTreeDataTable(@Model.jobs.ID)" href="#collapseFileTree" aria-expanded="false" aria-controls="collapseThree">
+                                                    @Localizer["File Tree"]
+                                                    <i class="material-icons">keyboard_arrow_down</i>
+                                                </a>
+                                            </h5>
+                                        </div>
+                                        <div id="collapseFileTree" class="collapse" role="tabpanel" aria-labelledby="headingFileTree" data-parent="#accordion">
+                                            <div class="card-body FileTree">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="card-footer sticky">
+                                @*<div class="col-md-2">*@
+                                <button type="submit" id="fileSave" class="btn btn-primary btn-sm btn-primary-1">
+                                    <i class="fa fa-save"></i>&nbsp; @Localizer["Save"]
+                                </button>
+                                @*</div>*@
+                                @*<div class="col-md-2">*@
+                                @if (UserList.Where(x => x.RoleName == "Admin").Count() > 0 || UserList.Where(x => x.RoleName == "FileAdmin").Count() > 0 || Model.jobsFiles.CurrentCheckout == null || Model.jobsFiles.CurrentCheckout.ToString() == userid)
+                                {
+                                    if (Model.jobsFiles.Status == "TAGGING")
+                                    {
+                                        <button type="button" id="Checkout" name="Checkout" data-link="Checkout" class="btn btn-success btn-sm btn-primary-1 Checkout">
+                                            <i class="fa fa-save"></i>&nbsp; @Localizer["Check out"]
+                                        </button>
+                                    }
+                                    else if (Model.jobsFiles.Status == "REVIEW")
+                                    {
+                                        <button type="button" id="CheckoutToReview" name="CheckoutToReview" data-link="CheckoutToReview" class="btn btn-success btn-sm btn-primary-1 Checkout">
+                                            <i class="fa fa-save"></i>&nbsp; @Localizer["Check out"]
+                                        </button>
+                                    }
+                                    else if (Model.jobsFiles.Status == "FINAL")
+                                    {
+                                        <button type="button" id="CheckoutToFinal" name="CheckoutToFinal" data-link="CheckoutToFinal" class="btn btn-success btn-sm btn-primary-1 Checkout">
+                                            <i class="fa fa-save"></i>&nbsp; @Localizer["Check out"]
+                                        </button>
+                                    }
+                                    else if (Model.jobsFiles.Status == "QC")
+                                    {
+                                        <button type="button" id="CheckoutToQC" name="CheckoutToQC" data-link="CheckoutToQC" class="btn btn-success btn-sm btn-primary-1 Checkout">
+                                            <i class="fa fa-save"></i>&nbsp; @Localizer["Check out"]
+                                        </button>
+                                    }
+                                }
+                                else
+                                {
+                                    <button type="button" id="Checkout" name="Checkout" data-link="Checkout" class="btn btn-success btn-sm btn-primary-1 Checkout">
+                                        <i class="fa fa-save"></i>&nbsp; @Localizer["Check out"]
+                                    </button>
+                                }
+                                @*</div>*@
+                                @*<div class="col-md-2">*@
+                                <a href="javascript:;" class="btn btn-primary btn-sm btn-primary-1 SendTo">@Localizer["Send To"]</a>
+                                @*</div>*@
+
+                            </div>
+                        </div>
+
+                        @*<div class="row">
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-body">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>*@
+                    </form>
+                </div>
+            </div>
+        }
+
+    }
+
+}
+<div id="popupSendFile">
+</div>
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#Status').selectpicker('setStyle', 'btn btn-link');
+            $('#AssignedTo').selectpicker('setStyle', 'btn btn-link');
+            $('#AltTxt').selectpicker('setStyle', 'btn btn-link');
+            $('#Type').selectpicker('setStyle', 'btn btn-link');
+            $('.filter-option').addClass('filter-option-1');
+            $('.ReferenceFilesTable').dataTable();
+            $('.ErrorReportsTable').dataTable();
+            $('.ALTTextTable').dataTable();
+            $('.Phase2LastCommentsTable').dataTable();
+            $('.Phase4LastCommentsTable').dataTable();
+            $('.Phase5LastCommentsTable').dataTable();
+            $('.FileVersionsTable').dataTable({
+                "aLengthMenu": [
+                    [10, 25, 50, 100, -1],
+                    ['10 rows', '25 rows', '50 rows', '100 rows', 'Show All']
+                ],
+                "responsive": true,
+            });
+        });
+
+        function download() {
+            var ID = parseInt($("#ID").val());
+            var flag = $('#flag').val();
+            var allIDs = "";
+            var i = 0;
+            $(".FileVersionsTable tbody .assignfiles").each(function () {
+                var $this = $(this);
+                if ($this.is(":checked")) {
+                    if (allIDs == "") {
+                        allIDs = $this.attr('data-id');
+                    } else {
+                        allIDs = allIDs + "," + $this.attr('data-id');
+                    }
+                }
+            });
+            //allIDs = "all"
+            //var data = new FormData();
+            //data.append("ID", ID);
+            //data.append("IDS", IDS)
+            if (allIDs == "") {
+                $.notify({
+                    icon: 'add_alert',
+                    title: '<strong>Error!</strong>',
+                    message: "Please select at least one file"
+                }, {
+                    type: 'danger'
+                });
+            } else {
+                window.location.href = "/File/downloadFile?ID=" + ID + "&IDS=" + allIDs + "&flag=" + flag;
+            }
+
+
+    @*$.ajax({
+        type: "POST",
+        url: '@Url.Action("ZipPDFFiles", "File")',
+        contentType: false,
+        processData: false,
+        data: data,
+        success: function (result) {
+
+        },
+        error: function () {
+            alert("There was error uploading files!");
+        }
+    });*@
+
+}
+    </script>
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <script src="~/assets/js/pages/file.js?v=@abledoc.Utility.CommonHelper.Version"></script>
+    <script src="~/assets/js/pages/FileTreeTable.js?v=@abledoc.Utility.CommonHelper.Version"></script>
+    <!-- END PAGE LEVEL PLUGINS -->
+
+
+}

@@ -1,0 +1,27 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<div class="modal fade" id="bootstrap-sendForProcessing" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form method="post" id="frmProcessing">
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <h4>@Localizer["Are you sure you want to send your timesheet for processing?"]</h4>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary-1" id="saveBtn" onclick="SendTimesheetForProcessing(); return false;"> @Localizer["Yes"]</button>
+                    &nbsp;&nbsp;
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"> @Localizer["No"]</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>

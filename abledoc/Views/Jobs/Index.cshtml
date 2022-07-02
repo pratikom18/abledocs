@@ -1,0 +1,135 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    string addbtn = ViewBag.isAdd;
+    string editbtn = ViewBag.isEdit;
+
+}
+@model abledoc.Models.Jobs;
+@{
+    ViewData["Title"] = Localizer["Jobs"];
+    ViewData["PageTitle"] = Localizer["Jobs"];
+    var Status = "";
+    if (ViewBag.Status != "")
+    {
+        Status = ViewBag.Status.ToUpper();
+    }
+    else
+    {
+        Status = @abledoc.Models.Utility.JobStatus.DEFAULTSTATUS;
+    }
+}
+<input type="hidden" id="hdnEdit" value="@Localizer["Edit"]" />
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        @*<div class="card-icon">
+                                <i class="material-icons">assignment</i>
+                            </div>
+                            <h4 class="card-title">DataTables.net</h4>*@
+                        @if (ViewBag.StatusList != null)
+                        {
+                            foreach (var status in ViewBag.StatusList)
+                            {
+
+                                <button type="button" class="btn @((status.Status == Status) ? "btn-success" : "btn-primary-1") btn-sm statusBtn" rel="@status.Status">
+                                    @Localizer[abledoc.Utility.ComboHelper.UppercaseFirst(status.Status)] (@status.Count)
+                                </button>
+
+
+                            }
+                        }
+                        else
+                        {
+                    <button type="button" class="btn btn-success btn-sm statusBtn" rel="PENDING">
+                        @Localizer["Pending"] (0)
+                    </button>
+                    <button type="button" class="btn btn-primary-1 btn-sm statusBtn" rel="QUOTE">
+                        @Localizer["Quote"]  (0)
+                    </button>
+                    <button type="button" class="btn btn-primary-1 btn-sm statusBtn" rel="OPEN">
+                        @Localizer["Open"]  (0)
+                    </button>
+                    <button type="button" class="btn btn-primary-1 btn-sm statusBtn" rel="TOBEDELIVERED">
+                        @Localizer["To be Deliverd"]  (0)
+                    </button>
+                    <button type="button" class="btn btn-primary-1 btn-sm statusBtn" rel="DELIVERED">
+                        @Localizer["Deliverd"]  (0)
+                    </button>
+                        }
+
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                    <label for="today_task"><input type="checkbox" name="today_task" id="today_task" />  @Localizer["Today's task"]</label>
+
+                        <input type="hidden" id="status" value="@Status" />
+                        <input type="hidden" id="currentDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                        <input type="hidden" id="forDue2Days" value="@DateTime.Today.AddDays(2).ToString("yyyy-MM-dd")" />
+                        @if (addbtn != "No")
+                        {
+                            <div class="float-sm-right col-md-2">
+                                <input id="AddNewJobFromClientCode" class="form-control" list="clientList" data-mini="true" data-inline="true" title="3-character client code" placeholder="@Localizer["Add Job for Client"]" />
+                                @*<input id="AddNewJobFromClientCode" class="form-control" list="clientList" maxlength="3" data-mini="true" data-inline="true" title="3-character client code" placeholder="Add Job for Client" />*@
+                                <datalist id="clientList" runat="server">
+                                    @foreach (var client in ViewBag.ClientList)
+                                    {
+                                        <option value="@client.Code">@client.Company</option>
+                                    }
+                                </datalist>
+                                @*@Html.DropDownList("AddNewJobFromClientCode", ADO.Utility.ComboHelper.GetClientsList(), "Add Job for Client", new { @id = "AddNewJobFromClientCode", @class = "form-control  select2", @name = "AddNewJobFromClientCode", @tabindex = "3", @placeholder = "Add Job for Client" })*@
+
+
+                            </div>
+                        }
+                        @if (editbtn != "No")
+                        {
+                            <div class="float-sm-right col-md-2">
+
+                                <input type="text" class="form-control" id="gotoJob" placeholder="@Localizer["Go to Job"]" />
+
+                            </div>
+                        }
+
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                            <!--        Here you can write extra buttons/actions for the toolbar              -->
+                        </div>
+                        <div class="material-datatables">
+                            <table id="JobsTable" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                            </table>
+                        </div>
+                    </div>
+                    <!-- end content-->
+                </div>
+                <!--  end card  -->
+            </div>
+            <!-- end col-md-12 -->
+        </div>
+        <!-- end row -->
+    </div>
+</div>
+<input type="hidden" name="myedit" id="myedit" value="@editbtn" />
+<input type="hidden" id="hdnNo" value="@Localizer["No"]" />
+<input type="hidden" id="hdnJobID" value="@Localizer["Job ID"]" />
+<input type="hidden" id="hdnDeadLine" value="@Localizer["DeadLine"]" />
+<input type="hidden" id="hdnType" value="@Localizer["Type"]" />
+<input type="hidden" id="hdnFiles" value="@Localizer["Files"]" />
+<input type="hidden" id="hdnPages" value="@Localizer["Pages"]" />
+<input type="hidden" id="hdnCurrency" value="@Localizer["Currency"]" />
+<input type="hidden" id="hdnQuoted" value="@Localizer["Quoted"]" />
+<input type="hidden" id="hdnQuotedHours" value="@Localizer["Quoted Hours"]" />
+<input type="hidden" id="hdnHoursTaken" value="@Localizer["Hours Taken"]" />
+<input type="hidden" id="hdnProgress" value="@Localizer["Progress"]" />
+<input type="hidden" id="hdnNotes" value="@Localizer["Notes"]" />
+<input type="hidden" id="hdnActions" value="@Localizer["Actions"]" />
+<input type="hidden" id="hdnSendtoclient" value="@Localizer["Send to client"]" />
+
+@section scripts{
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <script src="~/assets/js/pages/Jobs.js?v=@abledoc.Utility.CommonHelper.Version"></script>
+    <!-- END PAGE LEVEL PLUGINS -->
+}
